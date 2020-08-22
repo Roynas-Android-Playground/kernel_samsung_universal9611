@@ -58,13 +58,13 @@
 #include "displayport.h"
 #endif
 
-int decon_log_level = 6;
+int decon_log_level = 0;
 module_param(decon_log_level, int, 0644);
-int dpu_bts_log_level = 6;
+int dpu_bts_log_level = 0;
 module_param(dpu_bts_log_level, int, 0644);
-int win_update_log_level = 6;
+int win_update_log_level = 0;
 module_param(win_update_log_level, int, 0644);
-int dpu_mres_log_level = 6;
+int dpu_mres_log_level = 0;
 module_param(dpu_mres_log_level, int, 0644);
 int decon_systrace_enable;
 void decon_wait_for_vstatus(struct decon_device *decon, u32 timeout);
