@@ -2146,6 +2146,7 @@ u32 dsim_reg_get_vm_line_cnt(u32 id)
 
 void __dsim_dump(u32 id, struct dsim_regs *regs)
 {
+#if 0
 	if (!regs->regs)
 		return;
 
@@ -2156,4 +2157,5 @@ void __dsim_dump(u32 id, struct dsim_regs *regs)
 			regs->regs, 0xFC, false);
 
 	dsim_reg_enable_shadow_read(id, 1);
+#endif
 }
