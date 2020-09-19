@@ -1140,6 +1140,7 @@ struct ext4_inode_info {
 #define EXT4_MOUNT_NO_AUTO_DA_ALLOC	0x10000	/* No auto delalloc mapping */
 #define EXT4_MOUNT_BARRIER		0x20000 /* Use block barriers */
 #define EXT4_MOUNT_QUOTA		0x40000 /* Some quota option set */
+#define EXT4_MOUNT_NO_SEHASH_XATTR	0x40000 /* Ignore security.sehash extended attribute */
 #define EXT4_MOUNT_USRQUOTA		0x80000 /* "old" user quota,
 						 * enable enforcement for hidden
 						 * quota files */
