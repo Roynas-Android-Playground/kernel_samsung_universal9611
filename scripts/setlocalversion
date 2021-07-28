@@ -49,9 +49,8 @@ scm_version()
 
 		# Get branch name, get commit sha, leave.
 		if test "$CONFIG_LOCALVERSION_BRANCH_SHA" = "y"; then
-			branch_name=$(git rev-parse --abbrev-ref HEAD)
 			last_commit=$(git rev-parse --verify --short=10 HEAD)
-			printf '%s' "-$branch_name/$last_commit"
+			printf '%s' "@$last_commit"
 			return
 		fi
 
