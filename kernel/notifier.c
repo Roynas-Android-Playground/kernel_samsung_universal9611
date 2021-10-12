@@ -90,11 +90,15 @@ static int notifier_call_chain(struct notifier_block **nl,
 			continue;
 		}
 #endif
+#ifdef CONFIG_DEBUG_SNAPSHOT
 		dbg_snapshot_print_notifier_call((void **)nl,
 				(unsigned long)nb->notifier_call, DSS_FLAG_IN);
+#endif
 		ret = nb->notifier_call(nb, val, v);
+#ifdef CONFIG_DEBUG_SNAPSHOT
 		dbg_snapshot_print_notifier_call((void **)nl,
 				(unsigned long)nb->notifier_call, DSS_FLAG_OUT);
+#endif
 
 		if (nr_calls)
 			(*nr_calls)++;
