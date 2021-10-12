@@ -256,7 +256,9 @@ static void sec_power_off(void)
 	pr_info("[%s] AC[%d], USB[%d], WPC[%d], WATER[%d]\n",
 			__func__, ac_val.intval, usb_val.intval, wpc_val.intval, water_val.intval);
 
+#ifdef CONFIG_SEC_DEBUG
 	sec_debug_clear_magic_rambase();
+#endif
 
 	flush_cache_all();
 
@@ -304,7 +306,9 @@ static void sec_reboot(enum reboot_mode reboot_mode, const char *cmd)
 
 	pr_emerg("%s (%d, %s)\n", __func__, reboot_mode, cmd ? cmd : "(null)");
 
+#ifdef CONFIG_SEC_DEBUG
 	sec_debug_clear_magic_rambase();
+#endif
 
 	/* LPM mode prevention */
 	sec_set_reboot_magic(SEC_REBOOT_NORMAL, SEC_REBOOT_END_OFFSET, 0xFF);
