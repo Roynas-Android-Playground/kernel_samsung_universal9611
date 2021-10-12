@@ -103,8 +103,9 @@ void synchronize_irq(unsigned int irq)
 	struct irq_desc *desc = irq_to_desc(irq);
 
 	if (desc) {
+#ifdef CONFIG_SEC_DEBUG
 		sec_debug_set_task_in_sync_irq((uint64_t)current, irq, (desc && desc->action) ? desc->action->name : NULL, desc);
-
+#endif
 		__synchronize_hardirq(desc);
 		/*
 		 * We made sure that no hardirq handler is
@@ -114,7 +115,9 @@ void synchronize_irq(unsigned int irq)
 		wait_event(desc->wait_for_threads,
 			   !atomic_read(&desc->threads_active));
 
+#ifdef CONFIG_SEC_DEBUG
 		sec_debug_set_task_in_sync_irq(0, 0, 0, 0);
+#endif
 	}
 }
 EXPORT_SYMBOL(synchronize_irq);
