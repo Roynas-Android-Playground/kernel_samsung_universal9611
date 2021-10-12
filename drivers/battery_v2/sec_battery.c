@@ -8117,12 +8117,14 @@ static int sec_battery_probe(struct platform_device *pdev)
 	battery->pdata->store_mode_charging_max = STORE_MODE_CHARGING_MAX;
 	battery->pdata->store_mode_charging_min = STORE_MODE_CHARGING_MIN;
 
+#ifdef CONFIG_SEC_PARAM
 #if !defined(CONFIG_SEC_FACTORY)
 	if (sales_code_is("VZW")) {
 		dev_err(battery->dev, "%s: Sales is VZW\n", __func__);
 		battery->pdata->store_mode_charging_max = STORE_MODE_CHARGING_MAX_VZW;
 		battery->pdata->store_mode_charging_min = STORE_MODE_CHARGING_MIN_VZW;
 	}
+#endif
 #endif
 
 #if defined(CONFIG_CALC_TIME_TO_FULL)
