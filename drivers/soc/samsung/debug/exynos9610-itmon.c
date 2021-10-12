@@ -513,7 +513,9 @@ static void itmon_switch_scandump(void)
 
 	ret = exynos_pmu_read(EXYNOS_PMU_BURNIN_CTRL, &val);
 	ret = exynos_pmu_write(EXYNOS_PMU_BURNIN_CTRL, val | BIT_ENABLE_DBGSEL_WDTRESET);
+#ifdef CONFIG_DEBUG_SNAPSHOT
 	s3c2410wdt_set_emergency_reset(5, 0);
+#endif
 }
 
 static struct itmon_rpathinfo *itmon_get_rpathinfo(struct itmon_dev *itmon,
