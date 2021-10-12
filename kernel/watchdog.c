@@ -223,7 +223,9 @@ static DEFINE_PER_CPU(unsigned long, hrtimer_interrupts_saved);
 static DEFINE_PER_CPU(struct softlockup_info, percpu_sl_info);
 #endif
 
+#ifdef CONFIG_SEC_DEBUG
 static void check_softlockup_type(void);
+#endif
 
 static unsigned long soft_lockup_nmi_warn;
 
