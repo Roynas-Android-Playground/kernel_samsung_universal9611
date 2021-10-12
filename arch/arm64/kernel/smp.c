@@ -831,7 +831,9 @@ static void ipi_cpu_stop(unsigned int cpu, struct pt_regs *regs)
 
 	local_irq_disable();
 
+#ifdef CONFIG_DEBUG_SNAPSHOT
 	dbg_snapshot_save_context(regs);
+#endif
 	exynos_sdm_flush_secdram();
 
 	while (1)
@@ -868,15 +870,19 @@ void handle_IPI(int ipinr, struct pt_regs *regs)
 {
 	unsigned int cpu = smp_processor_id();
 	struct pt_regs *old_regs = set_irq_regs(regs);
+#ifdef CONFIG_DEBUG_SNAPSHOT
 	unsigned long long start_time;
+#endif
 
 	if ((unsigned)ipinr < NR_IPI) {
 		trace_ipi_entry_rcuidle(ipi_types[ipinr]);
 		__inc_irq_stat(cpu, ipi_irqs[ipinr]);
 	}
 
+#ifdef CONFIG_DEBUG_SNAPSHOT
 	dbg_snapshot_irq_var(start_time);
 	dbg_snapshot_irq(ipinr, handle_IPI, NULL, 0, DSS_FLAG_IN);
+#endif
 
 	switch (ipinr) {
 	case IPI_RESCHEDULE:
@@ -941,7 +947,9 @@ void handle_IPI(int ipinr, struct pt_regs *regs)
 	if ((unsigned)ipinr < NR_IPI)
 		trace_ipi_exit_rcuidle(ipi_types[ipinr]);
 
+#ifdef CONFIG_DEBUG_SNAPSHOT
 	dbg_snapshot_irq(ipinr, handle_IPI, NULL, start_time, DSS_FLAG_OUT);
+#endif
 
 	set_irq_regs(old_regs);
 }
