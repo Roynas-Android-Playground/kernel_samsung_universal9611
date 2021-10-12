@@ -480,9 +480,9 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
 			current->comm, task_pid_nr(current));
 #ifdef CONFIG_SEC_DEBUG
 		check_softlockup_type();
-#endif
 		sec_debug_set_task_in_soft_lockup((uint64_t)current);
 		sec_debug_set_cpu_in_soft_lockup((uint64_t)smp_processor_id());
+#endif
 
 		__this_cpu_write(softlockup_task_ptr_saved, current);
 		print_modules();
@@ -989,8 +989,10 @@ static void watchdog_check_hardlockup_other_cpu(void)
 		if (hardlockup_panic) {
 			dbg_snapshot_set_hardlockup(hardlockup_panic);
 			atomic_notifier_call_chain(&hardlockup_notifier_list, 0, (void *)&next_cpu);
+#ifdef CONFIG_SEC_DEBUG
 			sec_debug_set_cpu_in_hard_lockup((uint64_t)next_cpu);
 			sec_debug_set_task_in_hard_lockup((uint64_t)((struct rq *)cpu_rq(next_cpu)->curr));
+#endif
 			panic("Watchdog detected hard LOCKUP on cpu %u", next_cpu);
 		} else {
 			WARN(1, "Watchdog detected hard LOCKUP on cpu %u", next_cpu);
