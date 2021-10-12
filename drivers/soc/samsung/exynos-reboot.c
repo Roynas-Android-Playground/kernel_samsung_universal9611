@@ -299,7 +299,9 @@ static void exynos_reboot(enum reboot_mode mode, const char *cmd)
 		}
 		if (revision < EXYNOS_MAIN_REV_1) {
 			pr_emerg("%s: Exynos SoC reset right now with fake watchdog\n", __func__);
+#ifdef CONFIG_DEBUG_SNAPSHOT
 			s3c2410wdt_set_emergency_reset(1000, 1);
+#endif
 			while (1)
 				wfi();
 		}
