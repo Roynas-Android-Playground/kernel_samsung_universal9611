@@ -313,7 +313,7 @@ static void chg_print_regmap(struct sm5713_charger_data *charger)
 	for (i = 0; i < PRINT_CHG_REG_NUM; ++i) {
 		sprintf(temp_buf+strlen(temp_buf), "0x%02X[0x%02X],", SM5713_CHG_REG_INTMSK1 + i, regs[i]);
 		if (((i+1) % 16 == 0) || ((i+1) == PRINT_CHG_REG_NUM)) {
-			pr_info("sm5713-charger: regmap: %s\n", temp_buf);
+			pr_debug("sm5713-charger: regmap: %s\n", temp_buf);
 			memset(temp_buf, 0x0, sizeof(temp_buf));
 		}
 	}
