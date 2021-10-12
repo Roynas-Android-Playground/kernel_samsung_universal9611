@@ -38,7 +38,7 @@ static char *sm5713_fg_supplied_to[] = {
 #define FG_ABNORMAL_RESET -1
 #define IGNORE_N_I_OFFSET 1
 
-#define SM5713_FG_FULL_DEBUG 1
+#define SM5713_FG_FULL_DEBUG 0
 #define I2C_ERROR_COUNT_MAX 5
 
 #ifdef ENABLE_SM5713_MQ_FUNCTION
@@ -521,7 +521,7 @@ void sm5713_adabt_full_offset(struct sm5713_fuelgauge_data *fuelgauge)
 
 	curr_off = sm5713_read_word(fuelgauge->i2c, SM5713_FG_REG_DP_CSP_I_OFF);
 	aux_stat = sm5713_read_word(fuelgauge->i2c, SM5713_FG_REG_AUX_STAT);
-	pr_info("%s: curr_off=%x, aux_stat=%x, flag_charge_health=%d, flag_chg_status=%d, flag_full_charge=%d\n", __func__,
+	pr_debug("%s: curr_off=%x, aux_stat=%x, flag_charge_health=%d, flag_chg_status=%d, flag_full_charge=%d\n", __func__,
 		curr_off, aux_stat, fuelgauge->info.flag_charge_health, fuelgauge->info.flag_chg_status, fuelgauge->info.flag_full_charge);
 
 	if (fuelgauge->info.full_offset_enable > 0) {
@@ -553,7 +553,7 @@ void sm5713_adabt_full_offset(struct sm5713_fuelgauge_data *fuelgauge)
 					sign_offset = 0;
 				}
 
-				pr_info("%s: curr=%x, curr_off=%x, i_offset=%x, sign_offset=%d, full_offset_margin=%x, full_extra_offset=%x\n",
+				pr_debug("%s: curr=%x, curr_off=%x, i_offset=%x, sign_offset=%d, full_offset_margin=%x, full_extra_offset=%x\n",
 					__func__, curr, curr_off, i_offset, sign_offset, fuelgauge->info.full_offset_margin, fuelgauge->info.full_extra_offset);
 
 				if (sign_offset == 1) {
@@ -828,7 +828,7 @@ static void sm5713_cal_carc (struct sm5713_fuelgauge_data *fuelgauge)
 	p_curr_cal = p_curr_cal + (p_fg_delta_cal);
 	n_curr_cal = n_curr_cal + (n_fg_delta_cal);
 
-	pr_info("%s: <%d %d %d %d %d %d %d %d %d %d>, temp_fg = %d ,p_curr_cal = 0x%x, n_curr_cal = 0x%x, "
+	pr_debug("%s: <%d %d %d %d %d %d %d %d %d %d>, temp_fg = %d ,p_curr_cal = 0x%x, n_curr_cal = 0x%x, "
 		"batt_temp = %d\n",
 		__func__,
 		fuelgauge->info.en_high_fg_temp_cal,
@@ -1619,7 +1619,7 @@ static void sm5713_fg_test_read(struct sm5713_fuelgauge_data *fuelgauge)
 	ret5 = sm5713_read_word(fuelgauge->i2c, 0x28);
 	ret6 = sm5713_read_word(fuelgauge->i2c, 0x2F);
 	ret7 = sm5713_read_word(fuelgauge->i2c, 0x01);
-	pr_info("%s: 0xA0=0x%04x, 0xAC=0x%04x, 0xAD=0x%04x, 0xAE=0x%04x, 0xAF=0x%04x, 0x28=0x%04x, 0x2F=0x%04x, 0x01=0x%04x, SM5713_ID=0x%04x\n",
+	pr_debug("%s: 0xA0=0x%04x, 0xAC=0x%04x, 0xAD=0x%04x, 0xAE=0x%04x, 0xAF=0x%04x, 0x28=0x%04x, 0x2F=0x%04x, 0x01=0x%04x, SM5713_ID=0x%04x\n",
 		__func__, ret0, ret1, ret2, ret3, ret4, ret5, ret6, ret7, sm5713_device_id);
 
 	ret0 = sm5713_read_word(fuelgauge->i2c, t_addr);
@@ -1677,7 +1677,7 @@ static void sm5713_update_all_value(struct sm5713_fuelgauge_data *fuelgauge)
 
 	sm5713_fg_test_read(fuelgauge);
 
-	pr_info("%s: chg_h=%d, chg_f=%d, chg_s=%d, is_chg=%d, ta_exist=%d, "
+	pr_debug("%s: chg_h=%d, chg_f=%d, chg_s=%d, is_chg=%d, ta_exist=%d, "
 		"v=%d, v_avg=%d, i=%d, i_avg=%d, ocv=%d, fg_t=%d, b_t=%d, cycle=%d, soc=%d, state=0x%x\n",
 		__func__, fuelgauge->info.flag_charge_health, fuelgauge->info.flag_full_charge,
 		fuelgauge->info.flag_chg_status, fuelgauge->is_charging, fuelgauge->ta_exist,
@@ -2342,12 +2342,8 @@ static int sm5713_fg_get_property(struct power_supply *psy,
 {
 	struct sm5713_fuelgauge_data *fuelgauge = power_supply_get_drvdata(psy);
 	enum power_supply_ext_property ext_psp = (enum power_supply_ext_property) psp;
-/*											  
-	static int abnormal_current_cnt = 0;
-	union power_supply_propval value;
-*/
 
-	pr_info("%s: psp = 0x%x\n", __func__, psp);
+	pr_debug("%s: psp = 0x%x\n", __func__, psp);
 	switch (psp) {
 	/* Cell voltage (VCELL, mV) */
 	case POWER_SUPPLY_PROP_VOLTAGE_NOW:
