@@ -207,7 +207,9 @@ void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk)
 		/* skip until specified stack frame */
 		if (!skip) {
 			dump_backtrace_entry(frame.pc);
+#ifdef CONFIG_DEBUG_SNAPSHOT
 			dbg_snapshot_save_log(raw_smp_processor_id(), frame.pc);
+#endif
 		} else if (frame.fp == regs->regs[29]) {
 			skip = 0;
 			/*
@@ -218,7 +220,9 @@ void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk)
 			 * instead.
 			 */
 			dump_backtrace_entry(regs->pc);
+#ifdef CONFIG_DEBUG_SNAPSHOT
 			dbg_snapshot_save_log(raw_smp_processor_id(), regs->pc);
+#endif
 		}
 		ret = unwind_frame(tsk, &frame);
 		if (ret < 0)
