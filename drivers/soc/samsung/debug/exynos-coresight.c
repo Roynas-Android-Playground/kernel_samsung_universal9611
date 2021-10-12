@@ -608,8 +608,10 @@ static int exynos_cs_init_dt(void)
 	if (val & SJTAG_SOFT_LOCK)
 		return -EIO;
 
+#ifdef CONFIG_DEBUG_SNAPSHOT
 	if (dbg_snapshot_get_sjtag_status() == true)
 		return -EIO;
+#endif
 
 	while ((np = of_find_node_by_type(np, "cs"))) {
 		ret = of_property_read_u32(np, "dbg-offset", &offset);
