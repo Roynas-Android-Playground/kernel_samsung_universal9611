@@ -1123,6 +1123,7 @@ static int dsim_free_fb_resource(struct dsim_device *dsim)
 	/* unmap */
 	iovmm_unmap_oto(dsim->dev, dsim->phys_addr);
 
+#ifdef CONFIG_SEC_DEBUG
 	/* unreserve memory */
 	/* if force upload enabled, DO NOT release rmem */
 	if (!sec_debug_enter_upload()) {
@@ -1131,6 +1132,7 @@ static int dsim_free_fb_resource(struct dsim_device *dsim)
 	} else {
 		dsim_info("%s rmem keep.\n", __func__);
 	}
+#endif
 
 	/* update state */
 	dsim->fb_reservation = false;
