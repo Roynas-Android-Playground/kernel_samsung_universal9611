@@ -217,7 +217,9 @@ void migrate_to_reboot_cpu(void)
  */
 void kernel_restart(char *cmd)
 {
+#ifdef CONFIG_SEC_DEBUG
 	sec_debug_set_task_in_sys_reboot((uint64_t)current);
+#endif
 
 	kernel_restart_prepare(cmd);
 	migrate_to_reboot_cpu();
@@ -263,7 +265,9 @@ EXPORT_SYMBOL_GPL(kernel_halt);
  */
 void kernel_power_off(void)
 {
+#ifdef CONFIG_SEC_DEBUG
 	sec_debug_set_task_in_sys_shutdown((uint64_t)current);
+#endif
 	kernel_shutdown_prepare(SYSTEM_POWER_OFF);
 	if (pm_power_off_prepare)
 		pm_power_off_prepare();
