@@ -602,26 +602,34 @@ void irq_init_desc(unsigned int irq)
 int generic_handle_irq(unsigned int irq)
 {
 	struct irq_desc *desc = irq_to_desc(irq);
-	irq_handler_t handler;
+	__maybe_unused irq_handler_t handler;
+#ifdef CONFIG_DEBUG_SNAPSHOT
 	unsigned long long start_time;
+#endif
 
 	if (!desc)
 		return -EINVAL;
 
+#ifdef CONFIG_DEBUG_SNAPSHOT
 	dbg_snapshot_irq_var(start_time);
+#endif
 
 	if (likely(desc->action))
 		handler = desc->action->handler;
 	else
 		handler = NULL;
 
+#ifdef CONFIG_DEBUG_SNAPSHOT
 	dbg_snapshot_irq(irq, (void *)handler, (void *)desc,
 				0, DSS_FLAG_IN);
+#endif
 
 	generic_handle_irq_desc(desc);
 
+#ifdef CONFIG_DEBUG_SNAPSHOT
 	dbg_snapshot_irq(irq, (void *)handler, (void *)desc,
 				start_time, DSS_FLAG_OUT);
+#endif
 
 	return 0;
 }
