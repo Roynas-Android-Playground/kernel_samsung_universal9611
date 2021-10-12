@@ -429,7 +429,9 @@ static int s3c2410wdt_keepalive(struct watchdog_device *wdd)
 {
 	struct s3c2410_wdt *wdt = watchdog_get_drvdata(wdd);
 	unsigned long flags, wtcnt = 0;
+#ifdef SEC_WATCHDOGD_FOOTPRINT
 	time64_t sec;
+#endif
 
 	s3c2410wdt_multistage_wdt_keepalive();
 
