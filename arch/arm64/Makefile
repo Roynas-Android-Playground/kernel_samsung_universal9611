@@ -74,6 +74,16 @@ KBUILD_AFLAGS	+= $(lseinstr) $(brokengasinst)
 KBUILD_CFLAGS	+= $(call cc-option,-mabi=lp64)
 KBUILD_AFLAGS	+= $(call cc-option,-mabi=lp64)
 
+#ifdef CONFIG_SOC_EXYNOS9610
+ifeq ($(cc-name),gcc)
+KBUILD_CFLAGS   += -mcpu=cortex-a73.cortex-a53 -mtune=cortex-a73.cortex-a53
+endif
+ifeq ($(cc-name),clang)
+KBUILD_CFLAGS   += -march=armv8-a+crypto+crc+sha2+aes -mtune=cortex-a53 \
+                   -mcpu=cortex-a53+crypto+crc+sha2+aes
+endif
+#endif
+
 ifeq ($(CONFIG_CPU_BIG_ENDIAN), y)
 KBUILD_CPPFLAGS	+= -mbig-endian
 CHECKFLAGS	+= -D__AARCH64EB__
