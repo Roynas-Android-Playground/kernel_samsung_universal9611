@@ -279,7 +279,7 @@ int parse_dataframe(struct ssp_data *data, char *dataframe, int frame_len)
 				ssp_infof("skip reset msg");
 			break;
 		case SSP2AP_REQ_RESET: {
-			int reset_type = dataframe[index++];
+			__maybe_unused int reset_type = dataframe[index++];
 			//if (reset_type == HUB_RESET_REQ_NO_EVENT) {
 			ssp_infof("Hub request reset[0x%x] No Event type %d", reset_type, dataframe[index++]);
 			reset_mcu(data, RESET_TYPE_HUB_NO_EVENT);

@@ -158,12 +158,8 @@ int scsc_printk_bin(int force, int tag, int dlev, const void *start, size_t len)
 #define SCSC_NOTICE(fmt, args...)	scsc_printk_tag(NO_FORCE_PRK, WLBT, \
 							KERN_NOTICE SCSC_DBG_FMT(fmt), \
 							 __func__, ## args)
-#define SCSC_INFO(fmt, args...)		scsc_printk_tag(NO_FORCE_PRK, WLBT, \
-							KERN_INFO SCSC_DBG_FMT(fmt), \
-							 __func__, ## args)
-#define SCSC_DEBUG(fmt, args...)	scsc_printk_tag(NO_FORCE_PRK, WLBT, \
-							KERN_DEBUG SCSC_DBG_FMT(fmt), \
-							 __func__, ## args)
+#define SCSC_INFO(fmt, args...) ((void)0)
+#define SCSC_DEBUG(fmt, args...) ((void)0)
 
 #define SCSC_TAG_EMERG(tag, fmt, args...) scsc_printk_tag(NO_FORCE_PRK, (tag), \
 							  KERN_EMERG SCSC_DBG_FMT(fmt), \
@@ -450,11 +446,11 @@ int scsc_printk_bin(int force, int tag, int dlev, const void *start, size_t len)
 #define SCSC_EMERG(fmt, args...)        pr_emerg(SCSC_DBG_FMT(fmt), __func__, ## args)
 #define SCSC_ALERT(fmt, args...)        pr_alert(SCSC_DBG_FMT(fmt), __func__, ## args)
 #define SCSC_CRIT(fmt, args...)         pr_crit(SCSC_DBG_FMT(fmt), __func__, ## args)
-#define SCSC_ERR(fmt, args...)          // pr_err(SCSC_DBG_FMT(fmt), __func__, ## args)
-#define SCSC_WARNING(fmt, args...)      // pr_warn(SCSC_DBG_FMT(fmt), __func__, ## args)
-#define SCSC_NOTICE(fmt, args...)	// pr_notice(SCSC_DBG_FMT(fmt), __func__, ## args)
-#define SCSC_INFO(fmt, args...)		// pr_info(SCSC_DBG_FMT(fmt), __func__, ## args)
-#define SCSC_DEBUG(args...)		do {} while (0)
+#define SCSC_ERR(fmt, args...)          pr_err(SCSC_DBG_FMT(fmt), __func__, ## args)
+#define SCSC_WARNING(fmt, args...)      pr_warn(SCSC_DBG_FMT(fmt), __func__, ## args)
+#define SCSC_NOTICE(fmt, args...)	((void)0)
+#define SCSC_INFO(fmt, args...)		((void)0)
+#define SCSC_DEBUG(args...)		((void)0)
 
 /* Reverting to pr_* keeping the [tag] */
 #define SCSC_TAG_EMERG(tag, fmt, args...)       \
