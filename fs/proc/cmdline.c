@@ -44,6 +44,7 @@ static void patch_flag(char *cmd, const char *flag, const char *val)
 static void patch_safetynet_flags(char *cmd)
 {
 	patch_flag(cmd, "androidboot.flash.locked=", "1");
+	patch_flag(cmd, "androidboot.warranty_bit=", "0");
 	patch_flag(cmd, "androidboot.verifiedbootstate=", "green");
 	patch_flag(cmd, "androidboot.veritymode=", "enforcing");
 	patch_flag(cmd, "androidboot.vbmeta.device_state=", "locked");
