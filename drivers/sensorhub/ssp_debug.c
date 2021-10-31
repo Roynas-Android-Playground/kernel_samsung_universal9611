@@ -317,7 +317,7 @@ int initialize_debug_timer(struct ssp_data *data)
 int print_mcu_debug(char *dataframe, int *index, int dataframe_length)
 {
 	u16 length = 0;
-	int cur = *index;
+	__maybe_unused int cur = *index;
 
 	memcpy(&length, dataframe + *index, 1);
 	*index += 1;

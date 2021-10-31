@@ -132,13 +132,13 @@ static void sec_vibrator_haptic_enable(struct sec_vibrator_drvdata *ddata)
 	sec_vibrator_set_enable(ddata, true);
 
 	if (ddata->vib_ops->set_frequency)
-		pr_info("freq:%d, intensity:%d, %dms\n", ddata->frequency,
+		pr_debug("freq:%d, intensity:%d, %dms\n", ddata->frequency,
 				ddata->intensity, ddata->timeout);
 	else if (ddata->vib_ops->set_intensity)
-		pr_info("intensity:%d, %dms\n", ddata->intensity,
+		pr_debug("intensity:%d, %dms\n", ddata->intensity,
 				ddata->timeout);
 	else
-		pr_info("%dms\n", ddata->timeout);
+		pr_debug("%dms\n", ddata->timeout);
 }
 
 static void sec_vibrator_haptic_disable(struct sec_vibrator_drvdata *ddata)
@@ -158,9 +158,9 @@ static void sec_vibrator_haptic_disable(struct sec_vibrator_drvdata *ddata)
 	sec_vibrator_set_intensity(ddata, 0);
 
 	if (ddata->timeout > 0)
-		pr_info("timeout, off\n");
+		pr_debug("timeout, off\n");
 	else
-		pr_info("off\n");
+		pr_debug("off\n");
 }
 
 static void sec_vibrator_engine_run_packet(struct sec_vibrator_drvdata *ddata,
@@ -180,20 +180,20 @@ static void sec_vibrator_engine_run_packet(struct sec_vibrator_drvdata *ddata,
 	if (intensity) {
 		sec_vibrator_set_intensity(ddata, intensity);
 		if (!ddata->packet_running) {
-			pr_info("[haptic engine] motor run\n");
+			pr_debug("[haptic engine] motor run\n");
 			sec_vibrator_set_enable(ddata, true);
 		}
 		ddata->packet_running = true;
 	} else {
 		if (ddata->packet_running) {
-			pr_info("[haptic engine] motor stop\n");
+			pr_debug("[haptic engine] motor stop\n");
 			sec_vibrator_set_enable(ddata, false);
 		}
 		ddata->packet_running = false;
 		sec_vibrator_set_intensity(ddata, intensity);
 	}
 
-	pr_info("%s [%d] freq:%d, intensity:%d, time:%d overdrive: %d\n",
+	pr_debug("%s [%d] freq:%d, intensity:%d, time:%d overdrive: %d\n",
 			__func__, ddata->packet_cnt, frequency, intensity,
 			ddata->timeout, overdrive);
 }
@@ -235,7 +235,7 @@ static enum hrtimer_restart haptic_timer_func(struct hrtimer *timer)
 	struct sec_vibrator_drvdata *ddata
 		= container_of(timer, struct sec_vibrator_drvdata, timer);
 
-	pr_info("%s\n", __func__);
+	pr_debug("%s\n", __func__);
 	kthread_queue_work(&ddata->kworker, &ddata->kwork);
 	return HRTIMER_NORESTART;
 }
@@ -283,7 +283,7 @@ static ssize_t intensity_store(struct device *dev,
 		return -EINVAL;
 	}
 
-	pr_info("%s %d\n", __func__, intensity);
+	pr_debug("%s %d\n", __func__, intensity);
 
 	if ((intensity < 0) || (intensity > MAX_INTENSITY)) {
 		pr_err("[VIB]: %s out of range\n", __func__);
@@ -316,7 +316,7 @@ static ssize_t force_touch_intensity_store(struct device *dev,
 		return -EINVAL;
 	}
 
-	pr_info("%s %d\n", __func__, intensity);
+	pr_debug("%s %d\n", __func__, intensity);
 
 	if ((intensity < 0) || (intensity > MAX_INTENSITY)) {
 		pr_err("[VIB]: %s out of range\n", __func__);
@@ -348,7 +348,7 @@ static ssize_t multi_freq_store(struct device *dev,
 		return -EINVAL;
 	}
 
-	pr_info("%s %d\n", __func__, num);
+	pr_debug("%s %d\n", __func__, num);
 
 	ddata->frequency = num;
 
@@ -375,7 +375,7 @@ static ssize_t haptic_engine_store(struct device *dev,
 		return count;
 
 	if (_data > PACKET_MAX_SIZE * VIB_PACKET_MAX)
-		pr_info("%s, [%d] packet size over\n", __func__, _data);
+		pr_debug("%s, [%d] packet size over\n", __func__, _data);
 	else {
 		ddata->packet_size = _data / VIB_PACKET_MAX;
 		ddata->packet_cnt = 0;
@@ -466,7 +466,7 @@ static ssize_t cs40l2x_cp_trigger_index_store(struct device *dev,
 		return -EINVAL;
 
 #ifdef CONFIG_CS40L2X_SAMSUNG_FEATURE
-	pr_info("%s index:%u (num_waves:%u)\n", __func__, index, cs40l2x->num_waves);
+	pr_debug("%s index:%u (num_waves:%u)\n", __func__, index, cs40l2x->num_waves);
 #endif
 
 	mutex_lock(&cs40l2x->lock);
@@ -598,7 +598,7 @@ static ssize_t cs40l2x_cp_trigger_queue_store(struct device *dev,
 	strlcpy(pbq_str, buf, count);
 
 #if DEBUG_VIB
-	pr_info("%s pbq_str=%s\n", __func__, pbq_str);
+	pr_debug("%s pbq_str=%s\n", __func__, pbq_str);
 #endif
 
 	pbq_str_tok = strsep(&pbq_str, ",");
@@ -743,10 +743,10 @@ static ssize_t cs40l2x_cp_trigger_queue_store(struct device *dev,
 #ifdef CONFIG_CS40L2X_SAMSUNG_FEATURE
 	if(count > DEBUG_PRINT_PLAYBACK_QUEUE) {
 		strlcpy(pbq_str_alloc, buf, DEBUG_PRINT_PLAYBACK_QUEUE);
-		pr_info("%s pbq_str=%s... (depth:%d)\n", __func__, pbq_str_alloc, pbq_depth);
+		pr_debug("%s pbq_str=%s... (depth:%d)\n", __func__, pbq_str_alloc, pbq_depth);
 	} else {
 		strlcpy(pbq_str_alloc, buf, count);
-		pr_info("%s pbq_str=%s (depth:%d)\n", __func__, pbq_str_alloc, pbq_depth);
+		pr_debug("%s pbq_str=%s (depth:%d)\n", __func__, pbq_str_alloc, pbq_depth);
 	}
 #endif
 	cs40l2x->pbq_depth = pbq_depth;
@@ -1066,7 +1066,7 @@ int sec_vibrator_register(struct sec_vibrator_drvdata *ddata)
 		ddata->frequency = FREQ_ALERT;
 	}
 
-	pr_info("%s done\n", __func__);
+	pr_debug("%s done\n", __func__);
 
 	return ret;
 
@@ -1151,7 +1151,7 @@ extern int haptic_homekey_press(void)
 			ddata->force_touch_intensity);
 	sec_vibrator_set_enable(ddata, true);
 
-	pr_info("%s freq:%d, intensity:%d, time:%d\n", __func__, FREQ_PRESS,
+	pr_debug("%s freq:%d, intensity:%d, time:%d\n", __func__, FREQ_PRESS,
 			ddata->force_touch_intensity, ddata->timeout);
 	mutex_unlock(&ddata->vib_mutex);
 
@@ -1182,7 +1182,7 @@ extern int haptic_homekey_release(void)
 			ddata->force_touch_intensity);
 	sec_vibrator_set_enable(ddata, true);
 
-	pr_info("%s freq:%d, intensity:%d, time:%d\n", __func__, FREQ_RELEASE,
+	pr_debug("%s freq:%d, intensity:%d, time:%d\n", __func__, FREQ_RELEASE,
 			ddata->force_touch_intensity, ddata->timeout);
 	mutex_unlock(&ddata->vib_mutex);
 
