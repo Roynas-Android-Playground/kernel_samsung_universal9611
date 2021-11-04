@@ -1021,7 +1021,7 @@ LDFLAGS_vmlinux	+= $(call ld-option, -X,)
 endif
 
 # FINGERPRINT
-USE_SECGETSPF := $(shell echo $(PATH))
+USE_SECGETSPF := $(shell echo "\$(PATH)")
 ifneq ($(findstring buildscript/build_common/core/bin, $(USE_SECGETSPF)),)
   ifneq ($(shell secgetspf SEC_PRODUCT_FEATURE_BIOAUTH_CONFIG_FINGERPRINT_TZ), false)
     ifeq ($(CONFIG_SENSORS_FINGERPRINT), y)
