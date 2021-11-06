@@ -110,7 +110,7 @@
 	({										\
 		static char input_log_buf[INPUT_LOG_BUF_SIZE];				\
 		snprintf(input_log_buf, sizeof(input_log_buf), "%s %s", SECLOG, fmt);	\
-		dev_info(dev, input_log_buf, ## __VA_ARGS__);				\
+		dev_dbg(dev, input_log_buf, ## __VA_ARGS__);				\
 	 })
 #define input_err(mode, dev, fmt, ...)						\
 	({										\
