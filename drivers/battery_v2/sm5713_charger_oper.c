@@ -142,10 +142,10 @@ static inline int change_op_table(unsigned char new_status)
 	if (sm5713_charger_op_mode_table[i].oper_mode != oper_info->current_table.oper_mode) {
         /* Factory 523K-JIG Test : Torch Light - Prevent VBUS input source */
 		if ((oper_info->factory_RID == RID_523K) && (sm5713_charger_op_mode_table[i].status == make_OP_STATUS(0, 0, 0, 0, 1, 0))) {
-			pr_info("sm5713-charger: %s: skip Flash Boost mode for Factory JIG fled:torch test\n", __func__);
+			pr_debug("sm5713-charger: %s: skip Flash Boost mode for Factory JIG fled:torch test\n", __func__);
         /* Factory 523K-JIG Test : Flash Light - Prevent VBUS input source */
 		} else if ((oper_info->factory_RID == RID_523K) && (sm5713_charger_op_mode_table[i].status == make_OP_STATUS(0, 0, 0, 1, 0, 0))) {
-			pr_info("sm5713-charger: %s: skip Flash Boost mode for Factory JIG fled:flash test\n", __func__);
+			pr_debug("sm5713-charger: %s: skip Flash Boost mode for Factory JIG fled:flash test\n", __func__);
         } else {
             set_OP_MODE(oper_info->i2c, sm5713_charger_op_mode_table[i].oper_mode);
             oper_info->current_table.oper_mode = sm5713_charger_op_mode_table[i].oper_mode;
@@ -153,7 +153,7 @@ static inline int change_op_table(unsigned char new_status)
 	}
 	oper_info->current_table.status = new_status;
 
-	pr_info("sm5713-charger: %s: New table[%d] info (STATUS: 0x%x, MODE: %d, BST_OUT: 0x%x, OTG_CURRENT: 0x%x\n",
+	pr_debug("sm5713-charger: %s: New table[%d] info (STATUS: 0x%x, MODE: %d, BST_OUT: 0x%x, OTG_CURRENT: 0x%x\n",
 			__func__, i, oper_info->current_table.status, oper_info->current_table.oper_mode,
 			oper_info->current_table.BST_OUT, oper_info->current_table.OTG_CURRENT);
 
@@ -183,7 +183,7 @@ int sm5713_charger_oper_push_event(int event_type, bool enable)
 		pr_err("sm5713-charger: %s: required init op_mode table\n", __func__);
 		return -ENOENT;
 	}
-	pr_info("sm5713-charger: %s: event_type=%d, enable=%d\n", __func__, event_type, enable);
+	pr_debug("sm5713-charger: %s: event_type=%d, enable=%d\n", __func__, event_type, enable);
 
 	mutex_lock(&oper_info->op_mutex);
 
@@ -207,7 +207,7 @@ static inline int detect_initial_table_index(struct i2c_client *i2c)
 
 static irqreturn_t vbus_update_isr(int irq, void *data)
 {
-	pr_info("sm5713-charger: %s: irq=%d\n", __func__, irq);
+	pr_debug("sm5713-charger: %s: irq=%d\n", __func__, irq);
 
 	oper_info->vbus_updated = 1;
 	sm5713_update_reg(oper_info->i2c, SM5713_CHG_REG_CHGCNTL9, (0x0 << 0), (0x1 << 0));
@@ -221,7 +221,7 @@ int sm5713_charger_oper_table_init(struct sm5713_dev *sm5713)
 	int ret, index;
 
 	if (oper_info) {
-		pr_info("sm5713-charger: %s: already initialized\n", __func__);
+		pr_debug("sm5713-charger: %s: already initialized\n", __func__);
 		return 0;
 	}
 
@@ -259,7 +259,7 @@ int sm5713_charger_oper_table_init(struct sm5713_dev *sm5713)
 	}
 	oper_info->factory_RID = 0;
 
-	pr_info("sm5713-charger: %s: current table info (STATUS: 0x%x, MODE: %d, BST_OUT: 0x%x, OTG_CURRENT: 0x%x)\n", \
+	pr_debug("sm5713-charger: %s: current table info (STATUS: 0x%x, MODE: %d, BST_OUT: 0x%x, OTG_CURRENT: 0x%x)\n", \
 			__func__, oper_info->current_table.status, oper_info->current_table.oper_mode, oper_info->current_table.BST_OUT, \
 			oper_info->current_table.OTG_CURRENT);
 
@@ -298,7 +298,7 @@ int sm5713_charger_oper_get_vbus_voltage(void)
 
 	sm5713_read_reg(oper_info->i2c, SM5713_CHG_REG_STATUS1, &reg);
 	if ((reg & 0x1) == 0) {
-		pr_info("sm5713-charger: %s: vbus=uvlo\n", __func__);
+		pr_debug("sm5713-charger: %s: vbus=uvlo\n", __func__);
 		return 0;
 	}
 
@@ -323,7 +323,7 @@ int sm5713_charger_oper_get_vbus_voltage(void)
 	vbus_voltage = ((reg & 0x3) * 1000) / 4;
 	vbus_voltage += (reg >> 2) * 1000;
 
-	pr_info("sm5713-charger: %s: vbus voltage=%dmV\n", __func__, vbus_voltage);
+	pr_debug("sm5713-charger: %s: vbus voltage=%dmV\n", __func__, vbus_voltage);
 
 	return vbus_voltage;
 }
@@ -341,7 +341,7 @@ int sm5713_charger_oper_en_factory_mode(int dev_type, int rid, bool enable)
 
 	sm5713_read_reg(oper_info->i2c, SM5713_CHG_REG_STATUS3, &reg);
 	nenq4_status = (reg & 0x40);
-	pr_info("sm5713-charger: %s device type = %d, enable = %d, nENQ4_ST = %d \n", __func__, dev_type, enable, nenq4_status);
+	pr_debug("sm5713-charger: %s device type = %d, enable = %d, nENQ4_ST = %d \n", __func__, dev_type, enable, nenq4_status);
 
 	if (enable) {
 		switch(rid) {
@@ -364,7 +364,7 @@ int sm5713_charger_oper_en_factory_mode(int dev_type, int rid, bool enable)
 			POWER_SUPPLY_PROP_ENERGY_NOW, val);
 
 		oper_info->factory_RID = rid;
-		pr_info("sm5713-charger: %s enable factroy mode configuration\n", __func__);
+		pr_debug("sm5713-charger: %s enable factroy mode configuration\n", __func__);
 	} else {
 		sm5713_update_reg(oper_info->i2c, SM5713_CHG_REG_CHGCNTL11, (0 << 0) , (0x1 << 0));		/*q4 forced vsys disable */
 		sm5713_update_reg(oper_info->i2c, SM5713_CHG_REG_CNTL1, (0x1 << 6), (0x1 << 6));			/* AICLEN_VBUS = 1 */
@@ -373,7 +373,7 @@ int sm5713_charger_oper_en_factory_mode(int dev_type, int rid, bool enable)
 		sm5713_update_reg(oper_info->i2c, SM5713_CHG_REG_VBUSCNTL, (0x10 << 0), (0x7F << 0));		/* VBUS_LIMIT=500mA*/
 
 		oper_info->factory_RID = 0;
-		pr_info("sm5713-charger: %s disable factroy mode configuration\n", __func__);
+		pr_debug("sm5713-charger: %s disable factroy mode configuration\n", __func__);
 	}
 
 	return 0;
