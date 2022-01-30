@@ -889,6 +889,7 @@ void mem_forced_cp_crash(struct mem_link_device *mld);
 
 #ifdef GROUP_MEM_LINK_DEBUG
 
+#ifdef CONFIG_DEBUG_KERNEL
 void print_pm_status(struct mem_link_device *mld);
 
 void print_req_ack(struct mem_link_device *mld, struct mem_snapshot *mst,
@@ -899,6 +900,32 @@ void print_res_ack(struct mem_link_device *mld, struct mem_snapshot *mst,
 void print_mem_snapshot(struct mem_link_device *mld, struct mem_snapshot *mst);
 void print_dev_snapshot(struct mem_link_device *mld, struct mem_snapshot *mst,
 			struct mem_ipc_device *dev);
+#else
+static inline void print_pm_status(struct mem_link_device *mld)
+{
+}
+static inline void print_req_ack(struct mem_link_device *mld,
+				 struct mem_snapshot *mst,
+				 struct mem_ipc_device *dev,
+				 enum direction dir)
+{
+}
+static inline void print_res_ack(struct mem_link_device *mld,
+				 struct mem_snapshot *mst,
+				 struct mem_ipc_device *dev,
+				 enum direction dir)
+{
+}
+static inline void print_mem_snapshot(struct mem_link_device *mld,
+				      struct mem_snapshot *mst)
+{
+}
+static inline void print_dev_snapshot(struct mem_link_device *mld,
+				      struct mem_snapshot *mst,
+				      struct mem_ipc_device *dev)
+{
+}
+#endif
 
 #endif
 
