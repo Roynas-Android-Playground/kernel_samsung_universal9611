@@ -822,7 +822,7 @@ static int mms_alert_handler_proximity_state(struct mms_ts_info *info, u8 data)
 			return 0;
 		}
 	}
-
+	data = !data;
 	input_info(true, &info->client->dev, "%s: hover %d\n", __func__, data);
 	info->hover_event = data;
 
