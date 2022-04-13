@@ -723,6 +723,7 @@ static int wait_for_mm_msg_halt_rsp(struct mxman *mxman)
 }
 
 #ifndef CONFIG_SCSC_WLBTD
+#define MEMDUMP_FILE_FOR_RECOVERY 2
 static int coredump_helper(void)
 {
 	int r;
