@@ -27,13 +27,13 @@ ccflags-y               += -DTFA_BLACKBOX_LOGGING
 endif
 
 # objs
-snd-soc-tfa98xx-objs    := tfa98xx.o
-snd-soc-tfa98xx-objs    += tfa_container.o
-snd-soc-tfa98xx-objs    += tfa_dsp.o
-snd-soc-tfa98xx-objs    += tfa_init.o
-snd-soc-tfa98xx-objs    += tfa_debug.o
-snd-soc-tfa98xx-objs    += tfa_cal.o
-snd-soc-tfa98xx-objs    += tfa_log.o
+snd-soc-tfa98xx-objs               += tfa98xx.o
+snd-soc-tfa98xx-objs               += tfa_container.o
+snd-soc-tfa98xx-objs               += tfa_dsp.o
+snd-soc-tfa98xx-objs               += tfa_init.o
+snd-soc-tfa98xx-objs               += tfa_debug.o
+snd-soc-tfa98xx-$(CONFIG_DEBUG_FS) += tfa_cal.o
+snd-soc-tfa98xx-$(CONFIG_DEBUG_FS) += tfa_log.o
 
 # CFLAGS
 CFLAGS_tfa98xx.o       += $(TFA98XX_FLAGS)
