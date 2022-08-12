@@ -3364,10 +3364,7 @@ static void bts_debugfs(void)
 		pr_err("[BTS]: could't create debugfs mif util\n");
 }
 #else
-static void bts_debugfs(void)
-{
-	pr_info("%s is disabled, check configuration\n", __func__);
-}
+static void bts_debugfs(void) { }
 #endif
 
 static int __init exynos_bts_init(void)
