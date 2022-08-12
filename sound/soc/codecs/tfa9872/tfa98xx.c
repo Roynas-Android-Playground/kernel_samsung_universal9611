@@ -48,7 +48,9 @@
 #include "tfa_container.h"
 #include "tfa98xx_parameters.h"
 
+#ifdef CONFIG_DEBUG_FS
 #define TFA_READ_BATTERY_TEMP
+#endif
 #if defined(TFA_READ_BATTERY_TEMP)
 #include <linux/power_supply.h>
 #endif
