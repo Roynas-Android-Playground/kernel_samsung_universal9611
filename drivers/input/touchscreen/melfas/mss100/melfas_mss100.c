@@ -815,7 +815,9 @@ static int mms_alert_handler_pocket_mode_state(struct mms_ts_info *info, u8 data
 
 static int mms_alert_handler_proximity_state(struct mms_ts_info *info, u8 data)
 {
-	
+#ifndef GRASS_ONEUI
+	bool report = false;
+#endif
 	if (!info->dtdata->support_protos) {
 		if (data == 4 || data == 5) {
 			input_info(true, &info->client->dev, "%s: not support protos %d\n", __func__, data);
@@ -823,7 +825,23 @@ static int mms_alert_handler_proximity_state(struct mms_ts_info *info, u8 data)
 		}
 	}
 #ifndef GRASS_ONEUI
-	data = data == 5 || !data;
+	report |= info->lowpower_mode;
+	if (info->touch_count > 0) {
+		int i;
+		for (i = 0; i < MAX_FINGER_NUM; i++) {
+			if (info->finger_state[i]) {
+				if (info->coord[i].y < 700 && info->coord[i].x > 900 && info->coord[i].x < 3000) {
+					report |= true;
+					break;
+				}
+			}
+		}
+	}
+	if (report) {
+		data = data == 5 || !data;
+	} else {
+		data = 1;
+	}
 #endif
 	input_info(true, &info->client->dev, "%s: hover %d\n", __func__, data);
 	info->hover_event = data;
