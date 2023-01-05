@@ -958,8 +958,8 @@ int sm5713_fg_calculate_iocv(struct sm5713_fuelgauge_data *fuelgauge, bool is_vs
 			v_ret = sm5713_read_word(fuelgauge->i2c, i+0x10);
 		else
 			v_ret = sm5713_read_word(fuelgauge->i2c, i);
-			i_ret = sm5713_read_word(fuelgauge->i2c, i+0x20);
 
+		i_ret = sm5713_read_word(fuelgauge->i2c, i+0x20);
 		if ((i_ret&0x4000) == 0x4000) {
 			i_ret = -(i_ret&0x3FFF);
 		}

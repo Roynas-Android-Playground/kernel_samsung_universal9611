@@ -48,7 +48,7 @@ void gpexbe_debug_dbg_snapshot_freq_out(int freq_before, int freq_after)
 		dbg_snapshot_freq_misc(dbg_info.dss_freq_id, freq_before, freq_after, DSS_FLAG_OUT);
 }
 
-int gpexbe_debug_init()
+int gpexbe_debug_init(void)
 {
 	/* this value is 0 for 9830 */
 	/* TODO: find out what's going on with 9830. dbg snapshot was never used? */
@@ -59,7 +59,7 @@ int gpexbe_debug_init()
 	return 0;
 }
 
-void gpexbe_debug_term()
+void gpexbe_debug_term(void)
 {
 	dbg_info.dss_freq_id = 0;
 }

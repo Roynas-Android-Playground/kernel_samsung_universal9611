@@ -2359,6 +2359,54 @@ static int zs_register_shrinker(struct zs_pool *pool)
 	return register_shrinker(&pool->shrinker);
 }
 
+#define ZS_COMPACT_THRESHOLD	1024
+#define ZS_COMPACT_INTERVAL	1
+
+struct zs_pool *g_pool;
+
+static void do_zs_compact(struct work_struct *work)
+{
+	unsigned long pages_freed;
+	if (g_pool) {
+		pages_freed = zs_compact(g_pool);
+		pr_info("zs_compact pages_freed=%d", pages_freed);
+	}
+}
+static DECLARE_WORK(zs_compact_work, do_zs_compact);
+
+static bool zs_compactable(struct zs_pool *pool, unsigned int pages)
+{
+	int i;
+	struct size_class *class;
+	unsigned long pages_to_free = 0;
+
+	for (i = ZS_SIZE_CLASSES - 1; i >= 0; i--) {
+		class = pool->size_class[i];
+		if (!class)
+			continue;
+		if (class->index != i)
+			continue;
+
+		pages_to_free += zs_can_compact(class);
+
+		if (pages_to_free >= pages)
+			return true;
+	}
+	return false;
+}
+
+void try_schedule_zs_compact(void)
+{
+	static unsigned long resume = INITIAL_JIFFIES;
+
+	if (time_is_before_jiffies(resume) &&
+			!work_pending(&zs_compact_work) &&
+			zs_compactable(g_pool, ZS_COMPACT_THRESHOLD)) {
+		resume = jiffies + ZS_COMPACT_INTERVAL * HZ;
+		schedule_work(&zs_compact_work);
+	}
+}
+
 /**
  * zs_create_pool - Creates an allocation pool to work from.
  * @name: pool name to be created

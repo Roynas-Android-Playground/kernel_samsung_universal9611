@@ -380,7 +380,7 @@ static void ipc_print_logbuf(void)
 		NAME_PREFIX, logbuf->token, logbuf->eq, logbuf->dq, logbuf->size, logbuf->full);
 }
 
-int ipc_check_reset_valid()
+int ipc_check_reset_valid(void)
 {
 	int i;
 	int ret = 0;

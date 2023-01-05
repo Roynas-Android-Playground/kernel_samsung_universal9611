@@ -109,7 +109,7 @@ void save_ram_dump(void *ssp_data)
 	contexthub_put_token(ipc);
 }
 
-int get_sensorhub_dump_size()
+int get_sensorhub_dump_size(void)
 {
 	return ipc_get_chub_mem_size();
 }
