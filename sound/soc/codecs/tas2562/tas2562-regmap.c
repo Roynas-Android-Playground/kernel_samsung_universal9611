@@ -680,7 +680,7 @@ static void irq_work_routine(struct work_struct *work)
 	} else
 		p_tas2562->mn_err_code &= ~ERROR_BROWNOUT;
 
-		goto reload;
+	goto reload;
 	} else {
 		n_counter = 2;
 
