@@ -39,6 +39,7 @@ snd-soc-tfa98xx-objs    += tfa_log.o
 CFLAGS_tfa98xx.o       += $(TFA98XX_FLAGS)
 CFLAGS_tfa_container.o += $(TFA98XX_FLAGS)
 CFLAGS_tfa_dsp.o       += $(TFA98XX_FLAGS)
+CFLAGS_tfa_dsp.o       += -Wno-enum-conversion
 CFLAGS_tfa_init.o      += $(TFA98XX_FLAGS)
 CFLAGS_tfa_debug.o     += $(TFA98XX_FLAGS)
 CFLAGS_tfa_cal.o       += $(TFA98XX_FLAGS)
