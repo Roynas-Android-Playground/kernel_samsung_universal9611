@@ -522,6 +522,8 @@ endif
 # CC is clang, Turn on integrated AS if CC is clang 15 or later version
 ifeq ($(shell [ $(call __cc-version) -ge 1500 ] && echo 15),)
 CLANG_FLAGS	+= -no-integrated-as
+else
+LLVM_IAS	:= 1
 endif
 KBUILD_CFLAGS	+= $(CLANG_FLAGS)
 KBUILD_AFLAGS	+= $(CLANG_FLAGS)
