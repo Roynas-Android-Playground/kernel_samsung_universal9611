@@ -215,8 +215,6 @@ obj-y				+= vibrator/
 # Fingerprint
 obj-$(CONFIG_SENSORS_FINGERPRINT) += fingerprint/
 
-obj-y				+= kperfmon/
-
 # GNSS
 obj-$(CONFIG_GPS_BCM4753)	+= gps/
 
