@@ -1141,7 +1141,7 @@ CONFIG_NET_FLOW_LIMIT=y
 #
 # CONFIG_NET_PKTGEN is not set
 # CONFIG_NET_DROP_MONITOR is not set
-CONFIG_NET_SUPPORT_DROPDUMP=y
+# CONFIG_NET_SUPPORT_DROPDUMP is not set
 # CONFIG_HAMRADIO is not set
 # CONFIG_CAN is not set
 # CONFIG_BT is not set
@@ -5116,11 +5116,6 @@ CONFIG_TZIC=y
 CONFIG_TZIC_USE_TZDEV=y
 # CONFIG_TZIC_DEFAULT is not set
 CONFIG_SPU_VERIFY=y
-
-#
-# samsung Performace manager
-#
-CONFIG_KPERFMON=y
 
 #
 # Firmware Drivers
