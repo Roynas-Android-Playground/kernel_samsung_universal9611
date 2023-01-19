@@ -125,3 +125,6 @@ all.config
 
 # fetched Android config fragments
 kernel/configs/android-*.cfg
+
+# Scripts
+local.config

@@ -669,7 +669,7 @@ endif
 # This allow a user to issue only 'make' to build a kernel including modules
 # Defaults to vmlinux, but the arch makefile usually adds further targets
 all: vmlinux
-	@(bash -C scripts/post-build-hook.sh &> /dev/null)
+	@(bash -C $(srctree)/scripts/post-build-hook.sh)
 
 KBUILD_CFLAGS	+= $(call cc-option,-fno-PIE)
 KBUILD_AFLAGS	+= $(call cc-option,-fno-PIE)

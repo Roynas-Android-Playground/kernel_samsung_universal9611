@@ -1,0 +1,4 @@
+CHAT_ID= # TG chat id
+BOT_TOKEN= # TG bot token
+DEVICE= # The device string
+OBJ= # File to send
