@@ -12,7 +12,7 @@ config SEC_HQM_DEVICE
 comment "Samsung TSP Logging Options"
 config SEC_DEBUG_TSP_LOG
 	default n
-	bool "Enable tsp log support" if EMBEDDED
+	tristate "Enable tsp log support" if EMBEDDED
 	depends on SEC_EXT
 	help
 	  This option enables additional log buffer for tsp log.
