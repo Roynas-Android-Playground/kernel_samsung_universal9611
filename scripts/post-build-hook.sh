@@ -34,4 +34,10 @@ echo "OBJ was not set. Not uploading"
 exit 1
 fi
 gcc ${srctree}/scripts/kernelversion.c -Iinclude/generated/ -o scripts/kernelversion
-tg_sendFile $OBJ "$(./scripts/kernelversion)"
+KERNELSTR="$(./scripts/kernelversion)"
+MY_PWD=$(pwd)
+TIME="$(date "+%m%d-%H%M%S")"
+KERNELZIP="$(echo "${KERNELSTR}" | sed s/^.*-//)@${TIME}.zip"
+cd ${srctree}/scripts/packaging/ || exit
+bash pack.sh "${MY_PWD}/${OBJ}" "${KERNELZIP}"
+tg_sendFile "${KERNELZIP}" "${KERNELSTR}-${TIME}"
