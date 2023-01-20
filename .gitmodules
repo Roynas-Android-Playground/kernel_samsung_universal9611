@@ -1,0 +1,3 @@
+[submodule "scripts/packaging"]
+	path = scripts/packaging
+	url = https://github.com/A51-Development/kernel_packaging
