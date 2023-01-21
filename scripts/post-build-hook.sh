@@ -21,7 +21,7 @@ function tg_sendFile() {
 
 if [ ! -f "${srctree}/local.config" ]; then
 echo "Please fill in your credentials in local.config"
-exit 1
+exit 0
 fi
 
 source "${srctree}/local.config"
@@ -31,7 +31,7 @@ fi
 tg_sendText "Build completed${DEVICE_STR}!"
 if [ ! -n "${OBJ+x}" ]; then
 echo "OBJ was not set. Not uploading"
-exit 1
+exit 0
 fi
 gcc ${srctree}/scripts/kernelversion.c -Iinclude/generated/ -o scripts/kernelversion
 KERNELSTR="$(./scripts/kernelversion)"
