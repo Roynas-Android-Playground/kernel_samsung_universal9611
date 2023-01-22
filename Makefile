@@ -428,7 +428,7 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -Wno-format-security \
 		   -Werror \
 		   -std=gnu89
-KBUILD_CFLAGS   += -Wno-unused-but-set-variable
+KBUILD_CFLAGS   += $(call cc-option, -Wno-unused-but-set-variable)
 KBUILD_CPPFLAGS := -D__KERNEL__
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
