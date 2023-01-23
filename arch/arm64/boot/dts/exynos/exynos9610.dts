@@ -2737,7 +2737,7 @@
 
 			vbmeta {
 				compatible = "android,vbmeta";
-				parts = "vbmeta,boot,system,vendor";
+				status = "disabled";
 				linux,phandle = <0x10f>;
 				phandle = <0x10f>;
 			};
