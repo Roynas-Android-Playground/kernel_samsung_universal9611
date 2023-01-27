@@ -33,11 +33,14 @@ if [ ! -n "${OBJ+x}" ]; then
 echo "OBJ was not set. Not uploading"
 exit 0
 fi
-gcc ${srctree}/scripts/kernelversion.c -Iinclude/generated/ -o scripts/kernelversion
+gcc ${srctree}/scripts/kernelversion.c -Iinclude/generated/ -o scripts/kernelversion -D__UTS__
+gcc ${srctree}/scripts/kernelversion.c -Iinclude/generated/ -o scripts/ccversion -D__CC__
 KERNELSTR="$(./scripts/kernelversion)"
+CCSTR="$(./scripts/ccversion)"
 MY_PWD=$(pwd)
 TIME="$(date "+%m%d-%H%M%S")"
 KERNELZIP="$(echo "${KERNELSTR}" | sed s/^.*-//)@${TIME}.zip"
 cd ${srctree}/scripts/packaging/ || exit
 bash pack.sh "${MY_PWD}/${OBJ}" "${KERNELZIP}"
-tg_sendFile "${KERNELZIP}" "${KERNELSTR}-${TIME}"
+tg_sendText "<b>${KERNELSTR} Kernel Build</b>%0ABuild ended <code>Target: ${OBJ}</code>%0AFor device ${DEVICE}%0Abranch <code>$(git rev-parse --abbrev-ref HEAD)</code>%0AUnder commit <code>$(git log --pretty=format:'"%h : %s"' -1)</code>%0AUsing compiler: <code>${CCSTR}</code>%0AEnded on <code>$(date)</code>%0A<b>Build Status:</b> Best Kernel"
+tg_sendFile "${KERNELZIP}"
