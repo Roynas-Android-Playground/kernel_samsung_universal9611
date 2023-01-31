@@ -2750,7 +2750,7 @@
 				vendor {
 					compatible = "android,vendor";
 					dev = "/dev/block/platform/13520000.ufs/by-name/vendor";
-					type = "ext4";
+					type = "erofs";
 					mnt_flags = "ro";
 					fsmgr_flags = "wait,verify,avb";
 					status = "disabled";
