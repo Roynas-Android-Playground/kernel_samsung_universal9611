@@ -99,3 +99,18 @@ config SECURITY_SELINUX_CHECKREQPROT_VALUE
 	  via /selinux/checkreqprot if authorized by policy.
 
 	  If you are unsure how to answer this question, answer 0.
+
+config SECURITY_SELINUX_SETENFORCE_OVERRIDE
+	bool "NSA SELinux override setenforce"
+	depends on SECURITY_SELINUX
+	default n
+	help
+	  Disable all setenforce calls - /selinux/enforce and override the value to SECURITY_SELINUX_SETENFORCE_OVERRIDE_VALUE
+
+config SECURITY_SELINUX_SETENFORCE_OVERRIDE_VALUE
+	int "NSA SELinux override setenforce value"
+	depends on SECURITY_SELINUX_SETENFORCE_OVERRIDE
+	range 0 1
+	default 0
+	help
+	  Select the setenforce override value. 0 = permissive 1 = enforcing
