@@ -673,6 +673,9 @@ do {							\
 		trace_puts(fmt);			\
 } while (0)
 
+#undef trace_printk
+#define trace_printk(...)
+
 #define do_trace_printk(fmt, args...)					\
 do {									\
 	static const char *trace_printk_fmt __used			\
