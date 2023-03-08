@@ -1300,12 +1300,13 @@ int scsc_service_pm_qos_remove_request(struct scsc_service *service)
 }
 EXPORT_SYMBOL(scsc_service_pm_qos_remove_request);
 #endif
-#if IS_ENABLED(CONFIG_SCSC_MXLOGGER)
+#define MXLOGGER IS_ENABLED(CONFIG_SCSC_MXLOGGER)
 /* If there is no service/mxman associated, register the observer as global (will affect all the mx instanes)*/
 /* Users of these functions should ensure that the registers/unregister functions are balanced (i.e. if observer is registed as global,
  * it _has_ to unregister as global) */
 int scsc_service_register_observer(struct scsc_service *service, char *name)
 {
+#if MXLOGGER
 	struct scsc_mx      *mx;
 
 	if (!service)
@@ -1317,12 +1318,16 @@ int scsc_service_register_observer(struct scsc_service *service, char *name)
 		return -EIO;
 
 	return mxlogger_register_observer(scsc_mx_get_mxlogger(mx), name);
+#else
+	return 0;
+#endif
 }
 EXPORT_SYMBOL(scsc_service_register_observer);
 
 /* If there is no service/mxman associated, unregister the observer as global (will affect all the mx instanes)*/
 int scsc_service_unregister_observer(struct scsc_service *service, char *name)
 {
+#if MXLOGGER
 	struct scsc_mx      *mx;
 
 	if (!service)
@@ -1334,9 +1339,11 @@ int scsc_service_unregister_observer(struct scsc_service *service, char *name)
 		return -EIO;
 
 	return mxlogger_unregister_observer(scsc_mx_get_mxlogger(mx), name);
+#else
+	return 0;
+#endif
 }
 EXPORT_SYMBOL(scsc_service_unregister_observer);
-#endif
 
 int scsc_service_get_panic_record(struct scsc_service *service, u8 *dst, u16 max_size)
 {
@@ -1369,6 +1376,7 @@ EXPORT_SYMBOL(scsc_service_get_panic_record);
 #if defined(SCSC_SEP_VERSION) && SCSC_SEP_VERSION >= 12
 size_t scsc_service_mxlogger_buff_size(struct scsc_service *service, enum scsc_log_chunk_type fw_buffer)
 {
+#if MXLOGGER
 	struct scsc_mx *mx;
 
 	if (!service) {
@@ -1383,11 +1391,15 @@ size_t scsc_service_mxlogger_buff_size(struct scsc_service *service, enum scsc_l
 	}
 
 	return mxlogger_get_fw_buf_size(scsc_mx_get_mxlogger(mx), fw_buffer);
+#else
+	return 0;
+#endif
 }
 EXPORT_SYMBOL(scsc_service_mxlogger_buff_size);
 
 size_t scsc_service_collect_buffer(struct scsc_service *service, enum scsc_log_chunk_type fw_buffer, void *buffer, size_t size)
 {
+#if MXLOGGER
 	struct scsc_mx *mx;
 	size_t bytes = 0;
 
@@ -1413,6 +1425,7 @@ size_t scsc_service_collect_buffer(struct scsc_service *service, enum scsc_log_c
 	SCSC_TAG_DEBUG(MXMAN, "Unable to dump buffer\n");
 
 exit:
+#endif
 	return 0;
 }
 EXPORT_SYMBOL(scsc_service_collect_buffer);

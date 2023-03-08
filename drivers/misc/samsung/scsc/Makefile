@@ -36,7 +36,7 @@ endif
 ## - kernel nodebug modules : builtins without scsc_logring support
 ## - kernel debug|nodebug nomodules : no builtin / no scsclogring
 ##
-ccflags-y += -DCONFIG_SCSC_PRINTK
+#ccflags-y += -DCONFIG_SCSC_PRINTK
 
 ifneq ($(CONFIG_SCSC_DEBUG),n)
 ccflags-$(CONFIG_SCSC_STATIC_RING)	+= -DCONFIG_SCSC_STATIC_RING_SIZE=$(CONFIG_SCSC_STATIC_RING_SIZE)
