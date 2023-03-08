@@ -2618,15 +2618,15 @@ static char *shmem_get_srinfo_address(struct link_device *ld)
 	return base;
 }
 
+#ifdef CONFIG_SBD_BOOTLOG
 static void shmem_clr_sbdcplog(unsigned long arg)
 {
-#ifdef CONFIG_SBD_BOOTLOG
 	struct mem_link_device *mld = ld_to_mem_link_device((struct link_device *)arg);
 	u8 __iomem *base = mld->base + mld->size - SHMEM_BOOTSBDLOG_SIZE;
 
 	memset(base, 0, SHMEM_BOOTSBDLOG_SIZE);
-#endif
 }
+#endif
 
 static void shmem_pr_sbdcplog(unsigned long arg)
 {

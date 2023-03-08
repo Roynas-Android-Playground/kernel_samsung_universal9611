@@ -19,9 +19,11 @@ static inline void mxlog_phase4_message_handler(const void *message,
 						size_t length, u32 level,
 						void *data)
 {
+#ifdef CONFIG_SCSC_PRINTK
 	unsigned char *buf = (unsigned char *)message;
 
 	SCSC_TAG_LVL(MX_FW, level, SCSC_PREFIX"%d: %s\n", (int)length, buf);
+#endif
 }
 
 /**
