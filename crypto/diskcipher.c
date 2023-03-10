@@ -19,9 +19,13 @@
 #include <linux/delay.h>
 #include <linux/mm_types.h>
 #include <linux/fs.h>
+#define __FS_HAS_ENCRYPTION 0
 #include <linux/fscrypt.h>
 
 #include "internal.h"
+
+// fs/crypto/inline.c
+extern void *fscrypt_get_bio_cryptd(const struct inode *inode);
 
 #ifdef CONFIG_CRYPTO_DISKCIPHER_DEBUG
 #include <crypto/fmp.h>
