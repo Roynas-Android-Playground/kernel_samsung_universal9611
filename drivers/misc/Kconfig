@@ -282,6 +282,12 @@ config QCOM_COINCELL
 	  to maintain PMIC register and RTC state in the absence of
 	  external power.
 
+config RT_REGMAP
+	tristate "RT Regmap Module"
+	default n
+	help
+	  Say Y here to enable RT regmap support.
+
 config SGI_GRU
 	tristate "SGI GRU driver"
 	depends on X86_UV && SMP
@@ -539,4 +545,10 @@ source "drivers/misc/mic/Kconfig"
 source "drivers/misc/genwqe/Kconfig"
 source "drivers/misc/echo/Kconfig"
 source "drivers/misc/cxl/Kconfig"
+source "drivers/misc/mcu_ipc/Kconfig"
+source "drivers/misc/modem_v1/Kconfig"
+source "drivers/misc/gnss_if/Kconfig"
+source "drivers/misc/tzdev/Kconfig"
+source "drivers/misc/samsung/Kconfig"
+source "drivers/misc/tui/Kconfig"
 endmenu

@@ -30,6 +30,21 @@ struct rtc_time {
 	int tm_isdst;
 };
 
+#ifdef CONFIG_RTC_HIGH_RES
+struct rtc_hrtime {
+	int tm_msec;
+	int tm_sec;
+	int tm_min;
+	int tm_hour;
+	int tm_mday;
+	int tm_mon;
+	int tm_year;
+	int tm_wday;
+	int tm_yday;
+	int tm_isdst;
+};
+#endif /* CONFIG_RTC_HIGH_RES */
+
 /*
  * This data structure is inspired by the EFI (v0.92) wakeup
  * alarm API.

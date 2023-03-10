@@ -197,6 +197,30 @@ config INPUT_KEYCOMBO
 	---help---
 	  Say Y here if you want to take action when some keys are pressed;
 
+config TOUCHSCREEN_DUMP_MODE
+	bool "touchscreen dump mode"
+	depends on INPUT_TOUCHSCREEN
+	help
+	  Say Y here if you need to get raw data.
+
+	  If unsure, say N.
+
+config SEC_DEBUG_TSP_LOG
+	tristate "Support for tsp_msg"
+	default n
+
+config SEC_AUTO_INPUT
+	tristate "Samsung auto input"
+	depends on !SAMSUNG_PRODUCT_SHIP
+	default y
+	help
+	  Say Y here if you use auto input function.
+
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called autoinput.
+
 comment "Input Device Drivers"
 
 source "drivers/input/keyboard/Kconfig"
@@ -206,6 +230,8 @@ source "drivers/input/mouse/Kconfig"
 source "drivers/input/joystick/Kconfig"
 
 source "drivers/input/tablet/Kconfig"
+
+source "drivers/input/wacom/Kconfig"
 
 source "drivers/input/touchscreen/Kconfig"
 

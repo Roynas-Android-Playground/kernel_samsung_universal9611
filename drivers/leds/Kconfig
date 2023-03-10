@@ -696,6 +696,44 @@ config LEDS_NIC78BX
 	  To compile this driver as a module, choose M here: the module
 	  will be called leds-nic78bx.
 
+config LEDS_S2MPB02
+	bool "LED support for the S2MPB02"
+	depends on LEDS_CLASS
+	help
+	  This option enables support for the LEDs on the S2MPB02.
+
+config LEDS_S2MU106_FLASH
+	bool "FLASH LED support for the S2MU106"
+	depends on (MFD_S2MU106) && I2C
+	help
+	  This option enables support for the LEDs on the S2MU106 chip.
+
+config LEDS_SM5713
+	bool "LED support for the SM5713"
+	depends on LEDS_CLASS
+	help
+	  This option enables support for the LEDs on the SM5713.
+	  
+config LEDS_SM5713_DUAL_LED
+	bool "dual/ multi LED support for the SM5713"
+	depends on LEDS_CLASS
+	help
+	  This option enables support for the dual/multi LEDs on the SM5713.
+
+config LEDS_SM5713_RGB
+	bool "rgb LED support for the SM5713"
+	depends on LEDS_CLASS && MFD_SM5713
+	help
+	  This option enables support for the rgb LEDs on the SM5713.
+
+config LEDS_SM5713_RGB_WORKAROUND
+	bool "rgb LED support for the SM5713"
+	depends on LEDS_SM5713_RGB
+	help
+	  This option enables support for workaround of the rgb LEDs on the SM5713.
+	  Some led cannot work on low current setting(under 0.4mA).
+	  But if driver set high current(over 7mA) settings shortly, led works properly.
+
 comment "LED Triggers"
 source "drivers/leds/trigger/Kconfig"
 

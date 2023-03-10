@@ -456,6 +456,9 @@ static inline void dst_set_expires(struct dst_entry *dst, int timeout)
 /* Output packet to network from transport.  */
 static inline int dst_output(struct net *net, struct sock *sk, struct sk_buff *skb)
 {
+#ifdef CONFIG_NET_SUPPORT_DROPDUMP
+	skb->dropmask = PACKET_OUT;
+#endif
 	return skb_dst(skb)->output(net, sk, skb);
 }
 

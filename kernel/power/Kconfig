@@ -312,3 +312,10 @@ config PM_GENERIC_DOMAINS_OF
 
 config CPU_PM
 	bool
+
+config SEC_PERF_BIG_AFFINITY_RESUME
+        bool "resume process set affinity to big CPUs"
+	default n
+	help
+	  need to decrease resume time
+	  set big affinity to resume process

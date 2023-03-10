@@ -130,6 +130,17 @@ config CFG80211_DEFAULT_PS
 	  applications instead -- they need to register their network
 	  latency requirement, see Documentation/power/pm_qos_interface.txt.
 
+config CFG80211_SLSI_SAE
+        bool "Enable SAE in Kernel"
+        depends on CFG80211
+        default y
+        help
+          This option enables sae in kernel.
+
+          This Option enables SAE in CFG.
+          This option needs to be enabled if the kernel version by default doesnt
+          support SAE.
+
 config CFG80211_DEBUGFS
 	bool "cfg80211 DebugFS entries"
 	depends on CFG80211
@@ -186,6 +197,15 @@ config CFG80211_WEXT_EXPORT
 	help
 	  Drivers should select this option if they require cfg80211's
 	  wext compatibility symbols to be exported.
+
+config CFG80211_REG_NOT_UPDATED
+	bool "Do not update Regulatory configuration"
+	depends on CFG80211
+	default n
+	help
+	  Regulation should not updated even if device found other country
+	  Access Point Beacon once since device should find around other
+	  Access Points.
 
 config LIB80211
 	tristate

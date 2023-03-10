@@ -70,6 +70,8 @@ obj-$(CONFIG_CONNECTOR)		+= connector/
 obj-$(CONFIG_FB_I810)           += video/fbdev/i810/
 obj-$(CONFIG_FB_INTEL)          += video/fbdev/intelfb/
 
+obj-$(CONFIG_USE_MUIC)		+= muic/
+obj-$(CONFIG_IFCONN_MANAGER)    += ifconn/
 obj-$(CONFIG_PARPORT)		+= parport/
 obj-$(CONFIG_NVM)		+= lightnvm/
 obj-y				+= base/ block/ misc/ mfd/ nfc/
@@ -183,3 +185,43 @@ obj-$(CONFIG_FPGA)		+= fpga/
 obj-$(CONFIG_FSI)		+= fsi/
 obj-$(CONFIG_TEE)		+= tee/
 obj-$(CONFIG_MULTIPLEXER)	+= mux/
+
+obj-$(CONFIG_EXYNOS_BTS)	+= bts/
+obj-$(CONFIG_TRUSTONIC_TEE)     += gud/
+ifeq ($(CONFIG_BATTERY_SAMSUNG_V2), y)
+  obj-$(CONFIG_BATTERY_SAMSUNG)   += battery_v2/
+else
+  obj-$(CONFIG_BATTERY_SAMSUNG)   += battery/
+endif
+obj-$(CONFIG_SWITCH)     	+= switch/
+
+obj-$(CONFIG_VISION_SUPPORT)    += vision/
+
+obj-$(CONFIG_SEC_EXT)           += samsung/
+
+# FIVE TEE driver
+obj-$(CONFIG_FIVE_TEE_DRIVER)	+= security/samsung/five_tee_driver/
+obj-$(CONFIG_ICD)		+= security/samsung/icdrv/
+
+# Sensor Hub
+obj-$(CONFIG_SENSORS_SSP) += sensorhub/
+
+# uH
+obj-$(CONFIG_UH)		+= uh/
+
+# vibrator
+obj-y				+= vibrator/
+
+# Fingerprint
+obj-$(CONFIG_SENSORS_FINGERPRINT) += fingerprint/
+
+obj-y				+= kperfmon/
+
+# GNSS
+obj-$(CONFIG_GPS_BCM4753)	+= gps/
+
+#TZIC
+obj-y  += security/samsung/tzic/
+
+# SPU signature verify
+obj-$(CONFIG_SPU_VERIFY) += spu_verify/

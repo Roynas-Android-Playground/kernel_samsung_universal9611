@@ -67,6 +67,9 @@ struct mnt_namespace;
 struct vfsmount {
 	struct dentry *mnt_root;	/* root of the mounted tree */
 	struct super_block *mnt_sb;	/* pointer to superblock */
+#ifdef CONFIG_RKP_NS_PROT
+	struct mount *bp_mount;	/* pointer to mount*/
+#endif
 	int mnt_flags;
 	void *data;
 } __randomize_layout;
@@ -84,6 +87,10 @@ extern struct vfsmount *mntget(struct vfsmount *mnt);
 extern struct vfsmount *mnt_clone_internal(const struct path *path);
 extern int __mnt_is_readonly(struct vfsmount *mnt);
 extern bool mnt_may_suid(struct vfsmount *mnt);
+#ifdef CONFIG_RKP_NS_PROT
+extern void rkp_set_mnt_flags(struct vfsmount *mnt, int flags);
+extern void rkp_reset_mnt_flags(struct vfsmount *mnt, int flags);
+#endif
 
 struct path;
 extern struct vfsmount *clone_private_mount(const struct path *path);

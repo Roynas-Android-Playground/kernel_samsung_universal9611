@@ -390,8 +390,10 @@ static inline void mask_ack_irq(struct irq_desc *desc)
 
 void mask_irq(struct irq_desc *desc)
 {
+#if 0
 	if (irqd_irq_masked(&desc->irq_data))
 		return;
+#endif
 
 	if (desc->irq_data.chip->irq_mask) {
 		desc->irq_data.chip->irq_mask(&desc->irq_data);
@@ -401,8 +403,10 @@ void mask_irq(struct irq_desc *desc)
 
 void unmask_irq(struct irq_desc *desc)
 {
+#if 0
 	if (!irqd_irq_masked(&desc->irq_data))
 		return;
+#endif
 
 	if (desc->irq_data.chip->irq_unmask) {
 		desc->irq_data.chip->irq_unmask(&desc->irq_data);

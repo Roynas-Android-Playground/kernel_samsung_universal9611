@@ -16,6 +16,8 @@
 #include <linux/device.h>
 #include <linux/notifier.h>
 #include <linux/pm_opp.h>
+#include <linux/kthread.h>
+#include <linux/timer.h>
 
 #define DEVFREQ_NAME_LEN 16
 
@@ -46,8 +48,9 @@ struct devfreq_governor;
  */
 struct devfreq_dev_status {
 	/* both since the last measure */
-	unsigned long total_time;
-	unsigned long busy_time;
+	unsigned long long total_time;
+	unsigned long long busy_time;
+	unsigned long long delta_time;
 	unsigned long current_frequency;
 	void *private_data;
 };
@@ -89,6 +92,7 @@ struct devfreq_dev_status {
  */
 struct devfreq_dev_profile {
 	unsigned long initial_freq;
+	unsigned long suspend_freq;
 	unsigned int polling_ms;
 
 	int (*target)(struct device *dev, unsigned long *freq, u32 flags);
@@ -153,6 +157,7 @@ struct devfreq {
 
 	unsigned long min_freq;
 	unsigned long max_freq;
+	unsigned long str_freq;
 	bool stop_polling;
 
 	/* information for device frequency transition */
@@ -162,6 +167,8 @@ struct devfreq {
 	unsigned long last_stat_updated;
 
 	struct srcu_notifier_head transition_notifier_list;
+
+	bool disabled_pm_qos;
 };
 
 struct devfreq_freqs {
@@ -214,6 +221,14 @@ extern void devm_devfreq_unregister_notifier(struct device *dev,
 extern struct devfreq *devfreq_get_devfreq_by_phandle(struct device *dev,
 						int index);
 
+#if IS_ENABLED(CONFIG_DEVFREQ_GOV_SIMPLE_ONDEMAND) || IS_ENABLED(CONFIG_DEVFREQ_GOV_SIMPLE_USAGE)\
+	|| IS_ENABLED(CONFIG_DEVFREQ_GOV_SIMPLE_INTERACTIVE)
+struct devfreq_notifier_block {
+       struct notifier_block nb;
+       struct devfreq *df;
+};
+#endif
+
 #if IS_ENABLED(CONFIG_DEVFREQ_GOV_SIMPLE_ONDEMAND)
 /**
  * struct devfreq_simple_ondemand_data - void *data fed to struct devfreq
@@ -229,8 +244,64 @@ extern struct devfreq *devfreq_get_devfreq_by_phandle(struct device *dev,
  * the governor uses the default values.
  */
 struct devfreq_simple_ondemand_data {
+	unsigned int multiplication_weight;
 	unsigned int upthreshold;
 	unsigned int downdifferential;
+	unsigned long cal_qos_max;
+	int pm_qos_class;
+	struct devfreq_notifier_block nb;
+};
+#endif
+
+#if IS_ENABLED(CONFIG_DEVFREQ_GOV_SIMPLE_USAGE)
+struct devfreq_simple_usage_data {
+	unsigned int multiplication_weight;
+	unsigned int proportional;
+	unsigned int upthreshold;
+	unsigned int target_percentage;
+	int pm_qos_class;
+	unsigned long cal_qos_max;
+	bool en_monitoring;
+	struct devfreq_notifier_block nb;
+};
+#endif
+
+#if IS_ENABLED(CONFIG_DEVFREQ_GOV_SIMPLE_EXYNOS)
+struct devfreq_simple_exynos_data {
+	unsigned int urgentthreshold;
+	unsigned int upthreshold;
+	unsigned int downthreshold;
+	unsigned int idlethreshold;
+	unsigned long above_freq;
+	unsigned long below_freq;
+	int pm_qos_class;
+	int pm_qos_class_max;
+	unsigned long cal_qos_max;
+	bool en_monitoring;
+	struct devfreq_notifier_block nb;
+	struct devfreq_notifier_block nb_max;
+};
+#endif
+
+#if IS_ENABLED(CONFIG_DEVFREQ_GOV_SIMPLE_INTERACTIVE)
+#define DEFAULT_DELAY_TIME		10 /* msec */
+#define DEFAULT_NDELAY_TIME		1
+#define DELAY_TIME_RANGE		10
+#define BOUND_CPU_NUM			0
+
+struct devfreq_simple_interactive_data {
+	bool use_delay_time;
+	int *delay_time;
+	int ndelay_time;
+	unsigned long prev_freq;
+	u64 changed_time;
+	struct timer_list freq_timer;
+	struct timer_list freq_slack_timer;
+	struct task_struct *change_freq_task;
+	int pm_qos_class;
+	int pm_qos_class_max;
+	struct devfreq_notifier_block nb;
+	struct devfreq_notifier_block nb_max;
 };
 #endif
 

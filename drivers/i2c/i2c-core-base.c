@@ -546,6 +546,10 @@ int i2c_check_addr_validity(unsigned addr, unsigned short flags)
 		/* 10-bit address, all values are valid */
 		if (addr > 0x3ff)
 			return -EINVAL;
+	} else if (flags & I2C_CLIENT_SPEEDY) {
+		/* 12-bit address for SPEEDY, all values are valid */
+		if (addr > 0xfff)
+			return -EINVAL;
 	} else {
 		/* 7-bit address, reject the general call address */
 		if (addr == 0x00 || addr > 0x7f)

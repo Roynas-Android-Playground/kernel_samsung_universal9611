@@ -50,6 +50,7 @@ config ARM64
 	select GENERIC_CLOCKEVENTS
 	select GENERIC_CLOCKEVENTS_BROADCAST
 	select GENERIC_CPU_AUTOPROBE
+	select GENERIC_CPU_VULNERABILITIES
 	select GENERIC_EARLY_IOREMAP
 	select GENERIC_IDLE_POLL_SETUP
 	select GENERIC_IRQ_PROBE
@@ -61,6 +62,7 @@ config ARM64
 	select GENERIC_STRNCPY_FROM_USER
 	select GENERIC_STRNLEN_USER
 	select GENERIC_TIME_VSYSCALL
+	select GENERIC_CPU_VULNERABILITIES
 	select HANDLE_DOMAIN_IRQ
 	select HARDIRQS_SW_RESEND
 	select HAVE_ACPI_APEI if (ACPI && EFI)
@@ -208,9 +210,6 @@ config GENERIC_CSUM
         def_bool y
 
 config GENERIC_CALIBRATE_DELAY
-	def_bool y
-
-config ZONE_DMA
 	def_bool y
 
 config HAVE_GENERIC_GUP
@@ -455,6 +454,20 @@ config ARM64_ERRATUM_1024718
 	  without a break-before-make. The work around is to disable the usage
 	  of hardware DBM locally on the affected cores. CPUs not affected by
 	  erratum will continue to use the feature.
+
+	  If unsure, say Y.
+
+config ARM64_ERRATUM_1188873
+	bool "Cortex-A76: MRC read following MRRC read of specific Generic Timer in AArch32 might give incorrect result"
+	default y
+	depends on COMPAT
+	select ARM_ARCH_TIMER_OOL_WORKAROUND
+	help
+	  This option adds work arounds for ARM Cortex-A76 erratum 1188873
+
+	  Affected Cortex-A76 cores (r0p0, r1p0, r2p0) could cause
+	  register corruption when accessing the timer registers from
+	  AArch32 userspace.
 
 	  If unsure, say Y.
 
@@ -822,7 +835,7 @@ config FORCE_MAX_ZONEORDER
 
 config UNMAP_KERNEL_AT_EL0
 	bool "Unmap kernel when running in userspace (aka \"KAISER\")" if EXPERT
-	default y
+	default n
 	help
 	  Speculation attacks against some high-performance processors can
 	  be used to bypass MMU permission checks and leak kernel data to
@@ -857,6 +870,16 @@ config ARM64_SSBD
 	  by speculative loads.
 
 	  If unsure, say Y.
+
+config MITIGATE_SPECTRE_BRANCH_HISTORY
+	bool "Mitigate Spectre style attacks against branch history" if EXPERT
+	default y
+	depends on HARDEN_BRANCH_PREDICTOR || !KVM
+	help
+	  Speculation attacks against some high-performance processors can
+	  make use of branch history to influence future speculation.
+	  When taking an exception from user-space, a sequence of branches
+	  or a firmware call overwrites the branch history.
 
 menuconfig ARMV8_DEPRECATED
 	bool "Emulate deprecated/obsolete ARMv8 instructions"
@@ -1196,6 +1219,78 @@ config BUILD_ARM64_APPENDED_DTB_IMAGE_NAMES
 	  Space separated list of names of dtbs to append when
 	  building a concatenated Image.gz-dtb.
 
+config UH
+	bool "Enable micro hypervisor feature"
+	depends on !SEC_FACTORY
+	default n
+	help
+	  It enables a micro hypervisor.
+	  It's samsung's hypervisor.
+	  RKP and etc can be loaded on it.
+	  please check a memory map for it.
+
+config UH_DEBUG
+    bool "Enable micro hypervisor debug feature"
+	depends on UH
+	default n
+	help
+	  It's for debugging uH.
+
+config UH_RKP
+	bool "Enable RKP (Realtime Kernel Protection) UH feature"
+	depends on UH
+	default n
+	help
+	  it protects a kernel text and etc.
+
+config RKP_KDP
+	bool "Protection for cred structure"
+	depends on !SEC_VTS_TEST
+	depends on UH_RKP
+	default n
+	help
+	  Prevents unauthorized cred modification.
+
+config RKP_NS_PROT
+	bool "Protection for namespace structure"
+	depends on RKP_KDP
+	default n
+	help
+	  Prevents unauthorized namespace modification.
+
+config RKP_DMAP_PROT
+	bool "Page Double Mapping protection"
+	depends on RKP_KDP
+	default n
+	help
+	  Prevents unauthorized mapping for page table.
+
+config RKP_TEST
+	bool "Enable RKP test"
+	depends on UH_RKP && !SAMSUNG_PRODUCT_SHIP
+	default n
+	help
+	  enable RKP test.
+
+config KDP_TEST
+	bool "Enable KDP test"
+	depends on RKP_KDP && RKP_NS_PROT && !SAMSUNG_PRODUCT_SHIP
+	default n
+	help
+	  enable KDP test.
+
+config UH_RKP_FIMC_CHECK
+	bool "Select FIMC type"
+	depends on UH_RKP
+	default n
+	help
+	  it protects a kernel text and etc.
+
+config UH_LKM_BLOCK
+	bool "Block LKM"
+	help
+	  LKM is not allowed by Samsung security policy.
+
 endmenu
 
 menu "Userspace binary formats"
@@ -1274,3 +1369,10 @@ source "arch/arm64/crypto/Kconfig"
 endif
 
 source "lib/Kconfig"
+
+config FPSIMD_CORRUPTION_DETECT
+	bool "Detect for fpsimd has corruption"
+	default n
+	help
+	  If FPSIMD has corruption, use this feature for detect problem.
+

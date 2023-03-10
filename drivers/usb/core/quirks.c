@@ -410,3 +410,31 @@ void usb_detect_interface_quirks(struct usb_device *udev)
 		quirks);
 	udev->quirks |= quirks;
 }
+
+#ifdef CONFIG_USB_INTERFACE_LPM_LIST
+static const struct usb_device_id usb_interface_list_lpm[] = {
+	{ .match_flags = USB_DEVICE_ID_MATCH_INT_CLASS,
+		.bInterfaceClass = USB_CLASS_AUDIO},
+	{ }						/* Terminating entry */
+};
+
+int usb_detect_interface_lpm(struct usb_device *udev)
+{
+	const struct usb_device_id *id = usb_interface_list_lpm;
+	int l1_enable = 0;
+	
+	for (; id->match_flags; id++) {
+		if (!usb_match_device(udev, id))
+			continue;
+
+		if ((id->match_flags & USB_DEVICE_ID_MATCH_INT_INFO) &&
+		    !usb_match_any_interface(udev, id))
+			continue;
+
+		l1_enable = 1;
+		break;
+	}
+
+	return l1_enable;
+}
+#endif

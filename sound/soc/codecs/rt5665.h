@@ -1,7 +1,7 @@
 /*
  * rt5665.h  --  RT5665/RT5658 ALSA SoC audio driver
  *
- * Copyright 2016 Realtek Microelectronics
+ * Copyright 2015 Realtek Microelectronics
  * Author: Bard Liao <bardliao@realtek.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -12,9 +12,10 @@
 #ifndef __RT5665_H__
 #define __RT5665_H__
 
+#include <linux/wakelock.h>
 #include <sound/rt5665.h>
 
-#define DEVICE_ID 0x6451
+#define RT5665_6_8_DEVICE_ID 0x6451
 
 /* Info */
 #define RT5665_RESET				0x0000
@@ -221,7 +222,8 @@
 #define RT5665_CHARGE_PUMP_1			0x0125
 #define RT5665_DIG_IN_CTRL_1			0x0132
 #define RT5665_DIG_IN_CTRL_2			0x0133
-#define RT5665_PAD_DRIVING_CTRL			0x0137
+#define RT5665_PAD_DRIVING_CTRL_1		0x0136
+#define RT5665_PAD_DRIVING_CTRL_2		0x0137
 #define RT5665_SOFT_RAMP_DEPOP			0x0138
 #define RT5665_PLL				0x0139
 #define RT5665_CHOP_DAC				0x013a
@@ -425,6 +427,7 @@
 #define RT5665_R_EQ_PRE_VOL			0x03f1
 #define RT5665_L_EQ_POST_VOL			0x03f2
 #define RT5665_R_EQ_POST_VOL			0x03f3
+#define RT5665_MAGIC				0x03ff
 #define RT5665_SCAN_MODE_CTRL			0x07f0
 #define RT5665_I2C_MODE				0x07fa
 
@@ -1493,7 +1496,12 @@
 #define RT5665_I2S3_RATE_SFT			4
 
 /* Depop Mode Control 1 (0x008e) */
-#define RT5665_PUMP_EN				(0x1 << 3)
+#define RT5665_EN_OUT_HP			(0x1 << 4)
+#define RT5665_EN_OUT_HP_BIT			4
+#define RT5665_PWR_PUMP_HP			(0x1 << 3)
+#define RT5665_PWR_PUMP_HP_BIT			3
+#define RT5665_PWR_CAPLESS			(0x1 << 0)
+#define RT5665_PWR_CAPLESS_BIT			0
 
 /* Depop Mode Control 2 (0x8f) */
 #define RT5665_DEPOP_MASK			(0x1 << 13)
@@ -1628,27 +1636,6 @@
 #define RT5665_PWR_CLK1M_PD			(0x0 << 8)
 #define RT5665_PWR_CLK1M_PU			(0x1 << 8)
 
-/* I2S Master Mode Clock Control 1 (0x00a0) */
-#define RT5665_CLK_SRC_MCLK			(0x0)
-#define RT5665_CLK_SRC_PLL1			(0x1)
-#define RT5665_CLK_SRC_RCCLK			(0x2)
-#define RT5665_I2S_PD_1				(0x0)
-#define RT5665_I2S_PD_2				(0x1)
-#define RT5665_I2S_PD_3				(0x2)
-#define RT5665_I2S_PD_4				(0x3)
-#define RT5665_I2S_PD_6				(0x4)
-#define RT5665_I2S_PD_8				(0x5)
-#define RT5665_I2S_PD_12			(0x6)
-#define RT5665_I2S_PD_16			(0x7)
-#define RT5665_I2S2_SRC_MASK			(0x3 << 12)
-#define RT5665_I2S2_SRC_SFT			12
-#define RT5665_I2S2_M_PD_MASK			(0x7 << 8)
-#define RT5665_I2S2_M_PD_SFT			8
-#define RT5665_I2S3_SRC_MASK			(0x3 << 4)
-#define RT5665_I2S3_SRC_SFT			4
-#define RT5665_I2S3_M_PD_MASK			(0x7 << 0)
-#define RT5665_I2S3_M_PD_SFT			0
-
 
 /* EQ Control 1 (0x00b0) */
 #define RT5665_EQ_SRC_DAC			(0x0 << 15)
@@ -1713,8 +1700,8 @@
 #define RT5665_GP6_PIN_MASK			(0x3 << 5)
 #define RT5665_GP6_PIN_SFT			5
 #define RT5665_GP6_PIN_GPIO6			(0x0 << 5)
-#define RT5665_GP6_PIN_BCLK3			(0x1 << 5)
-#define RT5665_GP6_PIN_PDM_SCL			(0x2 << 5)
+#define RT5665_GP6_PIN_BCLK3			(0x0 << 5)
+#define RT5665_GP6_PIN_PDM_SCL			(0x1 << 5)
 #define RT5665_GP7_PIN_MASK			(0x3 << 3)
 #define RT5665_GP7_PIN_SFT			3
 #define RT5665_GP7_PIN_GPIO7			(0x0 << 3)
@@ -1950,6 +1937,8 @@
 #define RT5665_SAR_SEL_SIGNAL_AUTO		(0x1 << 4)
 #define RT5665_SAR_SEL_SIGNAL_MANU		(0x0 << 4)
 
+#define SND_JACK_OPEN_GENDER	0x0080
+
 /* System Clock Source */
 enum {
 	RT5665_SCLK_S_MCLK,
@@ -2003,7 +1992,63 @@ enum {
 	RT5665_CLK_SEL_SYS4,
 };
 
+struct rt5665_priv {
+	struct snd_soc_codec *codec;
+	struct rt5665_platform_data pdata;
+	struct regmap *regmap;
+	struct snd_soc_jack *hs_jack;
+	struct delayed_work jack_detect_work;
+	struct delayed_work jack_detect_open_gender_work;
+	struct delayed_work calibrate_work;
+	struct delayed_work ng_check_work;
+	struct delayed_work mic_check_work;
+	struct delayed_work water_detect_work;
+	struct delayed_work sto1_l_adc_work, sto1_r_adc_work;
+	struct delayed_work mono_l_adc_work, mono_r_adc_work;
+	struct delayed_work sto2_l_adc_work, sto2_r_adc_work;
+	struct wake_lock jack_detect_wake_lock;
+	struct mutex open_gender_mutex;
+
+	int sysclk;
+	int sysclk_src;
+	int lrck[RT5665_AIFS];
+	int bclk[RT5665_AIFS];
+	int master[RT5665_AIFS];
+	int id;
+
+	int pll_src;
+	int pll_in;
+	int pll_out;
+
+	int jack_type;
+	int btn_det;
+	int irq;
+	int irq_work_delay_time;
+
+	unsigned int adc_val;
+	unsigned int adb_reg_addr[0x100];
+	unsigned int adb_reg_value[0x100];
+	unsigned short adb_reg_num;
+	unsigned int magic;
+	bool do_rek;
+	bool disable_ng2;
+	bool is_suspend;
+	unsigned long rek_timeout;
+	bool rek;
+	bool mic_check_break;
+	unsigned long button_timeout;
+
+	bool impedance_gain_map;
+	unsigned int impedance_value;
+	unsigned int impedance_gain;
+	unsigned int impedance_bias;
+
+	struct iio_channel *jack_adc;
+};
+
 int rt5665_sel_asrc_clk_src(struct snd_soc_codec *codec,
 		unsigned int filter_mask, unsigned int clk_src);
+int rt5665_set_jack_detect(struct snd_soc_codec *codec,
+	struct snd_soc_jack *hs_jack);
 
 #endif /* __RT5665_H__ */

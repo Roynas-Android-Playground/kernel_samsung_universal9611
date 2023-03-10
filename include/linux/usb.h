@@ -544,6 +544,37 @@ struct usb3_lpm_parameters {
 	int timeout;
 };
 
+struct hcd_hw_info {
+	/* for XHCI */
+	int slot_id;
+	dma_addr_t erst_addr;
+	dma_addr_t dcbaa_dma;
+	dma_addr_t in_ctx;
+	dma_addr_t out_ctx;
+	dma_addr_t save_dma;
+	u64 cmd_ring;
+	/* Data Stream EP */
+	u64 old_out_deq;
+	u64 old_in_deq;
+	u64 out_deq;
+	u64 in_deq;
+	int in_ep;
+	int out_ep;
+	/* feedback ep */
+	int fb_in_ep;
+	int fb_out_ep;
+	u64 fb_old_out_deq;
+	u64 fb_old_in_deq;
+	u64 fb_out_deq;
+	u64 fb_in_deq;
+	/* Device Common Information */
+	int speed;
+	void *out_buf;
+	u64 out_dma;
+	void *in_buf;
+	u64 in_dma;
+};
+
 /**
  * struct usb_device - kernel's representation of a USB device
  * @devnum: device number; address on a USB bus
@@ -641,6 +672,9 @@ struct usb_device {
 	struct usb_host_endpoint *ep_out[16];
 
 	char **rawdescriptors;
+	int rawdesc_length;
+
+	struct hcd_hw_info hwinfo;
 
 	unsigned short bus_mA;
 	u8 portnum;

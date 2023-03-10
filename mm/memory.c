@@ -79,6 +79,10 @@
 #include <asm/tlbflush.h>
 #include <asm/pgtable.h>
 
+#ifdef CONFIG_PAGE_BOOST_RECORDING
+#include <linux/io_record.h>
+#endif
+
 #include "internal.h"
 
 #if defined(LAST_CPUPID_NOT_IN_PAGE_FLAGS) && !defined(CONFIG_COMPILE_TEST)
@@ -1309,6 +1313,9 @@ again:
 		if (pte_none(ptent))
 			continue;
 
+		if (need_resched())
+			break;
+
 		if (pte_present(ptent)) {
 			struct page *page;
 
@@ -1407,8 +1414,11 @@ again:
 	if (force_flush) {
 		force_flush = 0;
 		tlb_flush_mmu_free(tlb);
-		if (addr != end)
-			goto again;
+	}
+
+	if (addr != end) {
+		cond_resched();
+		goto again;
 	}
 
 	return addr;
@@ -3489,8 +3499,13 @@ int finish_fault(struct vm_fault *vmf)
 	return ret;
 }
 
+#ifdef CONFIG_FAULT_AROUND_4KB
+static unsigned long fault_around_bytes __read_mostly =
+	rounddown_pow_of_two(4096);
+#else
 static unsigned long fault_around_bytes __read_mostly =
 	rounddown_pow_of_two(65536);
+#endif
 
 #ifdef CONFIG_DEBUG_FS
 static int fault_around_bytes_get(void *data, u64 *val)
@@ -3622,6 +3637,10 @@ static int do_read_fault(struct vm_fault *vmf)
 		ret = do_fault_around(vmf);
 		if (ret)
 			return ret;
+#ifdef CONFIG_PAGE_BOOST_RECORDING
+	} else if (vma->vm_ops->map_pages && fault_around_bytes >> PAGE_SHIFT == 1) {
+		record_io_info(vma->vm_file, vmf->pgoff, 1);
+#endif
 	}
 
 	ret = __do_fault(vmf);

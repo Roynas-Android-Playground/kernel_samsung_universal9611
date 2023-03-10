@@ -34,6 +34,7 @@
 #include <linux/mmu_context.h>
 #include <linux/poll.h>
 #include <linux/eventfd.h>
+#include <linux/delay.h>
 
 #include "u_fs.h"
 #include "u_f.h"
@@ -1015,9 +1016,16 @@ static ssize_t ffs_epfile_io(struct file *file, struct ffs_io_data *io_data)
 
 		if (interrupted)
 			ret = -EINTR;
-		else if (io_data->read && ep->status > 0)
+		else if (io_data->read && ep->status > 0) {
+			if (ep->status > 0xFFFFFF) {
+				pr_info("%s abnormal size=%d\n",
+						__func__, (int)ep->status);
+				ret = -ENOMEM;
+				goto error_mutex;
+			}
 			ret = __ffs_epfile_read_data(epfile, data, ep->status,
 						     &io_data->data);
+		}
 		else
 			ret = ep->status;
 		goto error_mutex;
@@ -1723,6 +1731,10 @@ static void ffs_data_reset(struct ffs_data *ffs)
 	ffs->state = FFS_READ_DESCRIPTORS;
 	ffs->setup_state = FFS_NO_SETUP;
 	ffs->flags = 0;
+
+	ffs->ms_os_descs_ext_prop_count = 0;
+	ffs->ms_os_descs_ext_prop_name_len = 0;
+	ffs->ms_os_descs_ext_prop_data_len = 0;
 }
 
 
@@ -2929,6 +2941,9 @@ static inline struct f_fs_opts *ffs_do_functionfs_bind(struct usb_function *f,
 	func->ffs = ffs_opts->dev->ffs_data;
 	if (!ffs_opts->no_configfs)
 		ffs_dev_unlock();
+
+	pr_info("ffs_do_functionfs_bind %d\n", ret);
+
 	if (ret)
 		return ERR_PTR(ret);
 
@@ -3184,7 +3199,9 @@ static int ffs_func_set_alt(struct usb_function *f,
 
 static void ffs_func_disable(struct usb_function *f)
 {
+	pr_info("%s+++\n", __func__);
 	ffs_func_set_alt(f, 0, (unsigned)-1);
+	pr_info("%s---\n", __func__);
 }
 
 static int ffs_func_setup(struct usb_function *f,
@@ -3271,8 +3288,13 @@ static bool ffs_func_req_match(struct usb_function *f,
 
 static void ffs_func_suspend(struct usb_function *f)
 {
+#ifdef VERBOSE_DEBUG
 	ENTER();
+#else
+	pr_info("%s+++\n", __func__);
+#endif
 	ffs_event_add(ffs_func_from_usb(f)->ffs, FUNCTIONFS_SUSPEND);
+	pr_info("%s---\n", __func__);
 }
 
 static void ffs_func_resume(struct usb_function *f)
@@ -3475,6 +3497,7 @@ static void ffs_func_unbind(struct usb_configuration *c,
 static struct usb_function *ffs_alloc(struct usb_function_instance *fi)
 {
 	struct ffs_function *func;
+	struct ffs_dev *dev;
 
 	ENTER();
 
@@ -3482,7 +3505,8 @@ static struct usb_function *ffs_alloc(struct usb_function_instance *fi)
 	if (unlikely(!func))
 		return ERR_PTR(-ENOMEM);
 
-	func->function.name    = "Function FS Gadget";
+	dev = to_f_fs_opts(fi)->dev;
+	func->function.name    = dev->name;
 
 	func->function.bind    = ffs_func_bind;
 	func->function.unbind  = ffs_func_unbind;

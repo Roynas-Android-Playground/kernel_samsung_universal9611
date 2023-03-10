@@ -74,6 +74,15 @@
 #define ARCH_SHF_SMALL 0
 #endif
 
+#ifdef CONFIG_UH_LKM_BLOCK
+/* Return codes for lkm_block */
+#define	RET_UH_LKM_OK					0x00000000
+#define	RET_UH_LKM_BLOCK_FORCE			0x00000002
+
+/* Return codes for lkm_block function */
+#define	RET_LKM_BLOCK_SUCCESS				0
+#define	RET_LKM_BLOCK_FAIL				-1
+#endif
 /*
  * Modules' sections will be aligned on page boundaries
  * to ensure complete separation of code and data, but
@@ -2715,6 +2724,13 @@ static void add_kallsyms(struct module *mod, const struct load_info *info)
 }
 #endif /* CONFIG_KALLSYMS */
 
+#ifdef CONFIG_UH_LKM_BLOCK
+static int lkm_block()
+{
+	return RET_UH_LKM_BLOCK_FORCE;
+}
+#endif
+
 static void dynamic_debug_setup(struct module *mod, struct _ddebug *debug, unsigned int num)
 {
 	if (!debug)
@@ -2818,6 +2834,12 @@ static int elf_header_check(struct load_info *info)
 		info->len - info->hdr->e_shoff))
 		return -ENOEXEC;
 
+#ifdef CONFIG_UH_LKM_BLOCK
+	if (lkm_block() != RET_LKM_BLOCK_SUCCESS) {
+		pr_warn("UH: LKM is not allowed by Samsung security policy.\n");
+		return -ENOEXEC;
+	}
+#endif
 	return 0;
 }
 

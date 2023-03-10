@@ -147,11 +147,14 @@ int usb_control_msg(struct usb_device *dev, unsigned int pipe, __u8 request,
 	dr->wValue = cpu_to_le16(value);
 	dr->wIndex = cpu_to_le16(index);
 	dr->wLength = cpu_to_le16(size);
-
+#if defined(CONFIG_USB_HOST_SAMSUNG_FEATURE)
+	if (dev && dev->reset_resume == 1)
+		timeout = 500;
+#endif
 	ret = usb_internal_control_msg(dev, pipe, dr, data, size, timeout);
 
 	/* Linger a bit, prior to the next control message. */
-	if (dev->quirks & USB_QUIRK_DELAY_CTRL_MSG)
+	if (dev && (dev->quirks & USB_QUIRK_DELAY_CTRL_MSG))
 		msleep(200);
 
 	kfree(dr);
@@ -586,12 +589,13 @@ void usb_sg_cancel(struct usb_sg_request *io)
 	int i, retval;
 
 	spin_lock_irqsave(&io->lock, flags);
-	if (io->status) {
+	if (io->status || io->count == 0) {
 		spin_unlock_irqrestore(&io->lock, flags);
 		return;
 	}
 	/* shut everything down */
 	io->status = -ECONNRESET;
+	io->count++;		/* Keep the request alive until we're done */
 	spin_unlock_irqrestore(&io->lock, flags);
 
 	for (i = io->entries - 1; i >= 0; --i) {
@@ -605,6 +609,12 @@ void usb_sg_cancel(struct usb_sg_request *io)
 			dev_warn(&io->dev->dev, "%s, unlink --> %d\n",
 				 __func__, retval);
 	}
+
+	spin_lock_irqsave(&io->lock, flags);
+	io->count--;
+	if (!io->count)
+		complete(&io->complete);
+	spin_unlock_irqrestore(&io->lock, flags);
 }
 EXPORT_SYMBOL_GPL(usb_sg_cancel);
 

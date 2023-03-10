@@ -355,6 +355,19 @@ extern unsigned long mem_cgroup_shrink_node(struct mem_cgroup *mem,
 						pg_data_t *pgdat,
 						unsigned long *nr_scanned);
 extern unsigned long shrink_all_memory(unsigned long nr_pages);
+struct shrink_result {
+	int priority;
+	unsigned long nr_scanned;
+	unsigned long nr_reclaimed;
+};
+extern unsigned long shrink_anon_memory(unsigned long nr_to_reclaim,
+					struct shrink_result *sr);
+#ifdef CONFIG_KANOND
+extern void wakeup_kanond(void);
+extern const char *get_kanond_balanced_reason(void);
+extern unsigned long get_kanond_wmark_high(void);
+extern int set_kanond_wmark_high(unsigned long wmark);
+#endif
 extern int vm_swappiness;
 extern int remove_mapping(struct address_space *mapping, struct page *page);
 extern unsigned long vm_total_pages;
@@ -479,6 +492,8 @@ extern int try_to_free_swap(struct page *);
 struct backing_dev_info;
 extern int init_swap_address_space(unsigned int type, unsigned long nr_pages);
 extern void exit_swap_address_space(unsigned int type);
+extern unsigned long get_swap_orig_data_nrpages(void);
+extern unsigned long get_swap_comp_pool_nrpages(void);
 
 #else /* CONFIG_SWAP */
 
@@ -622,7 +637,7 @@ static inline int split_swap_cluster(swp_entry_t entry)
 }
 #endif
 
-#ifdef CONFIG_MEMCG
+#if defined(CONFIG_MEMCG) && !defined(CONFIG_MEMCG_FORCE_USE_VM_SWAPPINESS)
 static inline int mem_cgroup_swappiness(struct mem_cgroup *memcg)
 {
 	/* Cgroup2 doesn't have per-cgroup swappiness */

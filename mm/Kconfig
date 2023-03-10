@@ -639,6 +639,12 @@ config MAX_STACK_SIZE_MB
 
 	  A sane initial value is 80 MB.
 
+config HPA
+	bool "High-order Pages Allocator"
+	select CMA
+	help
+	  Turns on High-order Pages Allocator based on page migration.
+
 # For architectures that support deferred memory initialisation
 config ARCH_SUPPORTS_DEFERRED_STRUCT_PAGE_INIT
 	bool
@@ -757,3 +763,124 @@ config PERCPU_STATS
 	  This feature collects and exposes statistics via debugfs. The
 	  information includes global and per chunk statistics, which can
 	  be used to help understand percpu memory usage.
+
+config INCREASE_MAXIMUM_SWAPPINESS
+	bool "Allow swappiness to be set up to 200"
+	depends on SWAP
+	default y
+
+config LARGE_DIRTY_BUFFER
+	bool "Use large dirty_threshold value by enabling dirty_ratio"
+	default y
+	help
+	  This config enables dirty_ratio/dirty_background_ratio,
+	  and it means large dirty_threshold value in 64bit architectures.
+	  If unsure, say N to use kernel default value
+
+config MAX_DIRTY_THRESH_PAGES
+	int "The upper bound of VM dirty_thresh value in number of pages"
+	depends on LARGE_DIRTY_BUFFER
+	default 25600
+	help
+	  This value is the upper bound of VM dirty-thresh. (0 means no limit.)
+	  It is only effective when dirty_ratio is used.
+	  (Setting dirty_bytes disables this option.)
+
+config DIRECT_RECLAIM_FILE_PAGES_ONLY
+	bool "Reclaim file pages only on direct reclaim path"
+	depends on SWAP
+	default y
+
+config BALANCE_ANON_FILE_RECLAIM
+	bool "During reclaim treat anon and file backed pages equally"
+	depends on SWAP
+	default y
+	help
+	  When performing memory reclaim treat anonymous and file backed pages
+	  equally.
+	  Swapping anonymous pages out to memory can be efficient enough to justify
+	  treating anonymous and file backed pages equally.
+
+config KSWAPD_CPU
+	hex "Set kswapd cpu affinity by default"
+	default 0x3F
+	help
+	  Set kswapd cpu affinity by default. 0x3F means allowing CPU as 0 to 5.
+	  To disable this config, set this to 0.
+
+config MMAP_READAROUND_LIMIT
+	int "Limit mmap readaround upperbound"
+	default 0
+	help
+	  Inappropriate mmap readaround size can hurt device performance
+	  during the sluggish situation. Add the hard upper-limit for
+	  mmap readaround.
+
+config SWAP_ENABLE_READAHEAD
+	bool "Enable readahead on page swap in"
+	depends on SWAP
+	default y
+	help
+	  When a page fault occurs, adjacent pages are also paged in
+          expecting those pages will be used in near future.
+
+config KANOND
+	bool "Support kanond"
+	default n
+	help
+	  Support kanond kernel thread which does anonymous swapping.
+
+config KANOND_FORCE_SIZE
+	int "Set kanond required size by force"
+	depends on KANOND
+	default 0
+	help
+	  Instead of default size, for to use this size"
+
+config BOOT_MEMORY_PARAM
+	bool "keep more free memory at boot-time"
+        default n
+
+config PROCESS_RECLAIM
+	bool "Enable process reclaim"
+	depends on PROC_FS
+	default y
+	help
+	  It allows to reclaim pages of the process by /proc/pid/reclaim.
+
+	  (echo file > /proc/PID/reclaim) reclaims file-backed pages only.
+	  (echo anon > /proc/PID/reclaim) reclaims anonymous pages only.
+	  (echo all > /proc/PID/reclaim) reclaims all pages.
+
+	  (echo addr size-byte > /proc/PID/reclaim) reclaims pages in
+	  (addr, addr + size-bytes) of the process.
+
+	  Any other vaule is ignored.
+
+config FAULT_AROUND_4KB
+	bool "Fault around bytes 4KB"
+	default n
+	help
+	  Reduce fault around bytes to 4KB
+
+config VMPRESSURE_LEVEL_MED
+	int "Threshold to account memory pressure"
+	default 60
+	help
+	  This supports to adjust vmpressure_level_med threshold value
+
+config PAGE_BOOST
+	bool "PAGE_BOOST feature"
+	depends on MMU
+	default n
+	help
+	  Enable this for PAGE_BOOST feature
+
+config PAGE_BOOST_RECORDING
+	bool "PAGE_BOOST recording feature"
+	depends on PAGE_BOOST
+	default y
+	help
+	  Record Everything for the chosen process.
+	  As Android executes an app one by one, only allow 1 recording
+	  at a time.

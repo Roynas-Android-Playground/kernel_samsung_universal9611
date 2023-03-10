@@ -33,7 +33,7 @@ struct dwc3;
 #define DWC3_DEPCFG_XFER_IN_PROGRESS_EN	BIT(9)
 #define DWC3_DEPCFG_XFER_NOT_READY_EN	BIT(10)
 #define DWC3_DEPCFG_FIFO_ERROR_EN	BIT(11)
-#define DWC3_DEPCFG_STREAM_EVENT_EN	BIT(13)
+#define DWC3_DEPCFG_STREAM_EVENT_EN	BIT(12)
 #define DWC3_DEPCFG_BINTERVAL_M1(n)	(((n) & 0xff) << 16)
 #define DWC3_DEPCFG_STREAM_CAPABLE	BIT(24)
 #define DWC3_DEPCFG_EP_NUMBER(n)	(((n) & 0x1f) << 25)
@@ -114,5 +114,11 @@ static inline u32 dwc3_gadget_ep_get_transfer_index(struct dwc3_ep *dep)
 
 	return DWC3_DEPCMD_GET_RSC_IDX(res_id);
 }
+
+/**
+ * ISR for DWC3 gadget was changed because of RNDIS performance.
+ * However, previous ISR code was not removed to track the history.
+ */
+#undef DWC3_GADGET_IRQ_ORG
 
 #endif /* __DRIVERS_USB_DWC3_GADGET_H */

@@ -39,6 +39,11 @@ struct rw_semaphore {
 	 */
 	struct task_struct *owner;
 #endif
+
+#ifdef CONFIG_FAST_TRACK
+	struct task_struct *ftt_dep_task;
+#endif
+
 #ifdef CONFIG_DEBUG_LOCK_ALLOC
 	struct lockdep_map	dep_map;
 #endif
@@ -56,6 +61,10 @@ extern struct rw_semaphore *rwsem_down_write_failed(struct rw_semaphore *sem);
 extern struct rw_semaphore *rwsem_down_write_failed_killable(struct rw_semaphore *sem);
 extern struct rw_semaphore *rwsem_wake(struct rw_semaphore *);
 extern struct rw_semaphore *rwsem_downgrade_wake(struct rw_semaphore *sem);
+
+#ifdef CONFIG_FAST_TRACK
+#include <cpu/ftt/ftt_rwsem.h>
+#endif
 
 /* Include the arch specific part */
 #include <asm/rwsem.h>
@@ -77,10 +86,18 @@ static inline int rwsem_is_locked(struct rw_semaphore *sem)
 # define __RWSEM_DEP_MAP_INIT(lockname)
 #endif
 
+#ifdef CONFIG_FAST_TRACK
+#ifdef CONFIG_RWSEM_SPIN_ON_OWNER
+#define __RWSEM_OPT_INIT(lockname) , .osq = OSQ_LOCK_UNLOCKED, .owner = NULL, .ftt_dep_task = NULL
+#else
+#define __RWSEM_OPT_INIT(lockname)
+#endif
+#else
 #ifdef CONFIG_RWSEM_SPIN_ON_OWNER
 #define __RWSEM_OPT_INIT(lockname) , .osq = OSQ_LOCK_UNLOCKED, .owner = NULL
 #else
 #define __RWSEM_OPT_INIT(lockname)
+#endif
 #endif
 
 #define __RWSEM_INITIALIZER(name)				\

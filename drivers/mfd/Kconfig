@@ -726,6 +726,16 @@ config MFD_MAX8907
 	  accessing the device; additional drivers must be enabled in order
 	  to use the functionality of the device.
 
+config MFD_S2MU106
+	bool "SAMSUNG Electronics S2MU106 IF PMIC Series Support"
+	depends on I2C=y
+	select MFD_CORE
+	help
+	  Support for the Samsung Electronics MFD series.
+	  This driver provides common support for accessing the device,
+	  additional drivers must be enabled in order to use the functionality
+	  of the device
+
 config MFD_MAX8925
 	bool "Maxim Semiconductor MAX8925 PMIC Support"
 	depends on I2C=y
@@ -1001,6 +1011,37 @@ config MFD_SEC_CORE
 	 This driver provides common support for accessing the device,
 	 additional drivers must be enabled in order to use the functionality
 	 of the device
+
+config MFD_S2MU004
+	bool "Samsung Electronics S2MU004 IF PMIC Series Support"
+	depends on I2C=y
+	select MFD_CORE
+	help
+	  Support for the Samsung Electronics MFD series.
+	  This driver provides common support for accessing the device,
+	  additional drivers must be enabled in order to use the functionality
+	  of the device
+
+config MFD_S2MPU09
+	bool "SAMSUNG Electronics S2MPU09 PMIC Series Support"
+	depends on I2C=y
+	select MFD_CORE
+	select REGULATOR
+	help
+	 Support for the Samsung Electronics MFD series.
+	 This driver provides common support for accessing the device,
+	 additional drivers must be enabled in order to use the functionality
+	 of the device
+
+config MFD_S2MPB02
+	bool "Samsung Semiconductor S2MPB02 PMIC Support"
+	depends on I2C=y
+	select MFD_CORE
+	help
+	  Say yes here to support for Samsung Semiconductor S2MPB02.
+	  This is a Power Management IC with Flash on chip.
+	  This driver provides common support for accessing the device;
+	  additional drivers
 
 config MFD_SI476X_CORE
 	tristate "Silicon Laboratories 4761/64/68 AM/FM radio."
@@ -1646,6 +1687,42 @@ config MFD_ARIZONA_SPI
 	  Support for the Cirrus Logic/Wolfson Microelectronics Arizona platform
 	  audio SoC core functionality controlled via SPI.
 
+config MFD_MADERA
+	bool
+
+config MFD_MADERA_I2C
+	bool "Cirrus Logic Madera codecs with I2C"
+	select REGMAP
+	select REGMAP_IRQ
+	select MFD_CORE
+	select REGMAP_I2C
+	select MFD_MADERA
+	select MADERA_IRQ
+	depends on I2C
+	help
+	  Support for the Cirrus Logic Madera platform audio SoC
+	  core functionality controlled via I2C.
+
+config MFD_MADERA_SPI
+	bool "Cirrus Logic Madera codecs with SPI"
+	select REGMAP
+	select REGMAP_IRQ
+	select MFD_CORE
+	select REGMAP_SPI
+	select MFD_MADERA
+	select MADERA_IRQ
+	depends on SPI_MASTER
+	help
+	  Support for the Cirrus Logic Madera platform audio SoC
+	  core functionality controlled via SPI.
+
+config MFD_CS47L15
+	bool "Cirrus Logic CS47L15"
+	select PINCTRL_CS47L15
+	depends on MFD_MADERA
+	help
+	  Support for Cirrus Logic CS47L15 Smart Codec
+
 config MFD_CS47L24
 	bool "Cirrus Logic CS47L24 and WM1831"
 	depends on MFD_ARIZONA
@@ -1746,6 +1823,24 @@ config MFD_WM8994
 	  core support for the WM8994, in order to use the actual
 	  functionaltiy of the device other drivers must be enabled.
 
+config MFD_CS35L41
+	tristate "Cirrus Logic CS35L41 codec"
+	select MFD_CORE
+
+config MFD_CS35L41_SPI
+	tristate "Cirrus Logic CS35L41 codec (SPI)"
+	select MFD_CS35L41
+	select REGMAP_SPI
+	select REGMAP_IRQ
+	depends on SPI_MASTER
+
+config MFD_CS35L41_I2C
+	tristate "Cirrus Logic CS35L41 codec (I2C)"
+	select MFD_CS35L41
+	select REGMAP_I2C
+	select REGMAP_IRQ
+	depends on I2C
+
 config MFD_STW481X
 	tristate "Support for ST Microelectronics STw481x"
 	depends on I2C && (ARCH_NOMADIK || COMPILE_TEST)
@@ -1780,6 +1875,17 @@ config MFD_STM32_TIMERS
 	  Select this option to enable STM32 timers driver used
 	  for PWM and IIO Timer. This driver allow to share the
 	  registers between the others drivers.
+
+config MFD_SM5713
+        bool "Siliconmitus SM5713 IFPM Support"
+        depends on I2C=y
+        select MFD_CORE
+        help
+          Say yes here to support for Siliconmitus SM5713.
+          This is a Power Management IC with USBLDO, RGB(SVC led), Dual Flash, Charger
+          controls on chip.
+          This driver provides common support for accessing the device;
+          additional drivers
 
 menu "Multimedia Capabilities Port drivers"
 	depends on ARCH_SA1100

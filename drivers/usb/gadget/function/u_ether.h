@@ -20,7 +20,11 @@
 #include <linux/usb/cdc.h>
 #include <linux/netdevice.h>
 
+#ifdef CONFIG_USB_RNDIS_MULTIPACKET
+#define QMULT_DEFAULT 10
+#else
 #define QMULT_DEFAULT 5
+#endif
 
 /*
  * dev_addr: initial value
@@ -73,7 +77,11 @@ struct gether {
 	bool				is_fixed;
 	u32				fixed_out_len;
 	u32				fixed_in_len;
+	unsigned		ul_max_pkts_per_xfer;
+	unsigned		dl_max_pkts_per_xfer;
+	bool				multi_pkt_xfer;
 	bool				supports_multi_frame;
+	struct rndis_packet_msg_type	*header;
 	struct sk_buff			*(*wrap)(struct gether *port,
 						struct sk_buff *skb);
 	int				(*unwrap)(struct gether *port,
@@ -253,6 +261,10 @@ void gether_cleanup(struct eth_dev *dev);
 /* connect/disconnect is handled by individual functions */
 struct net_device *gether_connect(struct gether *);
 void gether_disconnect(struct gether *);
+
+void gether_free_request(struct gether *link);
+
+int gether_alloc_request(struct gether *link);
 
 /* Some controllers can't support CDC Ethernet (ECM) ... */
 static inline bool can_support_ecm(struct usb_gadget *gadget)

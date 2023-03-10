@@ -18,6 +18,7 @@
 #include <linux/rcupdate_wait.h>
 
 #include <linux/blkdev.h>
+#include <linux/cpufreq_times.h>
 #include <linux/kprobes.h>
 #include <linux/mmu_context.h>
 #include <linux/module.h>
@@ -26,12 +27,16 @@
 #include <linux/profile.h>
 #include <linux/security.h>
 #include <linux/syscalls.h>
+#include <linux/debug-snapshot.h>
+#include <linux/ems.h>
 
 #include <asm/switch_to.h>
 #include <asm/tlb.h>
 #ifdef CONFIG_PARAVIRT
 #include <asm/paravirt.h>
 #endif
+
+#include <linux/sec_debug.h>
 
 #include "sched.h"
 #include "../workqueue_internal.h"
@@ -40,6 +45,11 @@
 #define CREATE_TRACE_POINTS
 #include <trace/events/sched.h>
 #include "walt.h"
+
+
+#ifdef CONFIG_FAST_TRACK
+#include <cpu/ftt/ftt.h>
+#endif
 
 DEFINE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
 
@@ -2235,8 +2245,15 @@ static void __sched_fork(unsigned long clone_flags, struct task_struct *p)
 #endif
 
 	INIT_LIST_HEAD(&p->se.group_node);
+#ifdef CONFIG_SCHED_EMS
+	rcu_assign_pointer(p->band, NULL);
+	INIT_LIST_HEAD(&p->band_members);
+#endif
 	walt_init_new_task_load(p);
 
+#ifdef CONFIG_FAST_TRACK
+	init_task_ftt_info(p);
+#endif
 #ifdef CONFIG_FAIR_GROUP_SCHED
 	p->se.cfs_rq			= NULL;
 #endif
@@ -2244,6 +2261,10 @@ static void __sched_fork(unsigned long clone_flags, struct task_struct *p)
 #ifdef CONFIG_SCHEDSTATS
 	/* Even if schedstat is disabled, there should not be garbage */
 	memset(&p->se.statistics, 0, sizeof(p->se.statistics));
+#endif
+
+#ifdef CONFIG_CPU_FREQ_TIMES
+	cpufreq_task_times_init(p);
 #endif
 
 	RB_CLEAR_NODE(&p->dl.rb_node);
@@ -2448,6 +2469,7 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
 	}
 
 	init_entity_runnable_average(&p->se);
+	init_rt_entity_runnable_average(&p->rt);
 
 	/*
 	 * The child is not yet in the pid-hash so no cgroup attach races,
@@ -2512,6 +2534,8 @@ void wake_up_new_task(struct task_struct *p)
 	struct rq *rq;
 
 	raw_spin_lock_irqsave(&p->pi_lock, rf.flags);
+
+	newbie_join_band(p);
 
 	walt_init_new_task_load(p);
 
@@ -3105,6 +3129,8 @@ void scheduler_tick(void)
 	trigger_load_balance(rq);
 #endif
 	rq_last_tick_reset(rq);
+
+	update_band(curr, -1);
 }
 
 #ifdef CONFIG_NO_HZ_FULL
@@ -3231,7 +3257,7 @@ static noinline void __schedule_bug(struct task_struct *prev)
 	if (oops_in_progress)
 		return;
 
-	printk(KERN_ERR "BUG: scheduling while atomic: %s/%d/0x%08x\n",
+	pr_auto(ASL6, "BUG: scheduling while atomic: %s/%d/0x%08x\n",
 		prev->comm, prev->pid, preempt_count());
 
 	debug_show_held_locks(prev);
@@ -3248,6 +3274,9 @@ static noinline void __schedule_bug(struct task_struct *prev)
 		panic("scheduling while atomic\n");
 
 	dump_stack();
+#ifdef CONFIG_DEBUG_ATOMIC_SLEEP_PANIC
+	BUG();
+#endif
 	add_taint(TAINT_WARN, LOCKDEP_STILL_OK);
 }
 
@@ -3457,6 +3486,7 @@ static void __sched notrace __schedule(bool preempt)
 		rq_unlock_irq(rq, &rf);
 	}
 
+	dbg_snapshot_task(smp_processor_id(), rq->curr);
 	balance_callback(rq);
 }
 
@@ -3974,7 +4004,7 @@ int idle_cpu(int cpu)
 	if (rq->curr != rq->idle)
 		return 0;
 
-	if (rq->nr_running)
+	if (rq->nr_running == 1)
 		return 0;
 
 #ifdef CONFIG_SMP
@@ -5233,6 +5263,7 @@ void sched_show_task(struct task_struct *p)
 		(unsigned long)task_thread_info(p)->flags);
 
 	print_worker_info(KERN_INFO, p);
+	sec_debug_wtsk_print_info(p, false);
 	show_stack(p, NULL);
 	put_task_stack(p);
 }
@@ -6015,6 +6046,8 @@ void __init sched_init(void)
 
 	set_load_weight(&init_task);
 
+	alloc_bands();
+
 	/*
 	 * The boot idle thread does lazy MMU switching as well:
 	 */
@@ -6096,7 +6129,7 @@ void ___might_sleep(const char *file, int line, int preempt_offset)
 	/* Save this before calling printk(), since that will clobber it: */
 	preempt_disable_ip = get_preempt_disable_ip(current);
 
-	printk(KERN_ERR
+	pr_auto(ASL6,
 		"BUG: sleeping function called from invalid context at %s:%d\n",
 			file, line);
 	printk(KERN_ERR
@@ -6117,6 +6150,9 @@ void ___might_sleep(const char *file, int line, int preempt_offset)
 		pr_cont("\n");
 	}
 	dump_stack();
+#ifdef CONFIG_DEBUG_ATOMIC_SLEEP_PANIC
+	BUG();
+#endif
 	add_taint(TAINT_WARN, LOCKDEP_STILL_OK);
 }
 EXPORT_SYMBOL(___might_sleep);
@@ -6301,7 +6337,7 @@ static void sched_change_group(struct task_struct *tsk, int type)
 	tg = autogroup_task_group(tsk, tg);
 	tsk->sched_task_group = tg;
 
-#ifdef CONFIG_FAIR_GROUP_SCHED
+#if defined(CONFIG_FAIR_GROUP_SCHED) || defined(CONFIG_RT_GROUP_SCHED)
 	if (tsk->sched_class->task_change_group)
 		tsk->sched_class->task_change_group(tsk, type);
 	else
@@ -6841,4 +6877,21 @@ const u32 sched_prio_to_wmult[40] = {
  /*   5 */  12820798,  15790321,  19976592,  24970740,  31350126,
  /*  10 */  39045157,  49367440,  61356676,  76695844,  95443717,
  /*  15 */ 119304647, 148102320, 186737708, 238609294, 286331153,
+};
+
+/*
+ * RT Extension for 'prio_to_weight'
+ */
+const int rtprio_to_weight[51] = {
+ /* 0 */     17222521, 15500269, 13950242, 12555218, 11299696,
+ /* 10 */    10169726,  9152754,  8237478,  7413730,  6672357,
+ /* 20 */     6005122,  5404609,  4864149,  4377734,  3939960,
+ /* 30 */     3545964,  3191368,  2872231,  2585008,  2326507,
+ /* 40 */     2093856,  1884471,  1696024,  1526421,  1373779,
+ /* 50 */     1236401,  1112761,  1001485,   901337,   811203,
+ /* 60 */      730083,   657074,   591367,   532230,   479007,
+ /* 70 */      431106,   387996,   349196,   314277,   282849,
+ /* 80 */      254564,   229108,   206197,   185577,   167019,
+ /* 90 */      150318,   135286,   121757,   109581,    98623,
+ /* 100 for Fair class */				88761,
 };

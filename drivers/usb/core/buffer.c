@@ -127,7 +127,9 @@ void *hcd_buffer_alloc(
 
 	if (size == 0)
 		return NULL;
-
+#if defined (CONFIG_USB_HOST_SAMSUNG_FEATURE)
+	mem_flags |= __GFP_NOWARN;
+#endif
 	/* some USB hosts just use PIO */
 	if (!IS_ENABLED(CONFIG_HAS_DMA) ||
 	    (!is_device_dma_capable(bus->sysdev) &&

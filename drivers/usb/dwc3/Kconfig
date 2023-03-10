@@ -41,7 +41,6 @@ config USB_DWC3_GADGET
 config USB_DWC3_DUAL_ROLE
 	bool "Dual Role mode"
 	depends on ((USB=y || USB=USB_DWC3) && (USB_GADGET=y || USB_GADGET=USB_DWC3))
-	depends on (EXTCON=y || EXTCON=USB_DWC3)
 	help
 	  This is the default mode of working of DWC3 controller where
 	  both host and gadget features are enabled.
@@ -65,6 +64,7 @@ config USB_DWC3_EXYNOS
 	tristate "Samsung Exynos Platform"
 	depends on (ARCH_EXYNOS || COMPILE_TEST) && OF
 	default USB_DWC3
+	select TYPEC
 	help
 	  Recent Exynos5 SoCs ship with one DesignWare Core USB3 IP inside,
 	  say 'Y' or 'M' if you have one such device.
@@ -106,4 +106,10 @@ config USB_DWC3_ST
 	  inside (i.e. STiH407).
 	  Say 'Y' or 'M' if you have one such device.
 
+config USB_ANDROID_SAMSUNG_DISABLE_U1_U2
+	bool "Disable U1/U2 state"
+	depends on USB_DWC3_GADGET=y || USB_DWC3_DUAL_ROLE=y
+	default n
+	help
+	  Select this when you want to disable U1/U2 state in USB 3.0
 endif

@@ -240,6 +240,9 @@ source "net/switchdev/Kconfig"
 source "net/l3mdev/Kconfig"
 source "net/qrtr/Kconfig"
 source "net/ncsi/Kconfig"
+# SEC_PRODUCT_FEATURE_KNOX_SUPPORT_NPA {
+source "net/ncm/Kconfig"
+# SEC_PRODUCT_FEATURE_KNOX_SUPPORT_NPA }
 
 config RPS
 	bool
@@ -370,6 +373,15 @@ config NET_DROP_MONITOR
 	process.  If you don't need network drop alerts, or if you are ok
 	just checking the various proc files and other utilities for
 	drop statistics, say N here.
+
+config NET_SUPPORT_DROPDUMP
+	tristate "Network packet drop logging service for tcpdump"
+	default n
+	---help---
+	This feature just provide an /proc/sys/net/core/support_dropdump node,
+	whether this kernel supports 'dropdump' which is used at libpcap.
+	If node exist, then it supports.
+	If node doesn't exist, then it doesn't support.
 
 endmenu
 

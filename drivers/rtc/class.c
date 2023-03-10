@@ -51,7 +51,11 @@ static struct timespec64 old_rtc, old_system, old_delta;
 static int rtc_suspend(struct device *dev)
 {
 	struct rtc_device	*rtc = to_rtc_device(dev);
+#ifdef CONFIG_RTC_HIGH_RES
+	struct rtc_hrtime	tm;
+#else
 	struct rtc_time		tm;
+#endif
 	struct timespec64	delta, delta_delta;
 	int err;
 
@@ -62,14 +66,23 @@ static int rtc_suspend(struct device *dev)
 		return 0;
 
 	/* snapshot the current RTC and system time at suspend*/
+#ifdef CONFIG_RTC_HIGH_RES
+	err = rtc_read_hrtime(rtc, &tm);
+#else
 	err = rtc_read_time(rtc, &tm);
+#endif
 	if (err < 0) {
 		pr_debug("%s:  fail to read rtc time\n", dev_name(&rtc->dev));
 		return 0;
 	}
 
 	getnstimeofday64(&old_system);
+#ifdef CONFIG_RTC_HIGH_RES
+	old_rtc.tv_sec = rtc_hrtm_to_time64(&tm);
+	old_rtc.tv_nsec = tm.tm_msec * NSEC_PER_MSEC;
+#else
 	old_rtc.tv_sec = rtc_tm_to_time64(&tm);
+#endif
 
 
 	/*
@@ -97,7 +110,11 @@ static int rtc_suspend(struct device *dev)
 static int rtc_resume(struct device *dev)
 {
 	struct rtc_device	*rtc = to_rtc_device(dev);
+#ifdef CONFIG_RTC_HIGH_RES
+	struct rtc_hrtime	tm;
+#else
 	struct rtc_time		tm;
+#endif
 	struct timespec64	new_system, new_rtc;
 	struct timespec64	sleep_time;
 	int err;
@@ -111,14 +128,24 @@ static int rtc_resume(struct device *dev)
 
 	/* snapshot the current rtc and system time at resume */
 	getnstimeofday64(&new_system);
+#ifdef CONFIG_RTC_HIGH_RES
+	err = rtc_read_hrtime(rtc, &tm);
+#else
 	err = rtc_read_time(rtc, &tm);
+#endif
 	if (err < 0) {
 		pr_debug("%s:  fail to read rtc time\n", dev_name(&rtc->dev));
 		return 0;
 	}
 
+#ifdef CONFIG_RTC_HIGH_RES
+	new_rtc.tv_sec = rtc_hrtm_to_time64(&tm);
+	new_rtc.tv_nsec = tm.tm_msec * NSEC_PER_MSEC;
+#else
 	new_rtc.tv_sec = rtc_tm_to_time64(&tm);
 	new_rtc.tv_nsec = 0;
+#endif
+
 
 	if (new_rtc.tv_sec < old_rtc.tv_sec) {
 		pr_debug("%s:  time travel!\n", dev_name(&rtc->dev));
