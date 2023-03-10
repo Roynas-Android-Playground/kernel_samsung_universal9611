@@ -62,11 +62,17 @@
 #include <linux/random.h>
 #include <linux/rcuwait.h>
 #include <linux/compat.h>
+#include <linux/cpufreq_times.h>
+#include <linux/ems.h>
 
 #include <linux/uaccess.h>
 #include <asm/unistd.h>
 #include <asm/pgtable.h>
 #include <asm/mmu_context.h>
+
+#ifdef CONFIG_SECURITY_DEFEX
+#include <linux/defex.h>
+#endif
 
 static void __unhash_process(struct task_struct *p, bool group_dead)
 {
@@ -185,6 +191,9 @@ void release_task(struct task_struct *p)
 {
 	struct task_struct *leader;
 	int zap_leader;
+#ifdef CONFIG_CPU_FREQ_TIMES
+	cpufreq_task_times_exit(p);
+#endif
 repeat:
 	/* don't need to get the RCU readlock here - the process is dead and
 	 * can't be modifying its own credentials. But shut RCU-lockdep up */
@@ -768,11 +777,18 @@ static void check_stack_usage(void)
 #else
 static inline void check_stack_usage(void) {}
 #endif
-
+#ifdef CONFIG_FAST_TRACK
+#include <cpu/ftt/ftt.h>
+extern struct ftt_stat fttstat;
+#endif
 void __noreturn do_exit(long code)
 {
 	struct task_struct *tsk = current;
 	int group_dead;
+
+#ifdef CONFIG_SECURITY_DEFEX
+	task_defex_zero_creds(current);
+#endif
 
 	profile_task_exit(tsk);
 	kcov_task_exit(tsk);
@@ -818,6 +834,8 @@ void __noreturn do_exit(long code)
 	}
 
 	exit_signals(tsk);  /* sets PF_EXITING */
+	sync_band(tsk, LEAVE_BAND);
+
 	/*
 	 * Ensure that all new tsk->pi_lock acquisitions must observe
 	 * PF_EXITING. Serializes against futex.c:attach_to_pi_owner().
@@ -873,6 +891,10 @@ void __noreturn do_exit(long code)
 	exit_task_namespaces(tsk);
 	exit_task_work(tsk);
 	exit_thread(tsk);
+#ifdef CONFIG_FAST_TRACK
+	if(tsk->se.ftt_mark)
+		fttstat.ftt_cnt--;
+#endif
 
 	/*
 	 * Flush inherited counters to the parent - before the parent
@@ -954,6 +976,12 @@ void
 do_group_exit(int exit_code)
 {
 	struct signal_struct *sig = current->signal;
+
+	if (current->pid == 1) {
+		pr_err("[%s] trap before init(1) group exit, exit_code:%d\n",
+			current->comm, exit_code);
+		panic("Attempted to kill init task group! exitcode=0x%08x\n", exit_code);
+	}
 
 	BUG_ON(exit_code & 0x80); /* core dumps don't get here */
 

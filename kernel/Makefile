@@ -117,6 +117,8 @@ obj-$(CONFIG_TORTURE_TEST) += torture.o
 
 obj-$(CONFIG_HAS_IOMEM) += memremap.o
 
+obj-$(CONFIG_FAST_TRACK) += ftt/
+
 $(obj)/configs.o: $(obj)/config_data.h
 
 targets += config_data.gz

@@ -1,0 +1,225 @@
+#
+# sensor hub drivers configuration
+#
+
+config SENSORS_SSP
+	tristate "Sensors ssp"
+	default n
+	depends on SPI
+	help
+	  ssp driver for sensor hub.
+          If you say yes here you get ssp support for
+	  sensor hub.
+	  To compile this driver as a module, choose M here: the
+	  module will be called ssp.
+
+config SSP_ENG_DEBUG
+	tristate "sensor hub eng debug mode"
+	default n	
+	help	  
+	  If you want to use eng debug mode for sensor hub, it should be set.
+
+config SENSORS_SSP_A51
+	tristate "Sensors ssp a51"
+	default n
+	help
+	  If you want to use sensor hub for a51 project, it should be set.
+
+config SENSORS_SSP_XCOVERPRO
+	tristate "Sensors ssp xcoverpro"
+	default n
+	help
+	  If you want to use sensor hub for xcoverpro project, it should be set.
+
+config SENSORS_SSP_GTA4XL
+	tristate "Sensors ssp g4a4xl"
+	default n
+	help
+	  If you want to use sensor hub for g4a4xl project, it should be set.
+
+config SENSORS_SSP_M31
+	tristate "Sensors ssp m31"
+	default n
+	help
+	  If you want to use sensor hub for m31 project, it should be set.
+
+config SENSORS_SSP_M21
+	tristate "Sensors ssp m21"
+	default n
+	help
+	  If you want to use sensor hub for m21 project, it should be set.
+
+config SENSORS_SSP_M31S
+	tristate "Sensors ssp m31s"
+	default n
+	help
+	  If you want to use sensor hub for m31s project, it should be set.
+
+config SENSORS_SSP_GYROFILE_FOR_MAG
+	tristate "use gyro cal file for mag cal"
+	default n	
+	help	  
+	  If you want to use gyro cal file for magnetic sensor, it should be set.
+
+config SENSORS_A96T3X6
+	depends on I2C
+	tristate "A96T3X6 touchkey"
+	default n
+	help
+	  If you say yes here if you use A96T3X6 for grip.
+	  This option enables grip sensors using
+	  Above A96T3X6 device driver for grip.
+
+config SENSORS_A96T3X6_SUB
+	depends on I2C
+	tristate "A96T3X6 driver for grip"
+	default n
+	help
+	  Say Y here if you use A96T3X6 for grip.
+	  This option enables grip sensors using
+	  Above A96T3X6 device driver for grip.
+
+config SENSORS_A96T3X6_WIFI
+	depends on I2C
+	tristate "A96T3X6 driver for grip"
+	default n
+	help
+	  Say Y here if you use A96T3X6 for grip.
+	  This option enables grip sensors using
+	  Above A96T3X6 device driver for grip.
+
+config SENSORS_A96T3X6_2CH
+	depends on I2C
+	tristate "SENSORS_A96T3X6_2CH driver for grip"
+	default n
+	help
+	  Say Y here if you use SENSORS_A96T3X6_2CH for grip.
+	  This option enables grip sensors using
+	  Above SENSORS_A96T3X6_2CH device driver for grip.
+
+config SENSORS_A96T3X6_WIFI_2CH
+	depends on I2C
+	tristate "SENSORS_A96T3X6_WIFI_2CH driver for grip"
+	default n
+	help
+	  Say Y here if you use SENSORS_A96T3X6_WIFI_2CH for grip.
+	  This option enables grip sensors using
+	  Above SENSORS_A96T3X6_WIFI_2CH device driver for grip.
+
+config SENSOR_A96T3X6_LDO_SHARE
+	depends on I2C
+	tristate "SENSOR_A96T3X6_LDO_SHARE driver for grip"
+	default n
+	help
+	  Say Y here if you use SENSOR_A96T3X6_LDO_SHARE for grip.
+	  This option enables grip sensors using
+	  Above SENSOR_A96T3X6_LDO_SHARE device driver for grip.
+
+config SENSORS_A96T3X6_CRC_CHECK
+	bool "check crc check instead of checksum compare"
+	default n
+	help
+	  Say Y here if you use crc check instead of checksum compare
+
+config SENSORS_FW_VENDOR
+	bool "Locate the Firmware on Vendor"
+	default n
+	help
+	  To use the module automatic system, 
+	  locate the firmware on vendor side.
+	  DO NOT say Y when ABOV GRIP senseors use a common ldo.
+
+config SENSORS_A96T3X6_TABA4XL
+	depends on I2C
+	tristate "A96T3X6 touchkey"
+	default n
+	help
+	  If you say yes here if you use A96T3X6 for grip.
+	  This option enables grip sensors using
+	  Above A96T3X6 device driver for grip.
+
+config SENSORS_A96T3X6_M30S
+	depends on I2C
+	tristate "A96T3X6 touchkey"
+	default n
+	help
+	  If you say yes here if you use A96T3X6 for grip.
+	  This option enables grip sensors using
+	  Above A96T3X6 device driver for grip.
+
+config SENSORS_A96T3X6_M31
+	depends on I2C
+	tristate "A96T3X6 touchkey"
+	default n
+	help
+	  If you say yes here if you use A96T3X6 for grip.
+	  This option enables grip sensors using
+	  Above A96T3X6 device driver for grip.
+
+config SENSORS_A96T3X6_A51
+	depends on I2C
+	tristate "A96T3X6 touchkey"
+	default n
+	help
+	  If you say yes here if you use A96T3X6 for grip.
+	  This option enables grip sensors using
+	  Above A96T3X6 device driver for grip.
+
+config SENSORS_A96T3X6_A51_USA
+	depends on I2C
+	tristate "A96T3X6 touchkey"
+	default n
+	help
+	  If you say yes here if you use A96T3X6 for grip.
+	  This option enables grip sensors using
+	  Above A96T3X6 device driver for grip.
+
+config SENSORS_TC3XXK
+	depends on I2C
+	tristate "TC3XXK driver for grip Sensor"
+	default n
+	help
+	  Say Y here if you use TC3XXK IC for grip Sensor.
+	  This option enables grip sensors using
+	  Coreriver TC305K device driver for grip Sensor.
+
+config SENSORS_SX9360
+	depends on I2C
+	tristate "SX9360 driver"
+	default n
+	help
+	  Say Y here if you use sx9360.
+	  This option enables grip sensors using
+	  SemTech sx9360 device driver.
+	  Say N here if you do not use sx9360.
+
+config SENSORS_SX9360_SUB
+	depends on I2C
+	tristate "SX9330 sub driver"
+	default n
+	help
+	  Say Y here if you use sx9330 sub.
+	  This option enables grip sensors using
+	  SemTech sx9330 sub device driver.
+	  Say N here if you do not use sx9330 sub.
+
+config SENSORS_ISG5320A
+	depends on I2C
+	tristate "ISG5320A grip"
+	default n
+	help
+	  If you say yes here if you use ISG5320A for grip.
+	  This option enables grip sensors using
+	  IMAGIS ISG5320A device driver for grip.
+
+config SENSORS_ISG5320A_SUB
+	depends on I2C
+	tristate "ISG5320A grip sub"
+	default n
+	help
+	  If you say yes here if you use ISG5320A_SUB for grip sub.
+	  This option enables grip sensors using
+	  IMAGIS ISG5320A_SUB device driver for grip sub.
+	  
+source "drivers/sensorhub/factory/Kconfig"
+

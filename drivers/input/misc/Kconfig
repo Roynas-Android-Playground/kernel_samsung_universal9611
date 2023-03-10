@@ -860,4 +860,8 @@ config INPUT_HISI_POWERKEY
 	  To compile this driver as a module, choose M here: the
 	  module will be called hisi_powerkey.
 
+comment "Hall IC"
+
+source "drivers/input/misc/hall/Kconfig"
+
 endif

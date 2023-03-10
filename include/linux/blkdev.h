@@ -27,6 +27,7 @@
 #include <linux/percpu-refcount.h>
 #include <linux/scatterlist.h>
 #include <linux/blkzoned.h>
+#include <linux/blk-crypt.h>
 
 struct module;
 struct scsi_ioctl_command;
@@ -45,7 +46,11 @@ struct blk_queue_stats;
 struct blk_stat_callback;
 
 #define BLKDEV_MIN_RQ	4
-#define BLKDEV_MAX_RQ	128	/* Default maximum */
+#ifdef CONFIG_LARGE_DIRTY_BUFFER
+#define BLKDEV_MAX_RQ	256
+#else
+#define BLKDEV_MAX_RQ  128     /* Default maximum */
+#endif
 
 /* Must be consisitent with blk_mq_poll_stats_bkt() */
 #define BLK_MQ_POLL_STATS_BKTS 16
@@ -154,6 +159,9 @@ struct request {
 	unsigned int __data_len;	/* total data len */
 	int tag;
 	sector_t __sector;		/* sector cursor */
+#ifdef CONFIG_BLK_DEV_CRYPT_DUN
+	u64 __dun;                      /* dun for UFS */
+#endif
 
 	struct bio *bio;
 	struct bio *biotail;
@@ -534,6 +542,8 @@ struct request_queue {
 
 	unsigned int		nr_sorted;
 	unsigned int		in_flight[2];
+	unsigned long long  in_flight_time;
+	ktime_t         in_flight_stamp;
 
 	/*
 	 * Number of active block driver functions for which blk_drain_queue()
@@ -575,6 +585,7 @@ struct request_queue {
 	 * for flush operations
 	 */
 	struct blk_flush_queue	*fq;
+	unsigned long		flush_ios;
 
 	struct list_head	requeue_list;
 	spinlock_t		requeue_lock;
@@ -940,6 +951,8 @@ static inline void rq_flush_dcache_pages(struct request *rq)
 }
 #endif
 
+extern void __blk_drain_queue(struct request_queue *q, bool drain_all);
+
 #ifdef CONFIG_PRINTK
 #define vfs_msg(sb, level, fmt, ...)				\
 	__vfs_msg(sb, level, fmt, ##__VA_ARGS__)
@@ -1027,6 +1040,13 @@ static inline sector_t blk_rq_pos(const struct request *rq)
 {
 	return rq->__sector;
 }
+
+#ifdef CONFIG_BLK_DEV_CRYPT_DUN
+static inline sector_t blk_rq_dun(const struct request *rq)
+{
+	return rq->__dun;
+}
+#endif
 
 static inline unsigned int blk_rq_bytes(const struct request *rq)
 {
@@ -1394,7 +1414,8 @@ extern int blk_verify_command(unsigned char *cmd, fmode_t has_write_perm);
 enum blk_default_limits {
 	BLK_MAX_SEGMENTS	= 128,
 	BLK_SAFE_MAX_SECTORS	= 255,
-	BLK_DEF_MAX_SECTORS	= 2560,
+	BLK_OPT_MAX_SECTORS	= 1024,
+	BLK_DEF_MAX_SECTORS	= 1024,
 	BLK_MAX_SEGMENT_SIZE	= 65536,
 	BLK_SEG_BOUNDARY_MASK	= 0xFFFFFFFFUL,
 };
@@ -2019,5 +2040,12 @@ static inline int blkdev_issue_flush(struct block_device *bdev, gfp_t gfp_mask,
 }
 
 #endif /* CONFIG_BLOCK */
+
+#if !defined(CONFIG_SAMSUNG_PRODUCT_SHIP)
+#define SIO_PATCH_VERSION(name, major, minor, description)	\
+	static const char *sio_##name##_##major##_##minor __attribute__ ((used, section("sio_patches"))) = (#name " " #major "." #minor " " description)
+#else
+#define SIO_PATCH_VERSION(name, major, minor, description)
+#endif
 
 #endif

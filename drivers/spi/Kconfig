@@ -293,6 +293,12 @@ config SPI_GPIO
 	  GPIO operations, you should be able to leverage that for better
 	  speed with a custom version of this driver; see the source code.
 
+config SENSORS_FP_SPI_NUMBER
+	int "Fingerprint spi port number"
+	default -1
+	help
+	  Exclude setting of the Fingerprint Sensor
+
 config SPI_IMG_SPFI
 	tristate "IMG SPFI controller"
 	depends on MIPS || COMPILE_TEST

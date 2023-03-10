@@ -85,6 +85,14 @@ config RTC_NVMEM
 	  Say yes here to add support for the non volatile (often battery
 	  backed) storage present on RTCs.
 
+config RTC_HIGH_RES
+	bool "RTC High Resolution Timer support"
+	default n
+	help
+	  Say yes here to enable high resolution timer(milliseconds) support
+	  in the RTC framework if your hardware is capable.
+	  Read time only. Not support set time, set alarm, read alarm.
+
 comment "RTC interfaces"
 
 config RTC_INTF_SYSFS
@@ -630,6 +638,15 @@ config RTC_DRV_S5M
 
 	  This driver can also be built as a module. If so, the module
 	  will be called rtc-s5m.
+
+config RTC_DRV_S2MPU09
+	tristate "Samsung PMIC series RTC"
+	depends on MFD_S2MPU09
+	help
+	  If you say yes here you will get support for the
+	  RTC of Samsung PMIC series.
+	  This driver can also be built as a module. If so, the module
+	  will be called rtc-s2mpu09.
 
 endif # I2C
 
@@ -1714,6 +1731,13 @@ config RTC_DRV_MT6397
 	  Mediatek(R) RTC driver.
 
 	  If you want to use Mediatek(R) RTC interface, select Y or M here.
+
+config RTC_ALARM_BOOT
+	bool "Android alarm boot function"
+	default n
+	help
+	  This is for alarm booting function. This feature is only used in
+	  Chinese models.
 
 config RTC_DRV_XGENE
 	tristate "APM X-Gene RTC"

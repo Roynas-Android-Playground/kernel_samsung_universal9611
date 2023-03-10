@@ -1,0 +1,71 @@
+#
+# sensor drivers configuration
+#
+
+config SENSORS_SSP_LIGHT_TMD3725
+	tristate "Sensors ssp light tmd3725"
+	default n
+	help
+	  light tmd3725 file for factory test in ssp driver.
+          If you say yes here you get light tmd3725 support for
+	  factory test.
+	  To compile this driver as a module, choose M here: the
+	  module will be called ssp.
+
+config SENSORS_SSP_LIGHT_TMD3700
+	tristate "Sensors ssp light tmd3700"
+	default n
+	help
+	  light tmd3700 file for factory test in ssp driver.
+          If you say yes here you get light tmd3700 support for
+	  factory test.
+	  To compile this driver as a module, choose M here: the
+	  module will be called ssp.
+
+config SENSORS_SSP_LIGHT_TCS3701
+	tristate "Sensors ssp light tcs3701"
+	default n
+	help
+	  light tcs3701 file for factory test in ssp driver.
+          If you say yes here you get light tcs3701 support for
+	  factory test.
+	  To compile this driver as a module, choose M here: the
+	  module will be called ssp.
+
+config SENSORS_SSP_LIGHT_VEML3328
+	tristate "Sensors ssp light veml3328"
+	default n
+	help
+	  light veml3328 file for factory test in ssp driver.
+          If you say yes here you get light veml3328 support for
+	  factory test.
+	  To compile this driver as a module, choose M here: the
+	  module will be called ssp.
+
+config SENSORS_SSP_LIGHT_CM32183
+	tristate "Sensors ssp light cm32183"
+	default n
+	help
+	  light cm32183 file for factory test in ssp driver.
+          If you say yes here you get light cm32183 support for
+	  factory test.
+	  To compile this driver as a module, choose M here: the
+	  module will be called ssp.
+
+config SENSORS_SSP_LIGHT_STK3X6X
+	tristate "Sensors ssp light stk3x6x"
+	default n
+	help
+	  light stk3x6x file for factory test in ssp driver.
+          If you say yes here you get light stk3x6x support for
+	  factory test.
+	  To compile this driver as a module, choose M here: the
+	  module will be called ssp.
+
+config SENSORS_SSP_CAMERALIGHT_FOR_TAB
+        tristate "Sensors ssp camera light for tab"
+        default n
+        help
+          If you say yes here you get camera light support for tablet project.
+          To compile this driver as a module, choose M here: the
+          module will be called ssp.

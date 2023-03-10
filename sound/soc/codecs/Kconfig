@@ -50,6 +50,8 @@ config SND_SOC_ALL_CODECS
 	select SND_SOC_CS35L33 if I2C
 	select SND_SOC_CS35L34 if I2C
 	select SND_SOC_CS35L35 if I2C
+	select SND_SOC_CS35L41_I2C if I2C
+	select SND_SOC_CS35L41_SPI if SPI_MASTER
 	select SND_SOC_CS42L42 if I2C
 	select SND_SOC_CS42L51_I2C if I2C
 	select SND_SOC_CS42L52 if I2C && INPUT
@@ -62,6 +64,7 @@ config SND_SOC_ALL_CODECS
 	select SND_SOC_CS42XX8_I2C if I2C
 	select SND_SOC_CS43130 if I2C
 	select SND_SOC_CS4349 if I2C
+	select SND_SOC_CS47L15 if MFD_CS47L15
 	select SND_SOC_CS47L24 if MFD_CS47L24
 	select SND_SOC_CS53L30 if I2C
 	select SND_SOC_CX20442 if TTY
@@ -118,6 +121,7 @@ config SND_SOC_ALL_CODECS
 	select SND_SOC_RT274 if I2C
 	select SND_SOC_RT286 if I2C
 	select SND_SOC_RT298 if I2C
+	select SND_SOC_RT5510 if I2C
 	select SND_SOC_RT5514 if I2C
 	select SND_SOC_RT5616 if I2C
 	select SND_SOC_RT5631 if I2C
@@ -145,10 +149,13 @@ config SND_SOC_ALL_CODECS
 	select SND_SOC_STAC9766 if SND_SOC_AC97_BUS
 	select SND_SOC_STI_SAS
 	select SND_SOC_TAS2552 if I2C
+	select SND_SOC_TAS2562 if I2C
 	select SND_SOC_TAS5086 if I2C
 	select SND_SOC_TAS571X if I2C
 	select SND_SOC_TAS5720 if I2C
+	select SND_SOC_TFA9872 if I2C
 	select SND_SOC_TFA9879 if I2C
+	select SND_SOC_TFA9894 if I2C
 	select SND_SOC_TLV320AIC23_I2C if I2C
 	select SND_SOC_TLV320AIC23_SPI if SPI_MASTER
 	select SND_SOC_TLV320AIC26 if SPI_MASTER
@@ -228,6 +235,11 @@ config SND_SOC_ALL_CODECS
 
           If unsure select "N".
 
+config SND_RICHTEK_SPM
+	bool "Richtek SPM Class"
+	help
+	  Say Y here to enable Richtek SPM Class support.
+
 config SND_SOC_88PM860X
 	tristate
 
@@ -252,10 +264,12 @@ config SND_SOC_WM_HUBS
 config SND_SOC_WM_ADSP
 	tristate
 	select SND_SOC_COMPRESS
+	default y if SND_SOC_MADERA=y
 	default y if SND_SOC_CS47L24=y
 	default y if SND_SOC_WM5102=y
 	default y if SND_SOC_WM5110=y
 	default y if SND_SOC_WM2200=y
+	default m if SND_SOC_MADERA=m
 	default m if SND_SOC_CS47L24=m
 	default m if SND_SOC_WM5102=m
 	default m if SND_SOC_WM5110=m
@@ -423,6 +437,10 @@ config SND_SOC_CS35L35
 	tristate "Cirrus Logic CS35L35 CODEC"
 	depends on I2C
 
+config SND_SOC_CS35L41
+	tristate "Cirrus Logic CS35L41 CODEC"
+	select SND_SOC_WM_ADSP
+
 config SND_SOC_CS42L42
 	tristate "Cirrus Logic CS42L42 CODEC"
 	depends on I2C
@@ -446,6 +464,9 @@ config SND_SOC_CS42L56
 config SND_SOC_CS42L73
 	tristate "Cirrus Logic CS42L73 CODEC"
 	depends on I2C
+
+config SND_SOC_CS47L15
+	tristate "cirrus cs47l15"
 
 config SND_SOC_CS4265
 	tristate "Cirrus Logic CS4265 CODEC"
@@ -590,6 +611,10 @@ config SND_SOC_ISABELLE
 
 config SND_SOC_LM49453
 	tristate
+
+config SND_SOC_MADERA
+	tristate
+	default y if SND_SOC_CS47L15=y
 
 config SND_SOC_MAX98088
        tristate
@@ -743,6 +768,10 @@ config SND_SOC_RT298
 	tristate
 	depends on I2C
 
+config SND_SOC_RT5510
+	tristate "Richtek RT5510 speaker amplifier"
+	depends on I2C
+
 config SND_SOC_RT5514
 	tristate
 
@@ -863,6 +892,9 @@ config SND_SOC_STI_SAS
 config SND_SOC_TAS2552
 	tristate "Texas Instruments TAS2552 Mono Audio amplifier"
 	depends on I2C
+config SND_SOC_TAS2562
+	tristate "Texas Instruments TAS2562 SmartAmp(R)"
+	depends on I2C
 
 config SND_SOC_TAS5086
 	tristate "Texas Instruments TAS5086 speaker amplifier"
@@ -879,8 +911,16 @@ config SND_SOC_TAS5720
 	  Enable support for Texas Instruments TAS5720L/M high-efficiency mono
 	  Class-D audio power amplifiers.
 
+config SND_SOC_TFA9872
+	tristate "NXP Semiconductors TFA9872 amplifier"
+	depends on I2C
+
 config SND_SOC_TFA9879
 	tristate "NXP Semiconductors TFA9879 amplifier"
+	depends on I2C
+
+config SND_SOC_TFA9894
+	tristate "NXP Semiconductors TFA9894 amplifier"
 	depends on I2C
 
 config SND_SOC_TLV320AIC23
@@ -1176,5 +1216,11 @@ config SND_SOC_NAU8825
 config SND_SOC_TPA6130A2
 	tristate "Texas Instruments TPA6130A2 headphone amplifier"
 	depends on I2C
+
+# TAS2562
+source "sound/soc/codecs/tas2562/Kconfig"
+
+# DBMDx
+source "sound/soc/codecs/dbmdx/Kconfig"
 
 endmenu

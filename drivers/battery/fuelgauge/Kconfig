@@ -1,0 +1,21 @@
+
+config FUELGAUGE_DUMMY
+	tristate "dummy fuel gauge driver"
+	default n
+	depends on BATTERY_SAMSUNG
+	help
+	 Say Y to include support
+	 for dummy fuel gauge driver.
+	 This driver source code implemented
+	 skeleton source code for fuel gauge functions.
+
+config FUELGAUGE_S2MU106
+	tristate "S2MU106 fuel gauge driver"
+	default n
+	depends on I2C
+	help
+	 Say Y to include support
+	 for S.LSI S2MU106 fuel gauge driver.
+	 Ths fuel-gauge supports current tracking and
+	 voltage tracking to model the battery SOC.
+

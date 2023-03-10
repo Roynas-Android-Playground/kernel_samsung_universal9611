@@ -386,6 +386,9 @@ err_put_fd:
 static int sync_fill_fence_info(struct dma_fence *fence,
 				 struct sync_fence_info *info)
 {
+	ktime_t to = 10 * USEC_PER_SEC / HZ;
+	unsigned long start_jiffies = get_jiffies_64();
+
 	strlcpy(info->obj_name, fence->ops->get_timeline_name(fence),
 		sizeof(info->obj_name));
 	strlcpy(info->driver_name, fence->ops->get_driver_name(fence),
@@ -393,8 +396,15 @@ static int sync_fill_fence_info(struct dma_fence *fence,
 
 	info->status = dma_fence_get_status(fence);
 	while (test_bit(DMA_FENCE_FLAG_SIGNALED_BIT, &fence->flags) &&
-	       !test_bit(DMA_FENCE_FLAG_TIMESTAMP_BIT, &fence->flags))
-		cpu_relax();
+			!test_bit(DMA_FENCE_FLAG_TIMESTAMP_BIT, &fence->flags)) {
+		if (likely(get_jiffies_64() - start_jiffies < 8))
+			cpu_relax();
+		else {
+			set_current_state(TASK_UNINTERRUPTIBLE);
+			schedule_hrtimeout(&to, HRTIMER_MODE_REL);
+			__set_current_state(TASK_RUNNING);
+		}
+	}
 	info->timestamp_ns =
 		test_bit(DMA_FENCE_FLAG_TIMESTAMP_BIT, &fence->flags) ?
 		ktime_to_ns(fence->timestamp) :

@@ -1,0 +1,45 @@
+config CHARGER_DUMMY
+	tristate "dummy charger driver"
+	default n
+	depends on BATTERY_SAMSUNG
+	help
+	 Say Y to include support
+	 for dummy charger driver.
+	 This driver source code implemented
+	 skeleton source code for charger functions.
+
+config CHARGER_PCA9468
+	tristate "PCA9468 charger driver"
+	default n
+	depends on DIRECT_CHARGING
+	help
+	  Say Y here to enable support for the PCA9468 charger.
+	  PCA9468 is direct charging IC by NXP.
+	  PCA9468 depends on DIRECT_CHARGING
+	  so it needs to be defined.
+
+config CHARGER_S2MU106
+    tristate "S2MU106 charger support"
+    depends on (MFD_S2MU106) && I2C
+    help
+	  Say Y here to enable support for the S2MU106 charger.
+	  S2MU106 charger is an AFC compatible charging IC.
+	  S2MU106 charger is dependent on MFD_S2MU106
+	  so it needs to be defined.
+
+config CHARGER_SM5440
+	tristate "SM5440 direct charger support"
+	depends on I2C
+	help
+	  Say Y here to enable support for the SM5440 direct charger.
+	  SM5440 is a direct charging IC.
+	  SM5440 is dependent on I2C
+	  so it needs to be defined.
+
+config PM_S2MU106
+	tristate "S2MU106 power meter support"
+	depends on (MFD_S2MU106) && I2C
+	help
+	 Say Y here to enable support for the S2MU106 power meter.
+	 S2MU106 power meter is dependent on I2C
+	 so it needs to be defined.

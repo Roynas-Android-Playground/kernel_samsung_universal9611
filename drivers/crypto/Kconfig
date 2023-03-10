@@ -729,4 +729,6 @@ config CRYPTO_DEV_ARTPEC6
 
 	  To compile this driver as a module, choose M here.
 
+source "drivers/crypto/fmp/Kconfig"
+
 endif # CRYPTO_HW

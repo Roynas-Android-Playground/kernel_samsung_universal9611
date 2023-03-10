@@ -235,6 +235,9 @@ int elevator_init(struct request_queue *q, char *name)
 		 * to "none".
 		 */
 		if (q->mq_ops) {
+			if (q->tag_set && q->tag_set->flags & BLK_MQ_F_NO_SCHED_BY_DEFAULT)
+				return 0;
+
 			if (q->nr_hw_queues == 1)
 				e = elevator_get(q, "mq-deadline", false);
 			if (!e)
@@ -801,6 +804,8 @@ void elv_completed_request(struct request_queue *q, struct request *rq)
 	 */
 	if (blk_account_rq(rq)) {
 		q->in_flight[rq_is_sync(rq)]--;
+		if (!queue_in_flight(q))
+			q->in_flight_time += ktime_us_delta(ktime_get(), q->in_flight_stamp);
 		if ((rq->rq_flags & RQF_SORTED) &&
 		    e->type->ops.sq.elevator_completed_req_fn)
 			e->type->ops.sq.elevator_completed_req_fn(q, rq);

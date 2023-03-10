@@ -965,8 +965,8 @@ static void mmc_set_bus_speed(struct mmc_card *card)
 {
 	unsigned int max_dtr = (unsigned int)-1;
 
-	if ((mmc_card_hs200(card) || mmc_card_hs400(card)) &&
-	     max_dtr > card->ext_csd.hs200_max_dtr)
+	if ((mmc_card_hs200(card) || mmc_card_hs400(card) || mmc_card_hs400es(card))
+			&& max_dtr > card->ext_csd.hs200_max_dtr)
 		max_dtr = card->ext_csd.hs200_max_dtr;
 	else if (mmc_card_hs(card) && max_dtr > card->ext_csd.hs_max_dtr)
 		max_dtr = card->ext_csd.hs_max_dtr;
@@ -1375,17 +1375,17 @@ static int mmc_select_hs400es(struct mmc_card *card)
 		goto out_err;
 	}
 
+	err = mmc_switch_status(card);
+	if (err)
+		goto out_err;
+
 	/* Set host controller to HS400 timing and frequency */
-	mmc_set_timing(host, MMC_TIMING_MMC_HS400);
+	mmc_set_timing(host, MMC_TIMING_MMC_HS400_ES);
 
 	/* Controller enable enhanced strobe function */
 	host->ios.enhanced_strobe = true;
 	if (host->ops->hs400_enhanced_strobe)
 		host->ops->hs400_enhanced_strobe(host, &host->ios);
-
-	err = mmc_switch_status(card);
-	if (err)
-		goto out_err;
 
 	return 0;
 

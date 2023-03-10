@@ -121,6 +121,35 @@ time64_t rtc_tm_to_time64(struct rtc_time *tm)
 }
 EXPORT_SYMBOL(rtc_tm_to_time64);
 
+#ifdef CONFIG_RTC_HIGH_RES
+int rtc_valid_hrtm(struct rtc_hrtime *tm)
+{
+	if (tm->tm_year < 70
+			|| ((unsigned)tm->tm_mon) >= 12
+			|| tm->tm_mday < 1
+			|| tm->tm_mday > rtc_month_days(tm->tm_mon, tm->tm_year + 1900)
+			|| ((unsigned)tm->tm_hour) >= 24
+			|| ((unsigned)tm->tm_min) >= 60
+			|| ((unsigned)tm->tm_sec) >= 60
+			|| ((unsigned)tm->tm_msec) >= 1000)
+		return -EINVAL;
+
+	return 0;
+}
+EXPORT_SYMBOL(rtc_valid_hrtm);
+
+/*
+ * rtc_tm_to_time64 - Converts rtc_hrtime to time64_t.
+ * Convert Gregorian date to seconds since 01-01-1970 00:00:00.
+ */
+time64_t rtc_hrtm_to_time64(struct rtc_hrtime *tm)
+{
+	return mktime64(tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday,
+			tm->tm_hour, tm->tm_min, tm->tm_sec);
+}
+EXPORT_SYMBOL(rtc_hrtm_to_time64);
+#endif /* CONFIG_RTC_HIGH_RES*/
+
 /*
  * Convert rtc_time to ktime
  */

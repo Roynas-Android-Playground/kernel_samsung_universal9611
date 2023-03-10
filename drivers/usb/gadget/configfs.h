@@ -18,4 +18,10 @@ static inline struct usb_os_desc *to_usb_os_desc(struct config_item *item)
 	return container_of(to_config_group(item), struct usb_os_desc, group);
 }
 
+enum usb_mode_info{
+	USB_MODE_FOR_SEC	= 0,
+	USB_MODE_FOR_VTS_ADB	= 1,
+	USB_MODE_FOR_VTS_MTP	= 2
+};
+
 #endif /*  USB__GADGET__CONFIGFS__H */

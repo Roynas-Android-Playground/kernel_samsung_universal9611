@@ -48,7 +48,9 @@ static struct xhci_segment *xhci_segment_alloc(struct xhci_hcd *xhci,
 	seg = kzalloc(sizeof *seg, flags);
 	if (!seg)
 		return NULL;
-
+#if defined (CONFIG_USB_HOST_SAMSUNG_FEATURE)
+	flags |= __GFP_NOWARN;
+#endif
 	seg->trbs = dma_pool_zalloc(xhci->segment_pool, flags, &dma);
 	if (!seg->trbs) {
 		kfree(seg);
@@ -483,7 +485,9 @@ static struct xhci_container_ctx *xhci_alloc_container_ctx(struct xhci_hcd *xhci
 	ctx->size = HCC_64BYTE_CONTEXT(xhci->hcc_params) ? 2048 : 1024;
 	if (type == XHCI_CTX_TYPE_INPUT)
 		ctx->size += CTX_SIZE(xhci->hcc_params);
-
+#if defined (CONFIG_USB_HOST_SAMSUNG_FEATURE)
+	flags |= __GFP_NOWARN;
+#endif
 	ctx->bytes = dma_pool_zalloc(xhci->device_pool, flags, &ctx->dma);
 	if (!ctx->bytes) {
 		kfree(ctx);
@@ -1798,6 +1802,24 @@ void xhci_mem_cleanup(struct xhci_hcd *xhci)
 	xhci->event_ring = NULL;
 	xhci_dbg_trace(xhci, trace_xhci_dbg_init, "Freed event ring");
 
+#ifdef CONFIG_SND_EXYNOS_USB_AUDIO
+	if (xhci->save_addr)
+		dma_free_coherent(dev, sizeof(PAGE_SIZE), xhci->save_addr, xhci->save_dma);
+	xhci_info(xhci, "%s: Freed save-restore buffer for Audio offloading", __func__);
+
+	size = sizeof(struct xhci_erst_entry)*(xhci->erst_audio.num_entries);
+	if (xhci->erst_audio.entries)
+		dma_free_coherent(dev, size,
+				xhci->erst_audio.entries, xhci->erst_audio.erst_dma_addr);
+	xhci->erst_audio.entries = NULL;
+	xhci_info(xhci, "%s: Freed ERST for Audio offloading", __func__);
+
+	if (xhci->event_ring_audio)
+		xhci_ring_free(xhci, xhci->event_ring_audio);
+	xhci->event_ring_audio = NULL;
+	xhci_info(xhci, "%s: Freed event ring for Audio offloading", __func__);
+#endif
+
 	if (xhci->lpm_command)
 		xhci_free_command(xhci, xhci->lpm_command);
 	xhci->lpm_command = NULL;
@@ -2036,6 +2058,32 @@ static int xhci_check_trb_in_td_math(struct xhci_hcd *xhci)
 	xhci_dbg(xhci, "TRB math tests passed.\n");
 	return 0;
 }
+
+#ifdef CONFIG_SND_EXYNOS_USB_AUDIO
+static void xhci_set_hc_event_deq_audio(struct xhci_hcd *xhci)
+{
+	u64 temp;
+	dma_addr_t deq;
+
+	deq = xhci_trb_virt_to_dma(xhci->event_ring_audio->deq_seg,
+			xhci->event_ring_audio->dequeue);
+	if (deq == 0 && !in_interrupt())
+		xhci_warn(xhci, "WARN something wrong with SW event ring "
+				"dequeue ptr.\n");
+	/* Update HC event ring dequeue pointer */
+	temp = xhci_read_64(xhci, &xhci->ir_set_audio->erst_dequeue);
+	temp &= ERST_PTR_MASK;
+	/* Don't clear the EHB bit (which is RW1C) because
+	 * there might be more events to service.
+	 */
+	temp &= ~ERST_EHB;
+	xhci_info(xhci,
+			"//[%s] Write event ring dequeue pointer = 0x%llx, "
+			"preserving EHB bit",__func__, ((u64) deq & (u64) ~ERST_PTR_MASK) | temp);
+	xhci_write_64(xhci, ((u64) deq & (u64) ~ERST_PTR_MASK) | temp,
+			&xhci->ir_set_audio->erst_dequeue);
+}
+#endif
 
 static void xhci_set_hc_event_deq(struct xhci_hcd *xhci)
 {
@@ -2457,7 +2505,9 @@ int xhci_mem_init(struct xhci_hcd *xhci, gfp_t flags)
 	xhci_print_run_regs(xhci);
 	/* Set ir_set to interrupt register set 0 */
 	xhci->ir_set = &xhci->run_regs->ir_set[0];
-
+#ifdef CONFIG_SND_EXYNOS_USB_AUDIO
+	xhci->ir_set_audio = &xhci->run_regs->ir_set[1];
+#endif
 	/*
 	 * Event ring setup: Allocate a normal ring, but also setup
 	 * the event ring segment table (ERST).  Section 4.9.3.
@@ -2523,6 +2573,73 @@ int xhci_mem_init(struct xhci_hcd *xhci, gfp_t flags)
 			"Wrote ERST address to ir_set 0.");
 	xhci_print_ir_set(xhci, 0);
 
+#ifdef CONFIG_SND_EXYNOS_USB_AUDIO
+	xhci->save_addr = dma_alloc_coherent(dev, sizeof(PAGE_SIZE), &dma,
+			flags);
+	xhci->save_dma = dma;
+	xhci_info(xhci, "// Save address = 0x%llx (DMA), %p (virt)",
+			(unsigned long long)xhci->save_dma, xhci->save_addr);
+	/* for AUDIO erst */
+	xhci->event_ring_audio = xhci_ring_alloc(xhci, ERST_NUM_SEGS, 1, TYPE_EVENT,
+					0, flags);
+	if (!xhci->event_ring_audio)
+		goto fail;
+	if (xhci_check_trb_in_td_math(xhci) < 0)
+		goto fail;
+
+	xhci->erst_audio.entries = dma_alloc_coherent(dev,
+			sizeof(struct xhci_erst_entry) * ERST_NUM_SEGS, &dma,
+			flags);
+	if (!xhci->erst_audio.entries)
+		goto fail;
+	xhci_info(xhci,
+			"// Allocated event ring segment table at 0x%llx",
+			(unsigned long long)dma);
+
+	memset(xhci->erst_audio.entries, 0, sizeof(struct xhci_erst_entry)*ERST_NUM_SEGS);
+	xhci->erst_audio.num_entries = ERST_NUM_SEGS;
+	xhci->erst_audio.erst_dma_addr = dma;
+	xhci_info(xhci,
+			"// Set ERST to 0; private num segs = %i, virt addr = %p, dma addr = 0x%llx",
+			xhci->erst.num_entries,
+			xhci->erst.entries,
+			(unsigned long long)xhci->erst.erst_dma_addr);
+
+	/* set ring base address and size for each segment table entry */
+	for (val = 0, seg = xhci->event_ring_audio->first_seg; val < ERST_NUM_SEGS; val++) {
+		struct xhci_erst_entry *entry = &xhci->erst_audio.entries[val];
+		entry->seg_addr = cpu_to_le64(seg->dma);
+		entry->seg_size = cpu_to_le32(TRBS_PER_SEGMENT);
+		entry->rsvd = 0;
+		seg = seg->next;
+	}
+
+	/* set ERST count with the number of entries in the segment table */
+	val = readl(&xhci->ir_set_audio->erst_size);
+	val &= ERST_SIZE_MASK;
+	val |= ERST_NUM_SEGS;
+	xhci_info(xhci,
+			"// Write ERST size = %i to ir_set 0 (some bits preserved)",
+			val);
+	writel(val, &xhci->ir_set_audio->erst_size);
+
+	xhci_info(xhci,
+			"// Set ERST entries to point to event ring.");
+	/* set the segment table base address */
+	xhci_info(xhci,
+			"// Set ERST base address for ir_set 0 = 0x%llx",
+			(unsigned long long)xhci->erst_audio.erst_dma_addr);
+	val_64 = xhci_read_64(xhci, &xhci->ir_set_audio->erst_base);
+	val_64 &= ERST_PTR_MASK;
+	val_64 |= (xhci->erst_audio.erst_dma_addr & (u64) ~ERST_PTR_MASK);
+	xhci_write_64(xhci, val_64, &xhci->ir_set_audio->erst_base);
+
+	/* Set the event ring dequeue address */
+	xhci_set_hc_event_deq_audio(xhci);
+	xhci_info(xhci,
+			"// Wrote ERST address to ir_set 1.");
+	xhci_print_ir_set(xhci, 1);
+#endif
 	/*
 	 * XXX: Might need to set the Interrupter Moderation Register to
 	 * something other than the default (~1ms minimum between interrupts).

@@ -39,6 +39,21 @@ config DEVFREQ_GOV_SIMPLE_ONDEMAND
 	  Simple-Ondemand should be able to provide busy/total counter
 	  values that imply the usage rate. A device may provide tuned
 	  values to the governor with data field at devfreq_add_device().
+config DEVFREQ_GOV_SIMPLE_USAGE
+	tristate "Simple Usage"
+	help
+	  Chooses frequency based on the percentage of target device.
+
+config DEVFREQ_GOV_SIMPLE_EXYNOS
+	tristate "Simple Exynos"
+	help
+	  Chooses frequency based on the threshold of target device.
+
+config DEVFREQ_GOV_SIMPLE_INTERACTIVE
+	tristate "Simple Interactive"
+	help
+	  Chooses frequency based on the requested PM QoS from target device.
+	  And This governor uses timer when change frequency.
 
 config DEVFREQ_GOV_PERFORMANCE
 	tristate "Performance"
@@ -74,6 +89,18 @@ config DEVFREQ_GOV_PASSIVE
 	  devfreq device uses the OPP table to get the frequency/voltage.
 
 comment "DEVFREQ Drivers"
+
+config ARM_EXYNOS_DEVFREQ
+	bool "ARM Exynos Memory Bus DEVFREQ Common driver"
+	depends on ARCH_EXYNOS
+	select ARCH_HAS_OPP
+	select PM_OPP
+	help
+	  This adds the DEVFREQ driver for Exynos series common bus.
+
+config ARM_EXYNOS_DEVFREQ_DEBUG
+	bool "ARM Exynos DEVFREQ sysfs for Debug"
+	depends on ARM_EXYNOS_DEVFREQ
 
 config ARM_EXYNOS_BUS_DEVFREQ
 	tristate "ARM EXYNOS Generic Memory Bus DEVFREQ Driver"
@@ -114,5 +141,14 @@ config ARM_RK3399_DMC_DEVFREQ
           from hardware.
 
 source "drivers/devfreq/event/Kconfig"
+
+config ARM_EXYNOS9610_BUS_DEVFREQ
+	bool "ARM Exynos9610 Memory Bus DEVFREQ Driver"
+	default y
+	depends on ARM_EXYNOS_DEVFREQ
+	depends on SOC_EXYNOS9610
+	select DEVFREQ_GOV_SIMPLE_INTERACTIVE
+	help
+	  This adds the DEVFREQ driver for Exynos9610 memory and int.
 
 endif # PM_DEVFREQ

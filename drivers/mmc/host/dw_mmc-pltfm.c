@@ -53,6 +53,9 @@ int dw_mci_pltfm_register(struct platform_device *pdev,
 	/* Get registers' physical base address */
 	host->phy_regs = regs->start;
 
+	regs = platform_get_resource_byname(pdev, IORESOURCE_MEM, "fmp_mem");
+	host->fmp_regs = devm_ioremap_resource(&pdev->dev, regs);
+
 	platform_set_drvdata(pdev, host);
 	return dw_mci_probe(host);
 }

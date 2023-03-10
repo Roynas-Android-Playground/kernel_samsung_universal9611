@@ -117,6 +117,10 @@ source "drivers/usb/mtu3/Kconfig"
 
 source "drivers/usb/musb/Kconfig"
 
+source "drivers/usb/notify/Kconfig"
+
+source "drivers/usb/typec/manager/Kconfig"
+
 source "drivers/usb/dwc3/Kconfig"
 
 source "drivers/usb/dwc2/Kconfig"
@@ -203,5 +207,9 @@ config USB_ULPI_BUS
 
 	  To compile this driver as a module, choose M here: the module will
 	  be called ulpi.
+
+config USB_WAKE_LOCKS
+	boolean "USB Wakelock for L2 Suspend"
+	default n
 
 endif # USB_SUPPORT

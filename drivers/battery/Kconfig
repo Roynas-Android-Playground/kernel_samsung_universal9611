@@ -1,0 +1,39 @@
+#
+# battery driver configuration
+#
+
+comment "Battery drivers"
+
+config BATTERY_SAMSUNG
+	tristate "samsung battery driver"
+	help
+	 Say Y to include support for samsung battery driver
+	 This battery driver integrated all battery-related functions
+	 To see battery-related functions,
+	 refer to sec_charging_common.h
+
+config BATTERY_SAMSUNG_V2
+	tristate "samsung battery driver version 2"
+	default n
+	depends on BATTERY_SAMSUNG
+	help
+	 Say Y to include support for samsung battery driver
+	 This battery driver integrated all battery-related functions
+	 To see battery-related functions,
+	 refer to sec_charging_common.h
+
+config BATTERY_SAMSUNG_LEGO_STYLE
+	tristate "samsung battery driver (lego style)"
+	default n
+	depends on BATTERY_SAMSUNG
+	help
+	 Say Y to include support for samsung battery driver
+	 This battery driver integrated all battery-related functions
+	 To see battery-related functions,
+	 refer to sec_charging_common.h
+
+if BATTERY_SAMSUNG_LEGO_STYLE
+source "drivers/battery/charger/Kconfig"
+source "drivers/battery/common/Kconfig"
+source "drivers/battery/fuelgauge/Kconfig"
+endif # BATTERY_SAMSUNG_LEGO_STYLE

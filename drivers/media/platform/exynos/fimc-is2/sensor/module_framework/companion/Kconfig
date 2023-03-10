@@ -1,0 +1,14 @@
+menuconfig CAMERA_COMPANION_CHIP_SELECT
+	bool "Sensor companion select"
+	depends on USE_DIRECT_IS_CONTROL
+	help
+		Say Y here to enable support for platform-specific V4L drivers.
+
+config CAMERA_COMPANION_CHIP_GC607_OBJ
+		bool "Use GC607 companion"
+	depends on USE_DIRECT_IS_CONTROL
+	depends on CAMERA_COMPANION_CHIP_SELECT
+		default n
+		help
+			Use to build gc607 companion.
+

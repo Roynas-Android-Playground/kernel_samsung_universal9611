@@ -1,0 +1,17 @@
+#
+#
+#
+config VIBRATOR_S2MU106
+	tristate "SEC S2MU106 Vibrator"
+	default n
+	help
+	  If you say yes here you will get support for the
+	  SEC S2MU106 Vibrator.
+
+config VIBRATOR_S2MU106_VOLTAGE_3P3
+	tristate "SEC S2MU106 Voltage setting"
+	default n
+	help
+	  If you say yes here you will get support for the
+	  SEC S2MU106 Vibrator Voltage setting.
+

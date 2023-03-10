@@ -30,6 +30,9 @@ config SND_SAMSUNG_SPDIF
 config SND_SAMSUNG_I2S
 	tristate "Samsung I2S interface support"
 
+config SND_SOC_SAMSUNG_DISPLAYPORT
+	tristate "Samsung display port audio interface support"
+
 config SND_SOC_SAMSUNG_NEO1973_WM8753
 	tristate "Audio support for Openmoko Neo1973 Smartphones (GTA02)"
 	depends on MACH_NEO1973_GTA02
@@ -193,6 +196,39 @@ config SND_SOC_ODROID
 	help
 	  Say Y here to enable audio support for the Odroid XU3/XU4.
 
+config SND_SOC_SAMSUNG_EXYNOS9610
+	tristate "Audio support on exynos9610"
+	select SND_SOC_SAMSUNG_ABOX
+	#select SND_SOC_SAMSUNG_DISPLAYPORT
+	help
+		Say Y if you want to add support for audio on the Exynos9610.
+
+config SND_SOC_SAMSUNG_EXYNOS9610_RT5665_ALC5665
+        tristate "Audio support for RT5665(ALC5665) on Exynos9610"
+        select SND_SOC_RT5665
+        select MFD_CS35L41_SPI
+        select SND_SOC_CS35L41
+
+config SND_SOC_SAMSUNG_VOGUE_RT5665
+        tristate "Audio support for RT5665 on VOGUE"
+        select SND_SOC_RT5665
+
+config SND_SOC_SAMSUNG_VOGUE_CS47L15
+        tristate "Audio support for CS47L15 on VOGUE"
+        select MFD_MADERA
+        select MFD_MADERA_SPI
+        select MFD_CS47L15
+        select MADERA_IRQ
+        select MADERA_IRQ_CS47L15
+        select REGULATOR_ARIZONA_LDO1
+        select REGULATOR_ARIZONA_MICSUPP
+        select EXTCON_MADERA
+        select EXTCON_MADERA_INPUT_EVENT
+        select SND_SOC_CS47L15
+        select SND_SOC_MADERA
+        select SND_SOC_WM_ADSP
+        select GPIO_MADERA
+
 config SND_SOC_ARNDALE_RT5631_ALC5631
         tristate "Audio support for RT5631(ALC5631) on Arndale Board"
         depends on I2C
@@ -208,5 +244,13 @@ config SND_SOC_SAMSUNG_TM2_WM5110
 	select SND_SAMSUNG_I2S
 	help
 	  Say Y if you want to add support for SoC audio on the TM2 board.
+
+config SND_SOC_SAMSUNG_AUDIO
+	tristate "Audio support for Samsung Projects"
+	help
+	  Say Y here to enable audio support for the Samsung Audio.
+
+source "sound/soc/samsung/abox/Kconfig"
+source "sound/soc/samsung/vts/Kconfig"
 
 endif #SND_SOC_SAMSUNG

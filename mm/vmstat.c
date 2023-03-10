@@ -1132,6 +1132,12 @@ const char * const vmstat_text[] = {
 	"kswapd_inodesteal",
 	"kswapd_low_wmark_hit_quickly",
 	"kswapd_high_wmark_hit_quickly",
+#ifdef CONFIG_KANOND
+	"pgsteal_kanond",
+	"pgscan_kanond",
+	"kanond_low_wmark_hit_quickly",
+	"kanond_high_wmark_hit_quickly",
+#endif
 	"pageoutrun",
 
 	"pgrotated",
@@ -1220,6 +1226,12 @@ const char * const vmstat_text[] = {
 #ifdef CONFIG_SWAP
 	"swap_ra",
 	"swap_ra_hit",
+#endif
+#ifdef CONFIG_ZRAM_LRU_WRITEBACK
+	"sqzr_objcnt",
+	"sqzr_count",
+	"sqzr_read",
+	"sqzr_write",
 #endif
 #endif /* CONFIG_VM_EVENTS_COUNTERS */
 };

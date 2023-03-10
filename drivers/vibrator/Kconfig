@@ -1,0 +1,8 @@
+source "drivers/vibrator/common/Kconfig"
+
+source "drivers/vibrator/dc/Kconfig"
+
+source "drivers/vibrator/imagis/Kconfig"
+
+source "drivers/vibrator/slsi/s2mu106/Kconfig"
+
