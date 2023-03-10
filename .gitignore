@@ -128,3 +128,8 @@ kernel/configs/android-*.cfg
 
 # Scripts
 local.config
+
+# Kernel Build
+out/
+toolchain
+toolchain/
