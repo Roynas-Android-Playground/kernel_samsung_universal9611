@@ -46,3 +46,4 @@ cd ${srctree}/scripts/packaging/ || exit
 bash pack.sh "${MY_PWD}/${OBJ}" "${KERNELZIP}"
 tg_sendText "<b>${KERNELSTR} Kernel Build</b>%0ABuild ended <code>Target: ${OBJ}</code>%0AFor device ${DEVICE}%0Abranch <code>${BRANCH}</code>%0AUnder commit <code>${COMMITMSG}</code>%0AUsing compiler: <code>${CCSTR}</code>%0AEnded on <code>$(date)</code>"
 tg_sendFile "${KERNELZIP}"
+rm -f "${KERNELZIP}"
