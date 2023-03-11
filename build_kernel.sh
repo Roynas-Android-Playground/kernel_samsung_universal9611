@@ -1,8 +1,14 @@
-#!/bin/bash
+#/bin/bash
+set -e
 
-export ARCH=arm64
-export PLATFORM_VERSION=12
-export ANDROID_MAJOR_VERSION=s
+[ ! -e "scripts/packaging/pack.sh" ] && git submodule init && git submodule update
+[ ! -e "toolchain" ] && echo "Make toolchain avaliable at $(pwd)/toolchain" && exit
 
-make ARCH=arm64 exynos9610-a51xx_defconfig
-make ARCH=arm64 -j16
+export KBUILD_BUILD_USER=Royna
+export KBUILD_BUILD_HOST=GrassLand
+
+PATH=$PWD/toolchain/bin:$PATH
+
+rm -rf out
+make O=out CROSS_COMPILE=aarch64-linux-gnu- CC=clang LD=ld.lld AS=llvm-as AR=llvm-ar OBJDUMP=llvm-objdump READELF=llvm-readelf -j$(nproc) a51_defconfig
+make O=out CROSS_COMPILE=aarch64-linux-gnu- CC=clang LD=ld.lld AS=llvm-as AR=llvm-ar OBJDUMP=llvm-objdump READELF=llvm-readelf -j$(nproc) $1
