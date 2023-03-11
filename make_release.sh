@@ -6,7 +6,15 @@ which go || (echo "Go not found" && exit)
 go install github.com/github-release/github-release@latest
 
 KV=$(echo "$(out/scripts/kernelversion)" | sed 's/@.*//')
-#git tag "$KV"
+NUM=0
+set +e
+git tag "$KV-$NUM"
+while [ $? -ne 0 ]; do
+	NUM=$(expr $NUM + 1)
+	git tag "$KV-$NUM"
+done
+set -e
+KV="$KV-$NUM"
 git push origin "$KV"
 
 GHREL=$HOME/go/bin/github-release
