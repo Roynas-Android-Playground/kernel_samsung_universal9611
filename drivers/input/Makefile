@@ -6,7 +6,10 @@
 # Each configuration option enables a list of files.
 
 obj-$(CONFIG_INPUT)		+= input-core.o
-input-core-y := input.o input-compat.o input-mt.o ff-core.o
+ifneq ($(ONEUI),)
+INPUT_PREFIX := -samsung
+endif
+input-core-y := input$(INPUT_PREFIX).o input-compat.o input-mt.o ff-core.o
 
 obj-$(CONFIG_INPUT_TOUCHSCREEN)	+= sec_cmd.o
 obj-$(CONFIG_INPUT_FF_MEMLESS)	+= ff-memless.o
