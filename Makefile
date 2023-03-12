@@ -486,6 +486,10 @@ ifneq ($(KBUILD_SRC),)
 	    $(srctree) $(objtree) $(VERSION) $(PATCHLEVEL)
 endif
 
+ifneq ($(ONEUI),)
+KBUILD_CFLAGS += -DGRASS_ONEUI
+endif
+
 PLATFORM_VERSION := 12
 ifneq ($(PLATFORM_VERSION), )
 PLATFORM_VERSION_NUMBER=$(shell $(CONFIG_SHELL) $(srctree)/scripts/android-version.sh $(PLATFORM_VERSION))
