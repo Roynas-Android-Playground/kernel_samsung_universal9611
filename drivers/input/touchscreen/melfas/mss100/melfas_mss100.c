@@ -822,7 +822,9 @@ static int mms_alert_handler_proximity_state(struct mms_ts_info *info, u8 data)
 			return 0;
 		}
 	}
+#ifndef GRASS_ONEUI
 	data = data == 5 || !data;
+#endif
 	input_info(true, &info->client->dev, "%s: hover %d\n", __func__, data);
 	info->hover_event = data;
 
