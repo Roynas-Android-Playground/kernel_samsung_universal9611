@@ -9,6 +9,15 @@ export KBUILD_BUILD_HOST=GrassLand
 
 PATH=$PWD/toolchain/bin:$PATH
 
+TARGET=aosp
+FLAGS=
+if [ "$1" = "oneui" ]; then
+TARGET=oneui
+FLAGS=ONEUI=1
+fi
+
 rm -rf out
-make O=out CROSS_COMPILE=aarch64-linux-gnu- CC=clang LD=ld.lld AS=llvm-as AR=llvm-ar OBJDUMP=llvm-objdump READELF=llvm-readelf -j$(nproc) a51_defconfig
-make O=out CROSS_COMPILE=aarch64-linux-gnu- CC=clang LD=ld.lld AS=llvm-as AR=llvm-ar OBJDUMP=llvm-objdump READELF=llvm-readelf -j$(nproc) $1
+make O=out CROSS_COMPILE=aarch64-linux-gnu- CC=clang LD=ld.lld AS=llvm-as AR=llvm-ar \
+	OBJDUMP=llvm-objdump READELF=llvm-readelf -j$(nproc) vendor/a51-${TARGET}_defconfig
+make O=out CROSS_COMPILE=aarch64-linux-gnu- CC=clang LD=ld.lld AS=llvm-as AR=llvm-ar \
+	OBJDUMP=llvm-objdump READELF=llvm-readelf ${FLAGS} -j$(nproc)

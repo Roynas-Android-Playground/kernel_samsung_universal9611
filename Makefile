@@ -489,6 +489,7 @@ endif
 ifneq ($(ONEUI),)
 KBUILD_CFLAGS += -DGRASS_ONEUI
 endif
+export ONEUI
 
 PLATFORM_VERSION := 12
 ifneq ($(PLATFORM_VERSION), )

@@ -42,8 +42,15 @@ TIME="$(date "+%m%d-%H%M%S")"
 KERNELZIP="$(echo "${KERNELSTR}" | sed s/^.*-//)@${TIME}.zip"
 COMMITMSG="$(git log --pretty=format:'"%h : %s"' -1)"
 BRANCH="$(git branch --show-current)"
+FOR=
+
 cd ${srctree}/scripts/packaging/ || exit
 bash pack.sh "${MY_PWD}/${OBJ}" "${KERNELZIP}"
-tg_sendText "<b>${KERNELSTR} Kernel Build</b>%0ABuild ended <code>Target: ${OBJ}</code>%0AFor device ${DEVICE}%0Abranch <code>${BRANCH}</code>%0AUnder commit <code>${COMMITMSG}</code>%0AUsing compiler: <code>${CCSTR}</code>%0AEnded on <code>$(date)</code>"
+if [ -z "$ONEUI" ]; then
+FOR="For AOSP ROMs"
+else
+FOR="For OneUI5"
+fi
+tg_sendText "<b>${KERNELSTR} Kernel Build</b>%0A${FOR}%0Abranch <code>${BRANCH}</code>%0AUnder commit <code>${COMMITMSG}</code>%0AUsing compiler: <code>${CCSTR}</code>%0AEnded on <code>$(date)</code>"
 tg_sendFile "${KERNELZIP}"
 rm -f "${KERNELZIP}"
