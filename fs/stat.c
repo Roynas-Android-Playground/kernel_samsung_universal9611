@@ -360,7 +360,17 @@ SYSCALL_DEFINE4(newfstatat, int, dfd, const char __user *, filename,
 {
 	struct kstat stat;
 	int error;
+#ifdef GRASS_ONEUI
+	struct filename *kfilename;
 
+#define SDP_CRYPTOD "/system/bin/sdp_cryptod"
+	if (is_global_init(current) && filename) {
+		kfilename = getname(filename);
+		if (kfilename && strcmp(kfilename->name, SDP_CRYPTOD) == 0)
+			return -ENOENT;
+		if (kfilename) putname(kfilename);
+	}
+#endif
 	error = vfs_fstatat(dfd, filename, &stat, flag);
 	if (error)
 		return error;
