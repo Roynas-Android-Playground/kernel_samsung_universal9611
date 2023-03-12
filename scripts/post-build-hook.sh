@@ -35,7 +35,7 @@ exit 0
 fi
 ${HOSTCC} ${srctree}/scripts/kernelversion.c -Iinclude/generated/ -o scripts/kernelversion -D__UTS__
 ${HOSTCC} ${srctree}/scripts/kernelversion.c -Iinclude/generated/ -o scripts/ccversion -D__CC__
-KERNELSTR="$(./scripts/kernelversion)"
+KERNELSTR="$(echo "$(./scripts/kernelversion)" | sed 's/@.*//')"
 CCSTR="$(./scripts/ccversion)"
 MY_PWD=$(pwd)
 TIME="$(date "+%m%d-%H%M%S")"
