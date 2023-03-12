@@ -163,14 +163,7 @@ static int vmap_pte_range(pmd_t *pmd, unsigned long addr,
 	 * nr is a running index into the array which helps higher level
 	 * callers keep track of where we're up to.
 	 */
-#ifdef CONFIG_UH_RKP
-	unsigned long paddr = addr;
-	if(pgprot_rkp_ro(prot))
-		paddr &= (~PTE_RKP_RO);
-	pte = pte_alloc_kernel(pmd, paddr);
-#else
 	pte = pte_alloc_kernel(pmd, addr);
-#endif
 	if (!pte)
 		return -ENOMEM;
 	do {

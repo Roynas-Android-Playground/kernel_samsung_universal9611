@@ -319,15 +319,7 @@
 #define PG_TRAMP
 #endif
 
-#ifdef CONFIG_UH_RKP
-#define RKP_RO_PGT					\
-	PG_IDMAP								\
-	PG_SWAP									\
-	PG_RESERVED								\
-	PG_TRAMP
-#else
 #define RKP_RO_PGT
-#endif
 
 /*
  * Read only Data

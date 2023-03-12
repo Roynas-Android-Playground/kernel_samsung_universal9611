@@ -35,12 +35,7 @@
 #ifdef	CONFIG_EXYNOS_ITMON
 #include <soc/samsung/exynos-itmon.h>
 #endif
-#ifdef CONFIG_UH_RKP
-struct exynos_bcm_dbg_data *bcm_dbg_data;
-EXPORT_SYMBOL(bcm_dbg_data);
-#else
 static struct exynos_bcm_dbg_data *bcm_dbg_data;
-#endif
 #ifdef CONFIG_EXYNOS_BCM_DBG_GNR
 static void *bcm_addr;
 static struct bin_system_func *bin_func;

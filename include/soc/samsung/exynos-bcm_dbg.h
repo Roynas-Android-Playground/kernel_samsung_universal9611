@@ -232,9 +232,6 @@ struct os_system_func {
 };
 #endif
 
-#ifdef CONFIG_UH_RKP
-extern struct exynos_bcm_dbg_data *bcm_dbg_data;
-#endif
 
 #ifdef CONFIG_EXYNOS_BCM_DBG
 int exynos_bcm_dbg_ipc_send_data(enum exynos_bcm_dbg_ipc_type ipc_type,
