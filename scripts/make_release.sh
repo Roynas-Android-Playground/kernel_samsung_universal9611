@@ -25,3 +25,4 @@ for i in scripts/packaging/*.zip; do
 $GHREL upload --user A51-Development --repo kernel_samsung_a51 --tag "$KV" \
 	--name "$(basename $i)" --file $i
 done
+rm scripts/packaging/*.zip
