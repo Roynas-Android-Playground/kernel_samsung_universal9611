@@ -19,7 +19,9 @@ git push origin "$KV"
 
 GHREL=$HOME/go/bin/github-release
 $GHREL release --user A51-Development --repo kernel_samsung_a51 --tag "$KV" \
-	--name "$KV Build" --description "Compile ended at $(date) With $(out/scripts/ccversion)"
+	--name "$KV Build" --description "Compile ended at $(date) with $(out/scripts/ccversion)"
 sleep 5
+for i in scripts/packaging/*.zip; do
 $GHREL upload --user A51-Development --repo kernel_samsung_a51 --tag "$KV" \
-	--name "$(echo $(basename scripts/packaging/*.zip) | sed 's/@.*//').zip" --file scripts/packaging/*.zip
+	--name "$(basename $i)" --file $i
+done
