@@ -38,8 +38,14 @@ ${HOSTCC} ${srctree}/scripts/kernelversion.c -Iinclude/generated/ -o scripts/ccv
 KERNELSTR="$(echo "$(./scripts/kernelversion)" | sed 's/@.*//')"
 CCSTR="$(./scripts/ccversion)"
 MY_PWD=$(pwd)
-TIME="$(date "+%m%d-%H%M%S")"
-KERNELZIP="$(echo "${KERNELSTR}" | sed s/^.*-//)@${TIME}.zip"
+TIME="$(date "+%Y%m%d")"
+SUFFIX=
+if [ -z "${ONEUI}" ]; then
+SUFFIX=-AOSP
+else
+SUFFIX=-OneUI5
+fi
+KERNELZIP="$(echo "${KERNELSTR}" | sed s/^.*-//)${SUFFIX}_${TIME}.zip"
 COMMITMSG="$(git log --pretty=format:'"%h : %s"' -1)"
 BRANCH="$(git branch --show-current)"
 FOR=
@@ -53,4 +59,3 @@ FOR="For OneUI5"
 fi
 tg_sendText "<b>${KERNELSTR} Kernel Build</b>%0A${FOR}%0Abranch <code>${BRANCH}</code>%0AUnder commit <code>${COMMITMSG}</code>%0AUsing compiler: <code>${CCSTR}</code>%0AEnded on <code>$(date)</code>"
 tg_sendFile "${KERNELZIP}"
-rm -f "${KERNELZIP}"
