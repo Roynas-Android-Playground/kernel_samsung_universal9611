@@ -38,8 +38,14 @@ ${HOSTCC} ${srctree}/scripts/kernelversion.c -Iinclude/generated/ -o scripts/ccv
 KERNELSTR="$(echo "$(./scripts/kernelversion)" | sed 's/@.*//')"
 CCSTR="$(./scripts/ccversion)"
 MY_PWD=$(pwd)
-TIME="$(date "+%m%d-%H%M%S")"
-KERNELZIP="$(echo "${KERNELSTR}" | sed s/^.*-//)@${TIME}.zip"
+TIME="$(date "+%Y%m%d")"
+SUFFIX=
+if [ -z "${ONEUI}" ]; then
+SUFFIX=-AOSP
+else
+SUFFIX=-OneUI5
+fi
+KERNELZIP="$(echo "${KERNELSTR}" | sed s/^.*-//)${SUFFIX}_${TIME}.zip"
 COMMITMSG="$(git log --pretty=format:'"%h : %s"' -1)"
 BRANCH="$(git branch --show-current)"
 FOR=
