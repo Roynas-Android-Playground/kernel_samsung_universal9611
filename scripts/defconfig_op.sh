@@ -24,4 +24,8 @@ for i in ${DEFDIR}/a51-aosp_defconfig ${DEFDIR}/a51-oneui_defconfig ${DEFDIR}/m2
 		sed -i "s/$BEFORE/$AFTER/" out/.config
 	fi
 	cp out/.config $i;
+	if [ $REGEN -ne 1 ]; then
+		make O=out ARCH=arm64 CC=clang LD=ld.lld CROSS_COMPILE=aarch64-linux-gnu- vendor/$(basename $i)
+		cp out/.config $i;
+	fi
 done
