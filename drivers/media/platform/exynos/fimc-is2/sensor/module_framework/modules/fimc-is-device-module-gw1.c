@@ -234,6 +234,9 @@ static int sensor_gw1_power_setpin(struct device *dev,
 static int __init sensor_module_gw1_probe(struct platform_device *pdev)
 {
 	int ret = 0;
+#ifdef USE_AP_PDAF
+	int ch, t;
+#endif
 	bool use_pdaf = false;
 	struct fimc_is_core *core;
 	struct v4l2_subdev *subdev_module;
@@ -299,10 +302,10 @@ static int __init sensor_module_gw1_probe(struct platform_device *pdev)
 	module->ops = NULL;
 
 #ifdef USE_AP_PDAF
-	for (int ch = 1; ch < CSI_VIRTUAL_CH_MAX; ch++)
+	for (ch = 1; ch < CSI_VIRTUAL_CH_MAX; ch++)
 		module->vc_buffer_offset[ch] = pdata->vc_buffer_offset[ch];
 	
-	for (int t = VC_BUF_DATA_TYPE_SENSOR_STAT1; t < VC_BUF_DATA_TYPE_MAX; t++) {
+	for (t = VC_BUF_DATA_TYPE_SENSOR_STAT1; t < VC_BUF_DATA_TYPE_MAX; t++) {
 		module->vc_extra_info[t].stat_type = VC_STAT_TYPE_INVALID;
 		module->vc_extra_info[t].sensor_mode = VC_SENSOR_MODE_INVALID;
 		module->vc_extra_info[t].max_width = 0;
