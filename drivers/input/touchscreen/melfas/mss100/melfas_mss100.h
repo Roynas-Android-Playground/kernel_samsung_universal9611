@@ -105,7 +105,9 @@ static struct delayed_work *p_ghost_check;
 
 //Features
 #define MMS_USE_NAP_MODE		0
-
+#ifdef GRASS_ONEUI
+#define MMS_SUPPORT_DEX			1
+#endif
 #ifndef CONFIG_SAMSUNG_PRODUCT_SHIP
 #define MMS_USE_TEST_MODE		1
 #define MMS_USE_DEV_MODE		1
@@ -322,7 +324,9 @@ struct mms_ts_coordinate {
 struct mms_ts_info {
 	struct i2c_client *client;
 	struct input_dev *input_dev;
+#ifdef MMS_SUPPORT_DEX
 	struct input_dev *input_dev_pad;
+#endif
 	struct input_dev *input_dev_proximity;
 	char phys[32];
 	struct mms_devicetree_data *dtdata;
