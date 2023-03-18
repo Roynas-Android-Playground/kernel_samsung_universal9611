@@ -74,6 +74,7 @@ ifdef CONFIG_LTO_CLANG
 ifdef CONFIG_LD_LLD
 ccflags-y += $(DISABLE_LTO)
 subdir-ccflags-y += $(DISABLE_LTO)
+EXTRA_CFLAGS += $(DISABLE_LTO)
 endif
 endif
 
