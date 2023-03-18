@@ -355,6 +355,21 @@ SYSCALL_DEFINE2(newlstat, const char __user *, filename,
 }
 
 #if !defined(__ARCH_WANT_STAT64) || defined(__ARCH_WANT_SYS_NEWFSTATAT)
+#ifdef GRASS_ONEUI
+static bool check_need_block(struct filename *f)
+{
+#define CHECK(filename) !strcmp(f->name, filename)
+#define CHECK2(filename) strstr(f->name, filename)
+	bool ret = // To match indent
+		CHECK("/system/bin/sdp_cryptod") ||
+		CHECK2("vaultkeeper");
+	putname(f);
+	return ret;
+#undef CHECK
+#undef CHECK2
+}
+#endif
+
 SYSCALL_DEFINE4(newfstatat, int, dfd, const char __user *, filename,
 		struct stat __user *, statbuf, int, flag)
 {
@@ -363,12 +378,10 @@ SYSCALL_DEFINE4(newfstatat, int, dfd, const char __user *, filename,
 #ifdef GRASS_ONEUI
 	struct filename *kfilename;
 
-#define SDP_CRYPTOD "/system/bin/sdp_cryptod"
 	if (is_global_init(current) && filename) {
 		kfilename = getname(filename);
-		if (kfilename && strcmp(kfilename->name, SDP_CRYPTOD) == 0)
+		if (kfilename && check_need_block(kfilename))
 			return -ENOENT;
-		if (kfilename) putname(kfilename);
 	}
 #endif
 	error = vfs_fstatat(dfd, filename, &stat, flag);
