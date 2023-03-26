@@ -18,7 +18,7 @@ else
 fi
 
 DEFDIR=arch/arm64/configs/vendor
-for i in ${DEFDIR}/a51-aosp_defconfig ${DEFDIR}/a51-oneui_defconfig ${DEFDIR}/m21-oneui_defconfig ${DEFDIR}/m31-oneui_defconfig ${DEFDIR}/f41-oneui_defconfig; do
+for i in ${DEFDIR}/*-aosp_defconfig ${DEFDIR}/*-oneui_defconfig; do
 	make O=out ARCH=arm64 CC=clang LD=ld.lld CROSS_COMPILE=aarch64-linux-gnu- vendor/$(basename $i)
 	if [ $REGEN -ne 1 ]; then
 		sed -i "s/$BEFORE/$AFTER/" out/.config
