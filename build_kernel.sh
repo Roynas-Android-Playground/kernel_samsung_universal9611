@@ -15,9 +15,12 @@ if [ "$1" = "oneui" ]; then
 TARGET=oneui
 FLAGS=ONEUI=1
 fi
+if [ -z "$DEVICE" ]; then
+DEVICE=a51
+fi
 
 rm -rf out
 make O=out CROSS_COMPILE=aarch64-linux-gnu- CC=clang LD=ld.lld AS=llvm-as AR=llvm-ar \
-	OBJDUMP=llvm-objdump READELF=llvm-readelf -j$(nproc) vendor/a51-${TARGET}_defconfig
+	OBJDUMP=llvm-objdump READELF=llvm-readelf -j$(nproc) vendor/${DEVICE}-${TARGET}_defconfig
 make O=out CROSS_COMPILE=aarch64-linux-gnu- CC=clang LD=ld.lld AS=llvm-as AR=llvm-ar \
 	OBJDUMP=llvm-objdump READELF=llvm-readelf ${FLAGS} -j$(nproc)
