@@ -2,3 +2,5 @@ obj-$(CONFIG_SND_SOC_SAMSUNG_ABOX) += abox_util.o abox_dbg.o abox_dump.o abox_lo
 obj-$(CONFIG_SEC_SND_SYNCHRONIZED_IPC) += abox_synchronized_ipc.o
 obj-$(CONFIG_SEC_SND_SYNCHRONIZED_IPC_RICHTEK) += abox_synchronized_ipc_richtek.o
 obj-$(CONFIG_SEC_SND_ADAPTATION) += abox_adaptation.o
+
+ccflags-y += -Wno-unused-function
