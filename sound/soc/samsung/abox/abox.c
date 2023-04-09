@@ -3759,7 +3759,7 @@ int abox_request_int_freq(struct device *dev, struct abox_data *data,
 		return -ENOMEM;
 	}
 
-	schedule_work(&data->change_int_freq_work);
+//	schedule_work(&data->change_int_freq_work);
 
 	return 0;
 }
@@ -3816,7 +3816,7 @@ static int abox_request_mif_freq(struct device *dev, struct abox_data *data,
 		return -ENOMEM;
 	}
 
-	schedule_work(&data->change_mif_freq_work);
+//	schedule_work(&data->change_mif_freq_work);
 
 	return 0;
 }
@@ -3878,7 +3878,7 @@ int abox_request_lit_freq(struct device *dev, struct abox_data *data,
 		return -ENOMEM;
 	}
 
-	schedule_work(&data->change_lit_freq_work);
+//	schedule_work(&data->change_lit_freq_work);
 
 	return 0;
 }
@@ -3940,7 +3940,7 @@ int abox_request_big_freq(struct device *dev, struct abox_data *data,
 		return -ENOMEM;
 	}
 
-	schedule_work(&data->change_big_freq_work);
+//	schedule_work(&data->change_big_freq_work);
 
 	return 0;
 }
@@ -4005,7 +4005,7 @@ int abox_request_hmp_boost(struct device *dev, struct abox_data *data,
 		return -ENOMEM;
 	}
 
-	schedule_work(&data->change_hmp_boost_work);
+//	schedule_work(&data->change_hmp_boost_work);
 
 	return 0;
 }
@@ -6090,12 +6090,12 @@ static int samsung_abox_probe(struct platform_device *pdev)
 	}
 	INIT_WORK(&data->ipc_work, abox_process_ipc);
 	INIT_WORK(&data->change_cpu_gear_work, abox_change_cpu_gear_work_func);
-	INIT_WORK(&data->change_int_freq_work, abox_change_int_freq_work_func);
-	INIT_WORK(&data->change_mif_freq_work, abox_change_mif_freq_work_func);
-	INIT_WORK(&data->change_lit_freq_work, abox_change_lit_freq_work_func);
-	INIT_WORK(&data->change_big_freq_work, abox_change_big_freq_work_func);
-	INIT_WORK(&data->change_hmp_boost_work,
-			abox_change_hmp_boost_work_func);
+//	INIT_WORK(&data->change_int_freq_work, abox_change_int_freq_work_func);
+//	INIT_WORK(&data->change_mif_freq_work, abox_change_mif_freq_work_func);
+//	INIT_WORK(&data->change_lit_freq_work, abox_change_lit_freq_work_func);
+//	INIT_WORK(&data->change_big_freq_work, abox_change_big_freq_work_func);
+//	INIT_WORK(&data->change_hmp_boost_work,
+//			abox_change_hmp_boost_work_func);
 	INIT_WORK(&data->register_component_work,
 			abox_register_component_work_func);
 	INIT_WORK(&data->boot_done_work, abox_boot_done_work_func);
