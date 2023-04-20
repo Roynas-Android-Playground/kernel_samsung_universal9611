@@ -58,6 +58,7 @@ void sec_audio_log(int level, const char *fmt, ...);
 void sec_audio_bootlog(int level, const char *fmt, ...);
 void sec_audio_pmlog(int level, const char *fmt, ...);
 
+#undef CHANGE_DEV_PRINT
 #ifdef CHANGE_DEV_PRINT
 #ifdef dev_err
 #undef dev_err

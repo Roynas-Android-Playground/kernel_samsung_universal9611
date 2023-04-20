@@ -4,3 +4,4 @@ obj-$(CONFIG_SEC_SND_SYNCHRONIZED_IPC_RICHTEK) += abox_synchronized_ipc_richtek.
 obj-$(CONFIG_SEC_SND_ADAPTATION) += abox_adaptation.o
 
 ccflags-y += -Wno-unused-function
+ccflags-y += -include linux/spamblock.h
