@@ -16,7 +16,7 @@ TARGET=oneui
 FLAGS=ONEUI=1
 fi
 if [ -z "$DEVICE" ]; then
-DEVICE=a51
+export DEVICE=a51
 fi
 
 rm -rf out
