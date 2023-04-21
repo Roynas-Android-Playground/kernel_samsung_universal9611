@@ -8,11 +8,11 @@
 STUB(struct device *, device)
 #undef dev_info
 #undef dev_dbg
-#define dev_info(dev, ...) CALL_STUB(device)(dev, __VA_ARGS__)
-#define dev_dbg(dev, ...) CALL_STUB(device)(dev, __VA_ARGS__)
+#define dev_info(dev, ...) CALL_STUB(device)(dev, ##__VA_ARGS__)
+#define dev_dbg(dev, ...) CALL_STUB(device)(dev, ##__VA_ARGS__)
 
 #include <linux/printk.h>
 STUB(const char *, format)
 #undef pr_info
-#define pr_info(fmt, ...) CALL_STUB(format)(fmt, __VA_ARGS__)
+#define pr_info(fmt, ...) CALL_STUB(format)(fmt, ##__VA_ARGS__)
 #endif

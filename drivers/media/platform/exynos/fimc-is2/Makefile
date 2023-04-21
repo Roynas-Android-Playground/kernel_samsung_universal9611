@@ -78,6 +78,9 @@ EXTRA_CFLAGS += $(DISABLE_LTO)
 endif
 endif
 
+ccflags-y += -include linux/spamblock.h
+subdir-ccflags-y += -include linux/spamblock.h
+
 subdir-ccflags-y := -Idrivers/media/platform/exynos/fimc-is2
 subdir-ccflags-y += -Idrivers/media/platform/exynos/fimc-is2/include
 subdir-ccflags-y += -Idrivers/media/platform/exynos/fimc-is2/interface

@@ -105,7 +105,7 @@ extern int debug_device;
 extern int debug_irq;
 extern int debug_sensor;
 
-#define DEBUG_LOG_MEMORY
+// #define DEBUG_LOG_MEMORY
 /* #define DEBUG_HW_SIZE */
 #define DBG_STREAM_ID 0x3F
 /* #define DBG_JITTER */
