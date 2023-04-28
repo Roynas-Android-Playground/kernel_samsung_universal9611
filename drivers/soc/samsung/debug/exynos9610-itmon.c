@@ -503,8 +503,6 @@ MODULE_DEVICE_TABLE(of, itmon_dt_match);
 #define BIT_ENABLE_DBGSEL_WDTRESET	BIT(25)
 #ifdef CONFIG_S3C2410_WATCHDOG
 extern int s3c2410wdt_set_emergency_reset(unsigned int timeout, int index);
-#else
-#define s3c2410wdt_set_emergency_reset(a, b)	do { } while (0)
 #endif
 static void itmon_switch_scandump(void)
 {
