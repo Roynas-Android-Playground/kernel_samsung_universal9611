@@ -14,5 +14,9 @@ config TOUCHSCREEN_MELFAS_MSS100
 
 #          To compile this driver as a module, choose M here: the module will be called mms_ts.
 
+config TOUCHSCREEN_MELFAS_MSS100_FOD_SUPPORT
+	boolean "MELFAS MSS100 Touchscreen ext FOD AOSP"
+	depends on TOUCHSCREEN_MELFAS_MSS100
+	default n
 endif
 
