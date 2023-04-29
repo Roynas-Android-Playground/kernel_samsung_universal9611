@@ -45,7 +45,7 @@ SUFFIX=-AOSP
 else
 SUFFIX=-OneUI5
 fi
-KERNELZIP="$(echo "${KERNELSTR}" | sed s/^.*-//)${SUFFIX}_${TIME}.zip"
+KERNELZIP="$(echo "${KERNELSTR}" | sed s/^.*-//)${SUFFIX}-${DEVICE}_${TIME}.zip"
 COMMITMSG="$(git log --pretty=format:'"%h : %s"' -1)"
 BRANCH="$(git branch --show-current)"
 FOR=
