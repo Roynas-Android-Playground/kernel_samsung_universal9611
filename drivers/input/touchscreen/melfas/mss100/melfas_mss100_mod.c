@@ -654,20 +654,18 @@ int mms_custom_event_handler(struct mms_ts_info *info, u8 *rbuf, u8 size)
 #ifdef CONFIG_TOUCHSCREEN_MELFAS_MSS100_FOD_SUPPORT
 				info->fod_pressed = true;
 				sysfs_notify(&info->sec.fac_dev->kobj, NULL, "fod_pressed");
-#else
+#endif
 				input_report_key(info->input_dev, KEY_BLACK_UI_GESTURE, 1);
 				input_sync(info->input_dev);
-#endif
 			} else if (gesture_id == MMS_GESTURE_ID_FOD_RELEASE) {
 				info->scrub_id = SPONGE_EVENT_TYPE_FOD_RELEASE;
 				input_info(true, &info->client->dev, "%s: FOD release\n", __func__);
 #ifdef CONFIG_TOUCHSCREEN_MELFAS_MSS100_FOD_SUPPORT
 				info->fod_pressed = false;
 				sysfs_notify(&info->sec.fac_dev->kobj, NULL, "fod_pressed");
-#else
+#endif
 				input_report_key(info->input_dev, KEY_BLACK_UI_GESTURE, 1);
 				input_sync(info->input_dev);
-#endif
 			} else if (gesture_id == MMS_GESTURE_ID_FOD_OUT) {
 				info->scrub_id = SPONGE_EVENT_TYPE_FOD_OUT;
 				input_info(true, &info->client->dev, "%s: FOD OUT\n", __func__);
@@ -676,10 +674,8 @@ int mms_custom_event_handler(struct mms_ts_info *info, u8 *rbuf, u8 size)
 			}
 		}
 	}
-#ifndef CONFIG_TOUCHSCREEN_MELFAS_MSS100_FOD_SUPPORT
 	input_report_key(info->input_dev, KEY_BLACK_UI_GESTURE, 0);
 	input_sync(info->input_dev);
-#endif
 
 	input_dbg(false, &info->client->dev, "%s [DONE]\n", __func__);
 	return ret;
