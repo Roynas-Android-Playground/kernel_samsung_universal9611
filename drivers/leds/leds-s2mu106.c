@@ -980,7 +980,6 @@ static ssize_t rear_flash_store(struct device *dev,
 		return -EFAULT;
 	}
 	pr_info("%s: %d: rear_flash_store:\n", __func__,value );
-	g_fled_data->sysfs_input_data = value;
 	flash_current = g_fled_data->flash_current;
 	torch_current = g_fled_data->torch_current;
 
@@ -1013,10 +1012,12 @@ static ssize_t rear_flash_store(struct device *dev,
 			torch_current = g_fled_data->flashlight_current[4];
 		else
 			torch_current = g_fled_data->torch_current;
-		g_fled_data->sysfs_input_data = 1;
 	} else if (value == 2) {
 		mode = S2MU106_FLED_MODE_FLASH;
+	} else {
+		return -EINVAL;
 	}
+	g_fled_data->sysfs_input_data = value;
 	pr_info("%s: Torch current = %d  ; Flash current = %d \n", __func__, torch_current, flash_current );	
 
 	mutex_lock(&g_fled_data->lock);
