@@ -759,8 +759,6 @@ static ssize_t sm5713_rear_flash_store(struct device *dev, struct device_attribu
 		return -ENXIO;
 	}
 
-	fled->pdata->led[fled_index].sysfs_input_data = store_value;
-
 	dev_info(fled->dev, "%s: value=%d\n", __func__, store_value);
 
 	mutex_lock(&fled->fled_mutex);
@@ -805,6 +803,8 @@ static ssize_t sm5713_rear_flash_store(struct device *dev, struct device_attribu
 			ret = -EINVAL;
 			goto out_p;
 		}
+
+		fled->pdata->led[fled_index].sysfs_input_data = store_value;
 		dev_info(fled->dev, "%s: en_mled=%d, torch_on_cnt = %d \n", __func__, fled->pdata->led[fled_index].en_mled, fled->torch_on_cnt);
 
 		if (fled->pdata->led[fled_index].en_mled == true) {
