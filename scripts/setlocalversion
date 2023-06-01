@@ -43,6 +43,10 @@ scm_version()
 		short=true
 	fi
 
+	if test "$CONFIG_KSU" = "y"; then
+		printf "KSU"
+	fi
+
 	# Check for git and a git repo.
 	if test -z "$(git rev-parse --show-cdup 2>/dev/null)" &&
 	   head=`git rev-parse --verify --short HEAD 2>/dev/null`; then
