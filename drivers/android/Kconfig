@@ -54,6 +54,8 @@ config ANDROID_BINDER_IPC_SELFTEST
 	  exhaustively with combinations of various buffer sizes and
 	  alignments.
 
+source "drivers/android/kernelsu/Kconfig"
+
 endif # if ANDROID
 
 endmenu
