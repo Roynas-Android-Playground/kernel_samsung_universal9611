@@ -107,6 +107,8 @@ enum pm_qos_flags_status {
 	pm_qos_add_request_trace((char *)__func__, __LINE__, ##arg);	\
 } while(0)
 
+#define pm_qos_update_request_noop(a,r) pm_qos_update_request(NULL,r)
+
 struct pm_qos_request {
 	struct plist_node node;
 	int pm_qos_class;

@@ -3533,10 +3533,10 @@ static void abox_change_cpu_gear_legacy(struct device *dev,
 
 	if (increasing) {
 		if (gear <= ARRAY_SIZE(data->pm_qos_int))
-			pm_qos_update_request(&abox_pm_qos_int,
+			pm_qos_update_request_noop(&abox_pm_qos_int,
 					data->pm_qos_int[gear - 1]);
 		else
-			pm_qos_update_request(&abox_pm_qos_int, 0);
+			pm_qos_update_request_noop(&abox_pm_qos_int, 0);
 	}
 
 	if (gear >= ABOX_CPU_GEAR_MIN) {
@@ -3570,10 +3570,10 @@ static void abox_change_cpu_gear_legacy(struct device *dev,
 
 	if (!increasing) {
 		if (gear <= ARRAY_SIZE(data->pm_qos_int))
-			pm_qos_update_request(&abox_pm_qos_int,
+			pm_qos_update_request_noop(&abox_pm_qos_int,
 					data->pm_qos_int[gear - 1]);
 		else
-			pm_qos_update_request(&abox_pm_qos_int, 0);
+			pm_qos_update_request_noop(&abox_pm_qos_int, 0);
 	}
 skip:
 	abox_notify_cpu_gear(data, clk_get_rate(data->clk_cpu) * 1000, 0);
@@ -3728,7 +3728,7 @@ static void abox_change_int_freq_work_func(struct work_struct *work)
 	}
 
 	data->int_freq = freq;
-	pm_qos_update_request(&abox_pm_qos_int, data->int_freq);
+	pm_qos_update_request_noop(&abox_pm_qos_int, data->int_freq);
 
 	dev_info(dev, "pm qos request int: %dHz\n", pm_qos_request(
 			abox_pm_qos_int.pm_qos_class));
@@ -3785,7 +3785,7 @@ static void abox_change_mif_freq_work_func(struct work_struct *work)
 	}
 
 	data->mif_freq = freq;
-	pm_qos_update_request(&abox_pm_qos_mif, data->mif_freq);
+	pm_qos_update_request_noop(&abox_pm_qos_mif, data->mif_freq);
 
 	dev_info(dev, "pm qos request mif: %dHz\n", pm_qos_request(
 			abox_pm_qos_mif.pm_qos_class));
@@ -3843,7 +3843,7 @@ static void abox_change_lit_freq_work_func(struct work_struct *work)
 	}
 
 	data->lit_freq = freq;
-	pm_qos_update_request(&abox_pm_qos_lit, data->lit_freq);
+	pm_qos_update_request_noop(&abox_pm_qos_lit, data->lit_freq);
 
 	dev_info(dev, "pm qos request little: %dkHz\n",
 			pm_qos_request(abox_pm_qos_lit.pm_qos_class));
@@ -3905,7 +3905,7 @@ static void abox_change_big_freq_work_func(struct work_struct *work)
 	}
 
 	data->big_freq = freq;
-	pm_qos_update_request(&abox_pm_qos_big, data->big_freq);
+	pm_qos_update_request_noop(&abox_pm_qos_big, data->big_freq);
 
 	dev_info(dev, "pm qos request big: %dkHz\n",
 			pm_qos_request(abox_pm_qos_big.pm_qos_class));
