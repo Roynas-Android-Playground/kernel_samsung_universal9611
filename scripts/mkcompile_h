@@ -83,9 +83,10 @@ UTS_TRUNCATE="cut -b -$UTS_LEN"
   fi
   
   LD_VERSION=$($LD -v | head -n1 | sed 's/(compatible with [^)]*)//' \
-		      | sed 's/[[:space:]]*$//')
-
-  printf '#define LINUX_COMPILER "%s"\n' "$CC_VERSION, $LD_VERSION"
+          | sed 's/[[:space:]]*$//')
+  # remove new line at the end of CC_VERSION
+  CC_VERSION=$(echo $CC_VERSION | sed 's/[[:space:]]*$//')
+  echo "#define LINUX_COMPILER \"$CC_VERSION, $LD_VERSION\""
 ) > .tmpcompile
 
 # Only replace the real compile.h if the new one is different,
