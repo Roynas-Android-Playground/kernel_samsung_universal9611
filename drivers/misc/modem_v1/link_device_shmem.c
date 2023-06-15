@@ -2818,45 +2818,7 @@ static void shmem_irq_handler(void *data)
 }
 
 static struct pm_qos_request pm_qos_req_mif;
-static struct pm_qos_request pm_qos_req_cl0;
-static struct pm_qos_request pm_qos_req_cl1;
 static struct pm_qos_request pm_qos_req_int;
-
-static void shmem_qos_work_cpu(struct work_struct *work)
-{
-	struct mem_link_device *mld =
-		container_of(work, struct mem_link_device, pm_qos_work_cpu);
-	int qos_val;
-	int cpu_val;
-
-	qos_val = mbox_get_value(MCU_CP, mld->mbx_perf_req_cpu);
-	mif_err("pm_qos:0x%x requested\n", qos_val);
-
-	cpu_val = (qos_val & 0xff);
-	if (qos_val & BIT(31)) {
-		/* CL0 - Big */
-		if (cpu_val > 0 && cpu_val <= mld->cl0_table.num_of_table) {
-			mif_err("Lock CL0[%d] : %u\n", cpu_val,
-					mld->cl0_table.freq[cpu_val - 1]);
-			pm_qos_update_request(&pm_qos_req_cl0,
-				mld->cl0_table.freq[cpu_val - 1]);
-		} else {
-			mif_err("Unlock CL0(req_val : %d)\n", qos_val);
-			pm_qos_update_request(&pm_qos_req_cl0, 0);
-		}
-	} else {
-		/* CL1 - Little */
-		if (cpu_val > 0 && cpu_val <= mld->cl1_table.num_of_table) {
-			mif_err("Lock CL1[%d] : %u\n", cpu_val,
-					mld->cl1_table.freq[cpu_val - 1]);
-			pm_qos_update_request(&pm_qos_req_cl1,
-				mld->cl1_table.freq[cpu_val - 1]);
-		} else {
-			mif_err("Unlock CL1(req_val : %d)\n", qos_val);
-			pm_qos_update_request(&pm_qos_req_cl1, 0);
-		}
-	}
-}
 
 static void shmem_qos_work_mif(struct work_struct *work)
 {
@@ -3774,12 +3736,9 @@ struct link_device *shmem_create_link_device(struct platform_device *pdev)
 	mld->int_clk_table = modem->mbx->int_clk_table;
 	mld->int_clk_cnt = modem->mbx->int_clk_cnt;
 
-	pm_qos_add_request(&pm_qos_req_cl0, PM_QOS_CLUSTER0_FREQ_MIN, 0);
-	pm_qos_add_request(&pm_qos_req_cl1, PM_QOS_CLUSTER1_FREQ_MIN, 0);
 	pm_qos_add_request(&pm_qos_req_mif, PM_QOS_BUS_THROUGHPUT, 0);
 	pm_qos_add_request(&pm_qos_req_int, PM_QOS_DEVICE_THROUGHPUT, 0);
 
-	INIT_WORK(&mld->pm_qos_work_cpu, shmem_qos_work_cpu);
 	INIT_WORK(&mld->pm_qos_work_mif, shmem_qos_work_mif);
 	INIT_WORK(&mld->pm_qos_work_int, shmem_qos_work_int);
 
