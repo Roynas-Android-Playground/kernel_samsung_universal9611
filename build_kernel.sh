@@ -10,14 +10,13 @@ export KBUILD_BUILD_HOST=GrassLand
 PATH=$PWD/toolchain/bin:$PATH
 
 if [ "$1" = "oneui" ]; then
-TARGET=oneui
 FLAGS=ONEUI=1
 else
-TARGET=aosp
+CONFIG_AOSP=vendor/aosp.config
 fi
 
 if [ "$2" = "ksu" ]; then
-CONFIG_EXT=vendor/ksu.config
+CONFIG_KSU=vendor/ksu.config
 fi
 
 if [ -z "$DEVICE" ]; then
@@ -27,6 +26,6 @@ fi
 rm -rf out
 make O=out CROSS_COMPILE=aarch64-linux-gnu- CC=clang LD=ld.lld AS=llvm-as AR=llvm-ar \
 	OBJDUMP=llvm-objdump READELF=llvm-readelf -j$(nproc) \
-	vendor/${DEVICE}-${TARGET}_defconfig $CONFIG_EXT
+	vendor/${DEVICE}_defconfig vendor/grass.config vendor/${DEVICE}.config $CONFIG_AOSP $CONFIG_KSU
 make O=out CROSS_COMPILE=aarch64-linux-gnu- CC=clang LD=ld.lld AS=llvm-as AR=llvm-ar \
 	OBJDUMP=llvm-objdump READELF=llvm-readelf ${FLAGS} -j$(nproc)

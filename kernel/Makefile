@@ -122,7 +122,7 @@ targets += config_data.gz
 
 KCONFIG_CONFIG_SELECTED ?= $(KCONFIG_CONFIG)
 ifeq ($(CONFIG_ARM64),y)
-KCONFIG_CONFIG_SELECTED := arch/arm64/configs/a51-stock_defconfig
+KCONFIG_CONFIG_SELECTED := arch/arm64/configs/vendor/a51_defconfig
 endif
 $(obj)/config_data.gz: $(KCONFIG_CONFIG_SELECTED) FORCE
 	$(call if_changed,gzip)
