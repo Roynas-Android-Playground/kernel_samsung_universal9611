@@ -242,7 +242,7 @@ struct mmc_part {
 };
 
 struct mmc_card_error_log {
-	char    type[4];        // sbc, cmd, data, stop
+	char    type[5];        // sbc, cmd, data, stop
 	int     err_type;
 	u32     status;
 	u64     first_issue_time;
