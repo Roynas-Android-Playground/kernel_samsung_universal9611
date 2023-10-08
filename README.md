@@ -59,8 +59,6 @@ This is your kernel. Just flash it via TWRP or adb sideload
 
 ## Credits
 
-This software uses the following open source packages:
-
 - [roynatech2544](https://github.com/roynatech2544)
 - [Samsung Open Source](https://opensource.samsung.com/)
 - [Android Open Source Project](https://source.android.com/)
