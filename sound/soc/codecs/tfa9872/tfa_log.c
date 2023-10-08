@@ -28,9 +28,9 @@
 #define DESC_OVERTMAX_COUNT	"counter of T > Tmax"
 #define TFA_LOG_IN_SEPARATE_NODES
 #if defined(TFA_LOG_IN_SEPARATE_NODES)
-#define FILESIZE_LOG	10
+#define FILESIZE_LOG	11
 #else
-#define FILESIZE_LOG	(10 * TFA_LOG_MAX_COUNT)
+#define FILESIZE_LOG	(11 * TFA_LOG_MAX_COUNT)
 #endif
 
 /* ---------------------------------------------------------------------- */
