@@ -24,8 +24,21 @@ export DEVICE=a51
 fi
 
 rm -rf out
+rm Kernel.zip
 make O=out CROSS_COMPILE=aarch64-linux-gnu- CC=clang LD=ld.lld AS=llvm-as AR=llvm-ar \
 	OBJDUMP=llvm-objdump READELF=llvm-readelf -j$(nproc) \
 	vendor/${DEVICE}_defconfig vendor/grass.config vendor/${DEVICE}.config $CONFIG_AOSP $CONFIG_KSU
 make O=out CROSS_COMPILE=aarch64-linux-gnu- CC=clang LD=ld.lld AS=llvm-as AR=llvm-ar \
 	OBJDUMP=llvm-objdump READELF=llvm-readelf ${FLAGS} -j$(nproc)
+
+if [ -f "$PWD/out/arch/arm64/boot/Image" ]; then
+	echo "Okay, I have found Image!"
+	echo "Creating flashable zip..."
+	sleep 2
+	cp $PWD/out/arch/arm64/boot/Image $PWD/Anykernel3/ && cd Anykernel3/ && zip Kernel.zip -r * && mv Kernel.zip ../
+else
+	echo "ERROR, I could not found the Image file!"
+	echo "I will not be able to create flashable zip..."
+	exit 1
+fi
+	
