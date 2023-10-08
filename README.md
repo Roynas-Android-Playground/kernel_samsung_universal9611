@@ -1,7 +1,7 @@
 
 <h1 align="center">
   <br>
-  <img src="https://raw.githubusercontent.com/Gojikovi/kernel_samsung_universal9611/Grass-Unified/img/logo.jpg" alt="Markdownify" width="200">
+  <img src="https://raw.githubusercontent.com/Gojikovi/kernel_samsung_universal9611/Grass-Unified/img/logo.jpg" alt="Markdownify" width="2048">
   <br>
   GrassKernel
   <br>
