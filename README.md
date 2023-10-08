@@ -54,13 +54,8 @@ After build the image of the kernel will be in out/arch/arm64/boot/Image
 
 ## How To Flash
 
-To install the kernel use AnyKernel3.
-1. Download [this](https://github.com/Exynos9611-Development/kernel_samsung_universal9611/releases/download/4.14.150-Grass-5/Grass-AOSP_20230324.zip) kernel
-2. Unzip
-3. Delete the old Image file
-4. And move the new Image file
-5. Zip that all
-6. Flash via TWRP or adb sideload
+After a successful build, you can see the Kernel.zip archive.
+This is your kernel. Just flash it via TWRP or adb sideload
 
 ## Credits
 
