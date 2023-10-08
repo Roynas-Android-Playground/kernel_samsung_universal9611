@@ -46,8 +46,8 @@ $ ./download_toolchain.sh
 
 # If you want to compile the kernel not for A51 then change the 23 line in build_kernel.sh to f41, m21, m31, m31s
 # Build the kernel
-$ ./build_kernel.sh aosp ksu (for AOSP)
-$ ./build_kernel.sh oneui ksu (for OneUI)
+$ ./build_kernel.sh aosp ksu # (for AOSP)
+$ ./build_kernel.sh oneui ksu # (for OneUI)
 ```
 
 After build the image of the kernel will be in out/arch/arm64/boot/Image
