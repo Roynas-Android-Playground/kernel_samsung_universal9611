@@ -1,0 +1,23 @@
+****************************************************
+  ____                   _  __                    _
+ / ___|_ __ __ _ ___ ___| |/ /___ _ __ _ __   ___| |
+| |  _| '__/ _` / __/ __| ' // _ \ '__| '_ \ / _ \ |
+| |_| | | | (_| \__ \__ \ . \  __/ |  | | | |  __/ |
+ \____|_|  \__,_|___/___/_|\_\___|_|  |_| |_|\___|_|
+*****************************************************
+ Source    : Based on A515F_EUR_S source code 
+ Chipset   : Exynos 9611 with Mali G72 MP3     
+ Android   : For OneUI5/Supported AOSP ROMs
+ Developer : Royna (@roynatech on TG)
+ Support   : Telegram @galaxya51support 
+*****************************************************
+                 CLEAN AND STABLE KERNEL         
+*****************************************************
+- Keeping source clean and feature-full as possible
+*****************************************************
+                  MAIN FEATURES                 
+*****************************************************
+ Removed Security Stuffs, debugging codes, etc..
+ Balance between performance and battery life   
+ Compiled kernel with Neutron Clang 17.0.0
+*****************************************************
