@@ -2208,7 +2208,7 @@ static int clk_debug_create_one(struct clk_core *core, struct dentry *pdentry)
 		goto err_out;
 
 	if (core->num_parents > 1) {
-		d = debugfs_create_file("clk_possible_parents", S_IRUGO,
+		d = debugfs_create_file("clk_possible_parents", 0444,
 				core->dentry, core, &possible_parents_fops);
 		if (!d)
 			goto err_out;
