@@ -1,6 +1,6 @@
 [submodule "scripts/packaging"]
 	path = scripts/packaging
-	url = https://github.com/Exynos9611-Development/kernel_packaging
+	url = https://github.com/Roynas-Android-Playground/kernel_packaging
 
 [submodule "KernelSU"]
 	path = KernelSU
