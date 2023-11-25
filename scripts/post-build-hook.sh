@@ -43,7 +43,7 @@ SUFFIX=
 if [ -z "${ONEUI}" ]; then
 SUFFIX=-AOSP
 else
-SUFFIX=-OneUI5
+SUFFIX=-OneUI
 fi
 KERNELZIP="$(echo "${KERNELSTR}" | sed s/^.*-//)${SUFFIX}-${DEVICE}_${TIME}.zip"
 COMMITMSG="$(git log --pretty=format:'"%h : %s"' -1)"
