@@ -41,6 +41,11 @@ $ git clone https://github.com/Roynas-Android-Playground/kernel_samsung_universa
 # Go into the repository
 $ cd kernel_samsung_universal9611
 
+
+# Initialize The repo
+
+$ git submodule update --init
+
 # Download the KernelSU Submodule required for the build
 $ git submodule update --remote KernelSU
 
