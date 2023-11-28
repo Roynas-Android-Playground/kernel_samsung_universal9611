@@ -12,7 +12,16 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - device: a51
+          - device: m21
+          - device: m31
+          - device: m31s
+          - device: f41
+    name: "🚧 Build for ${{matrix.device}}"
     steps:
       - name: Checkout source
         uses: actions/checkout@v3.5.3
@@ -29,11 +38,11 @@ jobs:
 
       - name: Run build
         run: |
-          DEVICE=a51 bash build_kernel.sh . ksu
+          DEVICE=${{matrix.device}} bash build_kernel.sh
 
       - name: Upload kernel
         uses: actions/upload-artifact@v3.1.2
         with:
-          name: GrassKernel.zip
+          name: GrassKernel_${{matrix.device}}.zip
           path: scripts/packaging/Grass*
 
