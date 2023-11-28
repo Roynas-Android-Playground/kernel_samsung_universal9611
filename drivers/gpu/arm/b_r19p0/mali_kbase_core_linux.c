@@ -2937,9 +2937,13 @@ static ssize_t show_mem_pool_size(struct device *dev,
 	if (!kbdev)
 		return -ENODEV;
 
+#ifdef CONFIG_DEBUG_FS
 	return kbase_debugfs_helper_get_attr_to_string(buf, PAGE_SIZE,
 		kbdev->mem_pools.small, MEMORY_GROUP_MANAGER_NR_GROUPS,
 		kbase_mem_pool_debugfs_size);
+#else
+	return -ENODEV;
+#endif
 }
 
 static ssize_t set_mem_pool_size(struct device *dev,
@@ -2951,10 +2955,13 @@ static ssize_t set_mem_pool_size(struct device *dev,
 	if (!kbdev)
 		return -ENODEV;
 
+#ifdef CONFIG_DEBUG_FS
 	err = kbase_debugfs_helper_set_attr_from_string(buf,
 		kbdev->mem_pools.small, MEMORY_GROUP_MANAGER_NR_GROUPS,
 		kbase_mem_pool_debugfs_trim);
-
+#else
+	err = -ENODEV;
+#endif
 	return err ? err : count;
 }
 
@@ -2969,9 +2976,13 @@ static ssize_t show_mem_pool_max_size(struct device *dev,
 	if (!kbdev)
 		return -ENODEV;
 
+#ifdef CONFIG_DEBUG_FS
 	return kbase_debugfs_helper_get_attr_to_string(buf, PAGE_SIZE,
 		kbdev->mem_pools.small, MEMORY_GROUP_MANAGER_NR_GROUPS,
 		kbase_mem_pool_debugfs_max_size);
+#else
+	return -ENODEV;
+#endif
 }
 
 static ssize_t set_mem_pool_max_size(struct device *dev,
@@ -2983,10 +2994,13 @@ static ssize_t set_mem_pool_max_size(struct device *dev,
 	if (!kbdev)
 		return -ENODEV;
 
+#ifdef CONFIG_DEBUG_FS
 	err = kbase_debugfs_helper_set_attr_from_string(buf,
 		kbdev->mem_pools.small, MEMORY_GROUP_MANAGER_NR_GROUPS,
 		kbase_mem_pool_debugfs_set_max_size);
-
+#else
+	err = -ENODEV;
+#endif
 	return err ? err : count;
 }
 
@@ -3011,9 +3025,13 @@ static ssize_t show_lp_mem_pool_size(struct device *dev,
 	if (!kbdev)
 		return -ENODEV;
 
+#ifdef CONFIG_DEBUG_FS
 	return kbase_debugfs_helper_get_attr_to_string(buf, PAGE_SIZE,
 		kbdev->mem_pools.large, MEMORY_GROUP_MANAGER_NR_GROUPS,
 		kbase_mem_pool_debugfs_size);
+#else
+	return -ENODEV;
+#endif
 }
 
 /**
@@ -3037,10 +3055,13 @@ static ssize_t set_lp_mem_pool_size(struct device *dev,
 	if (!kbdev)
 		return -ENODEV;
 
+#ifdef CONFIG_DEBUG_FS
 	err = kbase_debugfs_helper_set_attr_from_string(buf,
 		kbdev->mem_pools.large, MEMORY_GROUP_MANAGER_NR_GROUPS,
 		kbase_mem_pool_debugfs_trim);
-
+#else
+	err = -ENODEV;
+#endif
 	return err ? err : count;
 }
 
@@ -3065,9 +3086,13 @@ static ssize_t show_lp_mem_pool_max_size(struct device *dev,
 	if (!kbdev)
 		return -ENODEV;
 
+#ifdef CONFIG_DEBUG_FS
 	return kbase_debugfs_helper_get_attr_to_string(buf, PAGE_SIZE,
 		kbdev->mem_pools.large, MEMORY_GROUP_MANAGER_NR_GROUPS,
 		kbase_mem_pool_debugfs_max_size);
+#else
+	return -ENODEV;
+#endif
 }
 
 /**
@@ -3090,10 +3115,13 @@ static ssize_t set_lp_mem_pool_max_size(struct device *dev,
 	if (!kbdev)
 		return -ENODEV;
 
+#ifdef CONFIG_DEBUG_FS
 	err = kbase_debugfs_helper_set_attr_from_string(buf,
 		kbdev->mem_pools.large, MEMORY_GROUP_MANAGER_NR_GROUPS,
 		kbase_mem_pool_debugfs_set_max_size);
-
+#else
+	err = -ENODEV;
+#endif
 	return err ? err : count;
 }
 
@@ -3760,9 +3788,14 @@ static int kbase_device_debugfs_mem_pool_max_size_show(struct seq_file *sfile,
 	void *data)
 {
 	CSTD_UNUSED(data);
+
+#ifdef CONFIG_DEBUG_FS
 	return kbase_debugfs_helper_seq_read(sfile,
 		MEMORY_GROUP_MANAGER_NR_GROUPS,
 		kbase_mem_pool_config_debugfs_max_size);
+#else
+	return -ENODEV;
+#endif
 }
 
 static ssize_t kbase_device_debugfs_mem_pool_max_size_write(struct file *file,
@@ -3771,10 +3804,14 @@ static ssize_t kbase_device_debugfs_mem_pool_max_size_write(struct file *file,
 	int err = 0;
 
 	CSTD_UNUSED(ppos);
+
+#ifdef CONFIG_DEBUG_FS
 	err = kbase_debugfs_helper_seq_write(file, ubuf, count,
 		MEMORY_GROUP_MANAGER_NR_GROUPS,
 		kbase_mem_pool_config_debugfs_set_max_size);
-
+#else
+	err = -ENODEV;
+#endif
 	return err ? err : count;
 }
 
