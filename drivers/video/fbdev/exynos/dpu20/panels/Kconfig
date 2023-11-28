@@ -70,6 +70,9 @@ config LOGGING_BIGDATA_BUG
 	depends on SEC_DEBUG
 	default n
 
+config EXYNOS_DECON_LCD_EA8076_A50
+	tristate "EA8076_A50 LCD driver"
+
 config EXYNOS_DECON_LCD_S6E3FA9_A51
 	tristate "S6E3FA9_A51 LCD driver"
 

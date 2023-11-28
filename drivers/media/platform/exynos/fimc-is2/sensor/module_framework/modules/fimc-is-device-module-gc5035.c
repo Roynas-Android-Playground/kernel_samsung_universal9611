@@ -41,60 +41,50 @@
 // Reference Version : GC5035 Setting Beta V0.50.xlsx
 
 #ifndef USE_VENDOR_PWR_PIN_NAME
-#define GC5035_IOVDD       "CAM_VDDIO_1P8"
-#define GC5035_AVDD        "RCAM2_AVDD_2P8"
-#define GC5035_DVDD        "vdd_ldo44"
-
-#define GC5035_2ND_IOVDD   "CAM_VLDO3"
-#define GC5035_2ND_AVDD    "gpio_cam_a2p8_1p2_en"
-#define GC5035_2ND_DVDD    "gpio_cam_a2p8_1p2_en"
+#define GC5035_IOVDD	"CAM_VDDIO_1P8"
+#define GC5035_AVDD	"RCAM2_AVDD_2P8"
+#define GC5035_DVDD	"vdd_ldo44"	/* RCAM2_DVDD_1P2 */
 #endif
-
-struct pin_info {
-	char *name; /* pin name */
-	int gpio;   /* gpio_none or gpio number */
-	int type;   /* PIN_OUTPUT, PIN_REGULATOR */
-};
 
 static struct fimc_is_sensor_cfg config_gc5035[] = {
 	/* 2576x1932@30fps 4:3 */
-	FIMC_IS_SENSOR_CFG(2576, 1932,  30, 0, 0, CSI_DATA_LANES_2, 897, CSI_MODE_VC_ONLY, PD_NONE,
+	FIMC_IS_SENSOR_CFG(2576, 1932,  30, 0, 0, CSI_DATA_LANES_2, 884, CSI_MODE_VC_ONLY, PD_NONE,
 		VC_IN(0, HW_FORMAT_RAW10, 2576, 1932), VC_OUT(HW_FORMAT_RAW10, VC_NOTHING, 0, 0),
 		VC_IN(1, HW_FORMAT_UNKNOWN, 0, 0), VC_OUT(HW_FORMAT_UNKNOWN, VC_NOTHING, 0, 0),
 		VC_IN(2, HW_FORMAT_UNKNOWN, 0, 0), VC_OUT(HW_FORMAT_UNKNOWN, VC_NOTHING, 0, 0),
 		VC_IN(3, HW_FORMAT_UNKNOWN, 0, 0), VC_OUT(HW_FORMAT_UNKNOWN, VC_NOTHING, 0, 0)),
 	/* 2560x1440@30fps 16:9 */
-	FIMC_IS_SENSOR_CFG(2560, 1440,  30, 0, 1, CSI_DATA_LANES_2, 897, CSI_MODE_VC_ONLY, PD_NONE,
+	FIMC_IS_SENSOR_CFG(2560, 1440,  30, 0, 1, CSI_DATA_LANES_2, 884, CSI_MODE_VC_ONLY, PD_NONE,
 		VC_IN(0, HW_FORMAT_RAW10, 2560, 1440), VC_OUT(HW_FORMAT_RAW10, VC_NOTHING, 0, 0),
 		VC_IN(1, HW_FORMAT_UNKNOWN, 0, 0), VC_OUT(HW_FORMAT_UNKNOWN, VC_NOTHING, 0, 0),
 		VC_IN(2, HW_FORMAT_UNKNOWN, 0, 0), VC_OUT(HW_FORMAT_UNKNOWN, VC_NOTHING, 0, 0),
 		VC_IN(3, HW_FORMAT_UNKNOWN, 0, 0), VC_OUT(HW_FORMAT_UNKNOWN, VC_NOTHING, 0, 0)),
 	/* 2224x1080@30fps 18.5:9 */
-	FIMC_IS_SENSOR_CFG(2224, 1080,  30, 0, 2, CSI_DATA_LANES_2, 897, CSI_MODE_VC_ONLY, PD_NONE,
+	FIMC_IS_SENSOR_CFG(2224, 1080,  30, 0, 2, CSI_DATA_LANES_2, 884, CSI_MODE_VC_ONLY, PD_NONE,
 		VC_IN(0, HW_FORMAT_RAW10, 2224, 1080), VC_OUT(HW_FORMAT_RAW10, VC_NOTHING, 0, 0),
 		VC_IN(1, HW_FORMAT_UNKNOWN, 0, 0), VC_OUT(HW_FORMAT_UNKNOWN, VC_NOTHING, 0, 0),
 		VC_IN(2, HW_FORMAT_UNKNOWN, 0, 0), VC_OUT(HW_FORMAT_UNKNOWN, VC_NOTHING, 0, 0),
 		VC_IN(3, HW_FORMAT_UNKNOWN, 0, 0), VC_OUT(HW_FORMAT_UNKNOWN, VC_NOTHING, 0, 0)),
 	/* 2576x1188@30fps 19.5:9 */
-	FIMC_IS_SENSOR_CFG(2576, 1188,  30, 0, 3, CSI_DATA_LANES_2, 897, CSI_MODE_VC_ONLY, PD_NONE,
+	FIMC_IS_SENSOR_CFG(2576, 1188,  30, 0, 3, CSI_DATA_LANES_2, 884, CSI_MODE_VC_ONLY, PD_NONE,
 		VC_IN(0, HW_FORMAT_RAW10, 2576, 1188), VC_OUT(HW_FORMAT_RAW10, VC_NOTHING, 0, 0),
 		VC_IN(1, HW_FORMAT_UNKNOWN, 0, 0), VC_OUT(HW_FORMAT_UNKNOWN, VC_NOTHING, 0, 0),
 		VC_IN(2, HW_FORMAT_UNKNOWN, 0, 0), VC_OUT(HW_FORMAT_UNKNOWN, VC_NOTHING, 0, 0),
 		VC_IN(3, HW_FORMAT_UNKNOWN, 0, 0), VC_OUT(HW_FORMAT_UNKNOWN, VC_NOTHING, 0, 0)),
 	/* 2576x1160@30fps 20:9 */
-	FIMC_IS_SENSOR_CFG(2576, 1160,  30, 0, 4, CSI_DATA_LANES_2, 897, CSI_MODE_VC_ONLY, PD_NONE,
+	FIMC_IS_SENSOR_CFG(2576, 1160,  30, 0, 4, CSI_DATA_LANES_2, 884, CSI_MODE_VC_ONLY, PD_NONE,
 		VC_IN(0, HW_FORMAT_RAW10, 2576, 1160), VC_OUT(HW_FORMAT_RAW10, VC_NOTHING, 0, 0),
 		VC_IN(1, HW_FORMAT_UNKNOWN, 0, 0), VC_OUT(HW_FORMAT_UNKNOWN, VC_NOTHING, 0, 0),
 		VC_IN(2, HW_FORMAT_UNKNOWN, 0, 0), VC_OUT(HW_FORMAT_UNKNOWN, VC_NOTHING, 0, 0),
 		VC_IN(3, HW_FORMAT_UNKNOWN, 0, 0), VC_OUT(HW_FORMAT_UNKNOWN, VC_NOTHING, 0, 0)),
 	/* 1920x1920@30fps 1:1 */
-	FIMC_IS_SENSOR_CFG(1920, 1920,  30, 0, 5, CSI_DATA_LANES_2, 897, CSI_MODE_VC_ONLY, PD_NONE,
+	FIMC_IS_SENSOR_CFG(1920, 1920,  30, 0, 5, CSI_DATA_LANES_2, 884, CSI_MODE_VC_ONLY, PD_NONE,
 		VC_IN(0, HW_FORMAT_RAW10, 1920, 1920), VC_OUT(HW_FORMAT_RAW10, VC_NOTHING, 0, 0),
 		VC_IN(1, HW_FORMAT_UNKNOWN, 0, 0), VC_OUT(HW_FORMAT_UNKNOWN, VC_NOTHING, 0, 0),
 		VC_IN(2, HW_FORMAT_UNKNOWN, 0, 0), VC_OUT(HW_FORMAT_UNKNOWN, VC_NOTHING, 0, 0),
 		VC_IN(3, HW_FORMAT_UNKNOWN, 0, 0), VC_OUT(HW_FORMAT_UNKNOWN, VC_NOTHING, 0, 0)),
 	/* 800x600@60fps */
-	FIMC_IS_SENSOR_CFG(800, 600,  60, 0, 6, CSI_DATA_LANES_2, 897, CSI_MODE_VC_ONLY, PD_NONE,
+	FIMC_IS_SENSOR_CFG(800, 600,  60, 0, 6, CSI_DATA_LANES_2, 884, CSI_MODE_VC_ONLY, PD_NONE,
 		VC_IN(0, HW_FORMAT_RAW10, 800, 600), VC_OUT(HW_FORMAT_RAW10, VC_NOTHING, 0, 0),
 		VC_IN(1, HW_FORMAT_UNKNOWN, 0, 0), VC_OUT(HW_FORMAT_UNKNOWN, VC_NOTHING, 0, 0),
 		VC_IN(2, HW_FORMAT_UNKNOWN, 0, 0), VC_OUT(HW_FORMAT_UNKNOWN, VC_NOTHING, 0, 0),
@@ -127,28 +117,6 @@ static const struct v4l2_subdev_ops subdev_ops = {
 	.pad = &pad_ops
 };
 
-static int set_pin_config(struct device *dev, struct pin_info* info)
-{
-	int gpio_cam = 0;
-	int gpio_none = 0;
-
-	FIMC_BUG(!dev);
-	FIMC_BUG(!info);
-
-	gpio_cam = of_get_named_gpio(dev->of_node, info->name, 0);
-	if (!gpio_is_valid(gpio_cam)) {
-		dev_info(dev, "%s is PIN_REGULATOR\n", info->name);
-		info->gpio	= gpio_none;
-		info->type	= PIN_REGULATOR;
-	} else {
-		gpio_request_one(gpio_cam, GPIOF_OUT_INIT_LOW, "CAM_GPIO_OUTPUT_LOW");
-		gpio_free(gpio_cam);
-		info->gpio	= gpio_cam;
-		info->type	= PIN_OUTPUT;
-	}
-	return 0;
-}
-
 static int module_gc5035_power_setpin(struct device *dev,
 		struct exynos_platform_fimc_is_module *pdata)
 {
@@ -157,12 +125,6 @@ static int module_gc5035_power_setpin(struct device *dev,
 	int gpio_reset = 0;
 	int gpio_none = 0;
 	bool shared_mclk = false;
-	bool use_2nd_module = false;
-	bool use_sensor_otp = false;
-
-	struct pin_info iovdd_pin;
-	struct pin_info avdd_pin;
-	struct pin_info dvdd_pin;
 
 	FIMC_BUG(!dev);
 
@@ -184,21 +146,6 @@ static int module_gc5035_power_setpin(struct device *dev,
 	}
 
 	shared_mclk = of_property_read_bool(dnode, "shared_mclk");
-	use_sensor_otp = of_property_read_bool(dnode, "use_sensor_otp");
-
-	use_2nd_module = of_property_read_bool(dnode, "use_2nd_module");
-	if (use_2nd_module) {
-		iovdd_pin.name = GC5035_2ND_IOVDD;
-		avdd_pin.name  = GC5035_2ND_AVDD;
-		dvdd_pin.name  = GC5035_2ND_DVDD;
-	} else {
-		iovdd_pin.name = GC5035_IOVDD;
-		avdd_pin.name  = GC5035_AVDD;
-		dvdd_pin.name  = GC5035_DVDD;
-	}
-	set_pin_config(dev, &iovdd_pin);
-	set_pin_config(dev, &avdd_pin);
-	set_pin_config(dev, &dvdd_pin);
 
 	SET_PIN_INIT(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_ON);
 	SET_PIN_INIT(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_OFF);
@@ -206,84 +153,31 @@ static int module_gc5035_power_setpin(struct device *dev,
 	SET_PIN_INIT(pdata, SENSOR_SCENARIO_READ_ROM, GPIO_SCENARIO_OFF);
 
 	/* Normal On */
-	SET_PIN(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_ON, gpio_reset,      SENSOR_RESET_LOW,  PIN_OUTPUT,     0, 0);
-	SET_PIN(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_ON, iovdd_pin.gpio,  iovdd_pin.name,    iovdd_pin.type, 1, 500);
-	if (use_2nd_module) {
-		SET_PIN(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_ON, gpio_none,   SENSOR_SET_DELAY,  PIN_NONE,       0, 2000);
-	}
-	SET_PIN(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_ON, dvdd_pin.gpio,   dvdd_pin.name,     dvdd_pin.type,  1, 500);
-	if (strcmp(avdd_pin.name, dvdd_pin.name) == 0) {
-		SET_PIN(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_ON, gpio_none,   SENSOR_SET_DELAY,  PIN_NONE,       0, 1000);
-	} else {
-		SET_PIN(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_ON, avdd_pin.gpio, avdd_pin.name,   avdd_pin.type,  1, 1000);
-	}
-	SET_PIN(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_ON, gpio_reset,      SENSOR_RESET_HIGH, PIN_OUTPUT,     1, 1000);
-	SET_PIN(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_ON, gpio_none,       SENSOR_MCLK_PIN,   PIN_FUNCTION,   2, 0);
+	SET_PIN(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_ON, gpio_reset, SENSOR_RESET_LOW, PIN_OUTPUT, 0, 0);
+	SET_PIN(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_ON, gpio_none, GC5035_IOVDD, PIN_REGULATOR, 1, 500);
+	SET_PIN(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_ON, gpio_none, GC5035_DVDD, PIN_REGULATOR, 1, 500);
+	SET_PIN(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_ON, gpio_none, GC5035_AVDD, PIN_REGULATOR, 1, 1000);
+	SET_PIN(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_ON, gpio_reset, SENSOR_RESET_HIGH, PIN_OUTPUT, 1, 1000);
+	SET_PIN(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_ON, gpio_none, SENSOR_MCLK_PIN, PIN_FUNCTION, 2, 0);
 	if (shared_mclk) {
 		SET_PIN_SHARED(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_ON, SRT_ACQUIRE,
 				&core->shared_rsc_slock[SHARED_PIN0], &core->shared_rsc_count[SHARED_PIN0], 1);
 	}
-	SET_PIN(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_ON, gpio_none,       SENSOR_SET_DELAY,  PIN_NONE,       0, 2000);
+	SET_PIN(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_ON, gpio_none, SENSOR_SET_DELAY, PIN_NONE, 0, 2000);
 
 	/* Normal Off */
-	SET_PIN(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_OFF, gpio_none,      SENSOR_SET_DELAY,  PIN_NONE,       0, 5000);
-	SET_PIN(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_OFF, gpio_none,      SENSOR_MCLK_PIN,   PIN_FUNCTION,   1, 0);
+	SET_PIN(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_OFF, gpio_none, SENSOR_SET_DELAY,  PIN_NONE, 0, 5000);
+	SET_PIN(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_OFF, gpio_none, SENSOR_MCLK_PIN, PIN_FUNCTION, 1, 0);
 	if (shared_mclk) {
 		SET_PIN_SHARED(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_OFF, SRT_RELEASE,
 				&core->shared_rsc_slock[SHARED_PIN0], &core->shared_rsc_count[SHARED_PIN0], 0);
 	}
-	SET_PIN(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_OFF, gpio_none,      SENSOR_MCLK_PIN,   PIN_FUNCTION,   0, 0);
-	SET_PIN(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_OFF, gpio_reset,     SENSOR_RESET_LOW,  PIN_OUTPUT,     0, 0);
-	SET_PIN(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_OFF, gpio_none,      SENSOR_SET_DELAY,  PIN_NONE,       0, 2000);
-	if (strcmp(avdd_pin.name, dvdd_pin.name) == 0) {
-		SET_PIN(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_OFF, gpio_none,  SENSOR_SET_DELAY,  PIN_NONE,       0, 500);
-	} else {
-		SET_PIN(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_OFF, avdd_pin.gpio, avdd_pin.name,  avdd_pin.type,  0, 500);
-	}
-	SET_PIN(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_OFF, dvdd_pin.gpio,  dvdd_pin.name,     dvdd_pin.type,  0, 500);
-	SET_PIN(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_OFF, iovdd_pin.gpio, iovdd_pin.name,    iovdd_pin.type, 0, 0);
-
-	/* READ_ROM - POWER ON */
-#ifdef SENSOR_OTP_GC5035
-	if (use_sensor_otp) {
-		SET_PIN(pdata, SENSOR_SCENARIO_READ_ROM, GPIO_SCENARIO_ON, gpio_reset,      SENSOR_RESET_LOW,  PIN_OUTPUT,     0, 0);
-	}	
-#endif
-	SET_PIN(pdata, SENSOR_SCENARIO_READ_ROM, GPIO_SCENARIO_ON, iovdd_pin.gpio, iovdd_pin.name, iovdd_pin.type, 1, 5000);
-	if (use_2nd_module) {
- 		SET_PIN(pdata, SENSOR_SCENARIO_READ_ROM, GPIO_SCENARIO_ON, gpio_none,   SENSOR_SET_DELAY,  PIN_NONE, 0, 3000);
-	}
-#ifdef SENSOR_OTP_GC5035
-	if (use_sensor_otp) {
-		SET_PIN(pdata, SENSOR_SCENARIO_READ_OTPROM, GPIO_SCENARIO_ON, dvdd_pin.gpio,   dvdd_pin.name,     dvdd_pin.type,  1, 500);
-		if (strcmp(avdd_pin.name, dvdd_pin.name) == 0) {
-			SET_PIN(pdata, SENSOR_SCENARIO_READ_OTPROM, GPIO_SCENARIO_ON, gpio_none,   SENSOR_SET_DELAY,  PIN_NONE,       0, 1000);
-		} else {
-			SET_PIN(pdata, SENSOR_SCENARIO_READ_OTPROM, GPIO_SCENARIO_ON, avdd_pin.gpio, avdd_pin.name,   avdd_pin.type,  1, 1000);
-		}
-		SET_PIN(pdata, SENSOR_SCENARIO_READ_OTPROM, GPIO_SCENARIO_ON, gpio_reset,      SENSOR_RESET_HIGH, PIN_OUTPUT,     1, 1000);
-		SET_PIN(pdata, SENSOR_SCENARIO_READ_OTPROM, GPIO_SCENARIO_ON, gpio_none,       SENSOR_MCLK_PIN,   PIN_FUNCTION,   2, 0);
-		SET_PIN(pdata, SENSOR_SCENARIO_READ_OTPROM, GPIO_SCENARIO_ON, gpio_none,       SENSOR_SET_DELAY,  PIN_NONE,       0, 2000);
-	}
-#endif
-
-	/* READ_ROM - POWER OFF */
-#ifdef SENSOR_OTP_GC5035
-	if (use_sensor_otp) {
-		SET_PIN(pdata, SENSOR_SCENARIO_READ_OTPROM, GPIO_SCENARIO_OFF, gpio_none,      SENSOR_SET_DELAY,  PIN_NONE,       0, 5000);
-		SET_PIN(pdata, SENSOR_SCENARIO_READ_OTPROM, GPIO_SCENARIO_OFF, gpio_none,      SENSOR_MCLK_PIN,   PIN_FUNCTION,   1, 0);
-		SET_PIN(pdata, SENSOR_SCENARIO_READ_OTPROM, GPIO_SCENARIO_OFF, gpio_none,      SENSOR_MCLK_PIN,   PIN_FUNCTION,   0, 0);
-		SET_PIN(pdata, SENSOR_SCENARIO_READ_OTPROM, GPIO_SCENARIO_OFF, gpio_reset,     SENSOR_RESET_LOW,  PIN_OUTPUT,     0, 0);
-		SET_PIN(pdata, SENSOR_SCENARIO_READ_OTPROM, GPIO_SCENARIO_OFF, gpio_none,      SENSOR_SET_DELAY,  PIN_NONE,       0, 2000);
-		if (strcmp(avdd_pin.name, dvdd_pin.name) == 0) {
-			SET_PIN(pdata, SENSOR_SCENARIO_READ_OTPROM, GPIO_SCENARIO_OFF, gpio_none,  SENSOR_SET_DELAY,  PIN_NONE,       0, 500);
-		} else {
-			SET_PIN(pdata, SENSOR_SCENARIO_READ_OTPROM, GPIO_SCENARIO_OFF, avdd_pin.gpio, avdd_pin.name,  avdd_pin.type,  0, 500);
-		}
-		SET_PIN(pdata, SENSOR_SCENARIO_READ_OTPROM, GPIO_SCENARIO_OFF, dvdd_pin.gpio,  dvdd_pin.name,     dvdd_pin.type,  0, 500);
-	}
-#endif
-	SET_PIN(pdata, SENSOR_SCENARIO_READ_ROM, GPIO_SCENARIO_OFF, iovdd_pin.gpio, iovdd_pin.name, iovdd_pin.type, 0, 0);
+	SET_PIN(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_OFF, gpio_none, SENSOR_MCLK_PIN, PIN_FUNCTION, 0, 0);
+	SET_PIN(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_OFF, gpio_reset, SENSOR_RESET_LOW, PIN_OUTPUT, 0, 0);
+	SET_PIN(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_OFF, gpio_none, SENSOR_SET_DELAY, PIN_NONE, 0, 2000);
+	SET_PIN(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_OFF, gpio_none, GC5035_AVDD, PIN_REGULATOR, 0, 500);
+	SET_PIN(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_OFF, gpio_none, GC5035_DVDD, PIN_REGULATOR, 0, 500);
+	SET_PIN(pdata, SENSOR_SCENARIO_NORMAL, GPIO_SCENARIO_OFF, gpio_none, GC5035_IOVDD, PIN_REGULATOR, 0, 0);
 
 	dev_info(dev, "%s X v4\n", __func__);
 
@@ -302,8 +196,6 @@ int sensor_module_gc5035_probe(struct platform_device *pdev)
 	struct exynos_platform_fimc_is_module *pdata;
 	struct device *dev;
 	struct pinctrl_state *s;
-	struct device_node *dnode;
-	bool use_2nd_module = false;
 
 	FIMC_BUG(!fimc_is_dev);
 
@@ -316,7 +208,6 @@ int sensor_module_gc5035_probe(struct platform_device *pdev)
 	dev = &pdev->dev;
 
 	fimc_is_module_parse_dt(dev, module_gc5035_power_setpin);
-	dnode = dev->of_node;
 
 	pdata = dev_get_platdata(dev);
 	device = &core->sensor[pdata->id];
@@ -351,14 +242,7 @@ int sensor_module_gc5035_probe(struct platform_device *pdev)
 	module->bitwidth = 10;
 	module->sensor_maker = "GALAXYCORE";
 	module->sensor_name = "GC5035";
-
-	use_2nd_module = of_property_read_bool(dnode, "use_2nd_module");
-	
-	if(use_2nd_module)
-		module->setfile_name = "setfile_gc5035_macro.bin";
-	else 
-		module->setfile_name = "setfile_gc5035.bin";
-
+	module->setfile_name = "setfile_gc5035.bin";
 	module->cfgs = ARRAY_SIZE(config_gc5035);
 	module->cfg = config_gc5035;
 	module->ops = NULL;
