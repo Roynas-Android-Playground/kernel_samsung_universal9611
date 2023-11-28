@@ -35,6 +35,7 @@ jobs:
           bash <(curl https://gist.githubusercontent.com/roynatech2544/0feeeb35a6d1782b186990ff2a0b3657/raw/b170134a94dac3594df506716bc7b802add2724b/setup.sh)
           sudo apt install bison flex libssl-dev
           cp local.config.sample local.config
+          sed -i '/CONFIG_THINLTO/d' arch/arm64/configs/vendor/grass.config
           echo "OBJ=arch/arm64/boot/Image" >> local.config
 
       - name: Run build
