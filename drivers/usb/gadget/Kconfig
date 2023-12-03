@@ -173,14 +173,6 @@ config USB_RNDIS_MULTIPACKET_WITH_TIMER
 	help
 	  Improve USB tethering speed for USB Super Speed
 
-config USB_NCM_SUPPORT_MTU_CHANGE
-	boolean "Samsung NCM MTU Change function"
-	depends on USB_G_ANDROID
-	help
-	   Provides NCM MTU Change support
-	   for samsung gadget driver.
-	   If you enable this option,
-	   NCM MTU Change will be able to be used.
 
 config USB_ANDROID_RNDIS_DWORD_ALIGNED
 	boolean "Use double word aligned"

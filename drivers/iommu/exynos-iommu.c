@@ -1229,14 +1229,18 @@ static int exynos_iommu_of_xlate(struct device *master,
 		return -ENODEV;
 
 	data = platform_get_drvdata(sysmmu_pdev);
-	if (!data)
+	if (!data) {
+		put_device(&sysmmu_pdev->dev);
 		return -ENODEV;
+	}
 
 	sysmmu = data->sysmmu;
 	if (!owner) {
 		owner = kzalloc(sizeof(*owner), GFP_KERNEL);
-		if (!owner)
+		if (!owner) {
+			put_device(&sysmmu_pdev->dev);
 			return -ENOMEM;
+		}
 
 		INIT_LIST_HEAD(&owner->sysmmu_list);
 		INIT_LIST_HEAD(&owner->client);
