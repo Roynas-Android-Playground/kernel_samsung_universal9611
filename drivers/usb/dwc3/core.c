@@ -1646,6 +1646,16 @@ static int dwc3_probe(struct platform_device *pdev)
 err5:
 	dwc3_event_buffers_cleanup(dwc);
 
+	usb_phy_shutdown(dwc->usb2_phy);
+	usb_phy_shutdown(dwc->usb3_phy);
+	phy_exit(dwc->usb2_generic_phy);
+	phy_exit(dwc->usb3_generic_phy);
+
+	usb_phy_set_suspend(dwc->usb2_phy, 1);
+	usb_phy_set_suspend(dwc->usb3_phy, 1);
+	phy_power_off(dwc->usb2_generic_phy);
+	phy_power_off(dwc->usb3_generic_phy);
+
 err4:
 	dwc3_free_scratch_buffers(dwc);
 
@@ -1694,6 +1704,8 @@ static int dwc3_remove(struct platform_device *pdev)
 		pm_runtime_put_sync(&pdev->dev);
 	pm_runtime_allow(&pdev->dev);
 	pm_runtime_disable(&pdev->dev);
+	pm_runtime_put_noidle(&pdev->dev);
+	pm_runtime_set_suspended(&pdev->dev);
 
 	dwc3_free_event_buffers(dwc);
 	dwc3_free_scratch_buffers(dwc);
