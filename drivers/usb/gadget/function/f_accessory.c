@@ -88,13 +88,13 @@ struct acc_dev {
 	/* online indicates state of function_set_alt & function_unbind
 	 * set to 1 when we connect
 	 */
-	unsigned int online:1;
+	int online;
 
 	/* disconnected indicates state of open & release
 	 * Set to 1 when we disconnect.
 	 * Not cleared until our file is closed.
 	 */
-	unsigned int disconnected:1;
+	int disconnected;
 
 	/* strings sent by the host */
 	char manufacturer[ACC_STRING_SIZE];
@@ -276,6 +276,10 @@ static void __put_acc_dev(struct kref *kref)
 {
 	struct acc_dev_ref *ref = container_of(kref, struct acc_dev_ref, kref);
 	struct acc_dev *dev = ref->acc_dev;
+
+	/* Cancel any async work */
+	cancel_delayed_work_sync(&dev->start_work);
+	cancel_work_sync(&dev->hid_work);
 
 	ref->acc_dev = NULL;
 	kfree(dev);
@@ -1378,10 +1382,11 @@ void acc_disconnect(void)
 {
 	struct acc_dev *dev = get_acc_dev();
 
-	/* unregister all HID devices if USB is disconnected */
-	if (dev)
-		kill_all_hid_devices(dev);
+	if (!dev)
+		return;
 
+	/* unregister all HID devices if USB is disconnected */
+	kill_all_hid_devices(dev);
 	put_acc_dev(dev);
 }
 EXPORT_SYMBOL_GPL(acc_disconnect);
