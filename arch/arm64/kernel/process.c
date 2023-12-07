@@ -62,7 +62,7 @@
 
 #ifdef CONFIG_CC_STACKPROTECTOR
 #include <linux/stackprotector.h>
-unsigned long __stack_chk_guard __read_mostly;
+unsigned long __stack_chk_guard __ro_after_init;
 EXPORT_SYMBOL(__stack_chk_guard);
 #endif
 
@@ -209,7 +209,7 @@ static void show_data(unsigned long addr, int nbytes, const char *name)
 		}
 	}
 
-	printk("\n%s: %#lx:\n", name, addr);
+	printk("\n%s: %pS:\n", name, addr);
 
 	/*
 	 * round address down to a 32 bit boundary
