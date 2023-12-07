@@ -379,7 +379,7 @@ alternative_else_nop_endif
 #endif
 	.else
 	ldr	lr, [sp, #S_LR]
-	add	sp, sp, #(S_FRAME_SIZE+PRESERVE_STACK_SIZE)
+	add	sp, sp, #S_FRAME_SIZE		// restore sp
 	eret
 	.endif
 	.endm
