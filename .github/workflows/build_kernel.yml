@@ -16,11 +16,7 @@ jobs:
       fail-fast: true
       matrix:
         include:
-          - device: a51
           - device: m21
-          - device: m31
-          - device: m31s
-          - device: f41
     name: "🚧 Build for ${{matrix.device}}"
     steps:
       - name: Checkout source
